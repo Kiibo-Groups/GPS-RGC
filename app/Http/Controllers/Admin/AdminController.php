@@ -24,9 +24,7 @@ class AdminController extends Controller
 	*/
 	public function index()
 	{
-		return View($this->folder.'index',[
-			'form_url' => Asset(env('admin').'/home')
-		]);
+		return View($this->folder.'dashboard.home');
 	}
 
 	/*

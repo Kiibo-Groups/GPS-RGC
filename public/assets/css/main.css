@@ -2,3 +2,10 @@ body[data-sidebar-color="dark"] .left-side-menu {
     background-color: rgb(42, 48, 66); /* #313844;*/
     box-shadow: none; 
 }
+body[data-sidebar-color="dark"] .navbar-custom {
+    background-color: #fff !important; 
+}
+
+body[data-sidebar-color="dark"] .logo-box {
+    background-color: rgb(42, 48, 66);
+}
