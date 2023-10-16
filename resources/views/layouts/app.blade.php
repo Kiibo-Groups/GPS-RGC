@@ -11,7 +11,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- App favicon -->
-    <link rel="shortcut icon" href="../assets/images/favicon.ico">
+    <link rel="shortcut icon" href="../public/assets/images/favicon.ico">
 
     <!-- App css -->
     <link href="{{ asset('public/assets/css/config/default/bootstrap.min.css') }}" rel="stylesheet" type="text/css" id="bs-default-stylesheet" />
@@ -80,11 +80,11 @@
      <script src="{{ asset('public/assets/js/vendor.min.j') }}s"></script>
  
      <!-- knob plugin -->
-     <script src="{{ asset('assets/libs/jquery-knob/jquery.knob.min.js') }}"></script>
+     <script src="{{ asset('public/assets/libs/jquery-knob/jquery.knob.min.js') }}"></script>
  
      <!--Morris Chart-->
-     <script src="{{ asset('assets/libs/morris.js06/morris.min.js') }}"></script>
-     <script src="{{ asset('assets/libs/raphael/raphael.min.js') }}"></script>
+     <script src="{{ asset('public/assets/libs/morris.js06/morris.min.js') }}"></script>
+     <script src="{{ asset('public/assets/libs/raphael/raphael.min.js') }}"></script>
  
      <!-- Dashboar init js-->
      <script src="{{ asset('public/assets/js/pages/dashboard.init.js') }}"></script>
