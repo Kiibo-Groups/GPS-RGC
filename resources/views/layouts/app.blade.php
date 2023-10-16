@@ -14,16 +14,16 @@
     <link rel="shortcut icon" href="../assets/images/favicon.ico">
 
     <!-- App css -->
-    <link href="{{ asset('assets/css/config/default/bootstrap.min.css') }}" rel="stylesheet" type="text/css" id="bs-default-stylesheet" />
-    <link href="{{ asset('assets/css/config/default/app.min.css') }}" rel="stylesheet" type="text/css" id="app-default-stylesheet" />
+    <link href="{{ asset('public/assets/css/config/default/bootstrap.min.css') }}" rel="stylesheet" type="text/css" id="bs-default-stylesheet" />
+    <link href="{{ asset('public/assets/css/config/default/app.min.css') }}" rel="stylesheet" type="text/css" id="app-default-stylesheet" />
 
-    <link href="{{ asset('assets/css/config/default/bootstrap-dark.min.css') }}" rel="stylesheet" type="text/css" id="bs-dark-stylesheet" disabled="disabled" />
-    <link href="{{ asset('assets/css/config/default/app-dark.min.css') }}" rel="stylesheet" type="text/css" id="app-dark-stylesheet" disabled="disabled" />
+    <link href="{{ asset('public/assets/css/config/default/bootstrap-dark.min.css') }}" rel="stylesheet" type="text/css" id="bs-dark-stylesheet" disabled="disabled" />
+    <link href="{{ asset('public/assets/css/config/default/app-dark.min.css') }}" rel="stylesheet" type="text/css" id="app-dark-stylesheet" disabled="disabled" />
 
     <!-- icons -->
-    <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('public/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
 
-    <link href="{{ asset('assets/css/main.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('public/assets/css/main.css') }}" rel="stylesheet" type="text/css" />
 
 </head>
 <body class="loading" data-layout='{"mode": "light", "width": "fluid", "menuPosition": "fixed", "sidebar": { "color": "dark", "size": "default", "showuser": true}, "topbar": {"color": "light"}, "showRightSidebarOnPageLoad": true}'>
@@ -77,7 +77,7 @@
      <div class="rightbar-overlay"></div>
 
      <!-- Vendor js -->
-     <script src="{{ asset('assets/js/vendor.min.j') }}s"></script>
+     <script src="{{ asset('public/assets/js/vendor.min.j') }}s"></script>
  
      <!-- knob plugin -->
      <script src="{{ asset('assets/libs/jquery-knob/jquery.knob.min.js') }}"></script>
@@ -87,9 +87,9 @@
      <script src="{{ asset('assets/libs/raphael/raphael.min.js') }}"></script>
  
      <!-- Dashboar init js-->
-     <script src="{{ asset('assets/js/pages/dashboard.init.js') }}"></script>
+     <script src="{{ asset('public/assets/js/pages/dashboard.init.js') }}"></script>
  
      <!-- App js-->
-     <script src="{{ asset('assets/js/app.min.js') }}"></script>
+     <script src="{{ asset('public/assets/js/app.min.js') }}"></script>
 </body>
 </html>
