@@ -34,6 +34,24 @@ class AdminController extends Controller
 	*/
 	public function home()
 	{
-		 
+		return View($this->folder.'dashboard.home');
+	}
+
+	public function conexiones()
+	{
+		return View($this->folder.'dashboard.home');
+	}
+
+
+	/*
+	|------------------------------------------------------------------
+	|Logout
+	|------------------------------------------------------------------
+	*/
+	public function logout()
+	{
+		auth()->guard()->logout();
+
+		return Redirect::to('/login')->with('message', 'Ha cerrado sesión con éxito !');
 	}
 }

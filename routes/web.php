@@ -16,24 +16,30 @@ use Illuminate\Support\Facades\Route;
 Auth::routes();
 
 
-Route::group(['namespace' => 'App\Http\Controllers\Admin','prefix' => env('admin')], function(){
-
+// Route::group(['namespace' => 'App\Http\Controllers\Admin','prefix' => env('admin')], function(){
+//     Route::group(['middleware' => 'auth'], function(){
     
+Route::prefix(env('user'))->namespace('User')->group(static function() {
+    Route::middleware('auth')->group(static function () {
 
-    
-    Route::group(['middleware' => 'auth'], function(){
 
         /*
         |-----------------------------------------
         |Dashboard and Account Setting & Logout
         |-----------------------------------------
         */
-        Route::get('/','AdminController@index'); 
-        Route::get('home','AdminController@home');
-        Route::get('setting','AdminController@setting');
-        Route::post('setting','AdminController@update');
-        Route::get('logout','AdminController@logout');
-
+        Route::get('/',[App\Http\Controllers\Admin\AdminController::class, 'index'])->name('dash');
+        Route::get('dash',[App\Http\Controllers\Admin\AdminController::class, 'home'])->name('dash');
+        Route::get('setting',[App\Http\Controllers\Admin\AdminController::class, 'setting'])->name('setting'); 
+        Route::post('/setting',[App\Http\Controllers\Admin\AdminController::class, 'update']); 
+        Route::get('logout',[App\Http\Controllers\Admin\AdminController::class, 'logout'])->name('logoutAdmin');
+        /*
+        |-----------------------------------------
+        |Conexiones
+        |-----------------------------------------
+        */ 
+        Route::get('conexiones',[App\Http\Controllers\Admin\AdminController::class, 'conexiones'])->name('conexiones');
+     
     });
 
 });
