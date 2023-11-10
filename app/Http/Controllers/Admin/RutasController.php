@@ -13,7 +13,7 @@ use Redirect;
 use IMS;
 class RutasController extends Controller
 {
-	public $folder  = "admin/rutas.";
+	public $folder  = "admin/Rutas.";
     /**
      * Display a listing of the resource.
      *
