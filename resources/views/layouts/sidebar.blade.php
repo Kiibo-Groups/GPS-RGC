@@ -18,7 +18,7 @@
                 </li>
 
                 <li>
-                    <a href="{{ asset('/subaccounts') }}">
+                    <a href="{{ url('/subaccounts') }}">
                         <i class="mdi mdi-account"></i>
                         <span>Cuentas de Usuario </span>
                     </a>
@@ -33,7 +33,7 @@
                     <div class="collapse" id="rutas">
                         <ul class="nav-second-level">
                             <li>
-                                <a href="{{ asset('/rutas') }}">Control de rutas</a>
+                                <a href="{{ url('/rutas') }}">Control de rutas</a>
                             </li> 
                         </ul>
                     </div>
@@ -48,17 +48,17 @@
                     <div class="collapse" id="cargas">
                         <ul class="nav-second-level">
                             <li>
-                                <a href="{{ asset('/cargas') }}">Vista de Cargas</a>
+                                <a href="{{ url('/cargas') }}">Vista de Cargas</a>
                             </li>
                             <li>
-                                <a href="{{ asset('/history_cargas') }}">Historial</a>
+                                <a href="{{ url('/history_cargas') }}">Historial</a>
                             </li>
                         </ul>
                     </div>
                 </li>
 
                 <li>
-                    <a href="{{ asset('/ticket') }}" >
+                    <a href="{{ url('/ticket') }}" >
                         <i class="mdi mdi-headset"></i> 
                         <span> Tickets de soporte </span>
                     </a>
@@ -73,12 +73,12 @@
                     <div class="collapse" id="dispositivos">
                         <ul class="nav-second-level">
                             <li>
-                                <a href="{{ asset('/dispositivos') }}">
+                                <a href="{{ url('/dispositivos') }}">
                                     Dispositivos
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('conexiones') }}">
+                                <a href="{{ url('conexiones') }}">
                                     Conexiones
                                 </a>
                             </li>
@@ -87,7 +87,7 @@
                 </li>
 
                 <li>
-                    <a href="{{ asset('/ajustes') }}">
+                    <a href="{{ url('/ajustes') }}">
                         <i class="mdi mdi-cog"></i>
                         <span> Ajustes </span>
                     </a>
