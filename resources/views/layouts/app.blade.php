@@ -60,62 +60,59 @@
             <div class="@if (!Route::is('login')) content @else container @endif">
                 
                 <main class="py-4">
-                    @if(Session::has('error'))
-                    <div class="row justify-content-center">
-                        <div class="col-md-8 col-lg-6 col-xl-4">
-                                
-                            <div class="card">
-                                <div class="card-body p-4">
+                    
+                        @if(Session::has('error'))
+                        <div class="row justify-content-center">
+                            <div class="col-md-8 col-lg-6 col-xl-4"> 
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <strong>ERROR : </strong> {{ Session::get('error') }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div> 
+                            </div> <!-- end col -->
+                        </div>
+                        @endif
+                        
+                        
+                        @if(Session::has('message'))
+                        <div class="row justify-content-center">
+                            <div class="col-md-8 col-lg-6 col-xl-4">
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <strong>SUCCESS : </strong> {{ Session::get('message') }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div> 
+                            </div> <!-- end col -->
+                        </div>
+                        @endif
+
+                        @if ($errors->any())
+                        <div class="row justify-content-center">
+                            <div class="col-md-8 col-lg-6 col-xl-4">
+                                <div class="alert alert-danger">
+                                    @foreach ($errors->all() as $error)
+                                        <p>{{ $error }}</p>
+                                    @endforeach
+                                </div>
+                            </div> <!-- end col -->
+                        </div>
+                        @endif      
+                    
+ 
+                    <div class="container-fluid">
+                        <div class="row">
+                            <h4 class="header-title mt-3 mt-sm-0">Te encuentras en:</h4>
+                            <div class="col-md-6">
+                                <div class="mb-4">
                                     
-
-                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                        <strong>ERROR : </strong> {{ Session::get('error') }}
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                    </div>
-                    
-                                </div> <!-- end card-body -->
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item"><a href="{{ route('dash') }}">Inicio</a></li>
+                                        <li class="breadcrumb-item">@yield('page_active')</li>
+                                        <li class="breadcrumb-item active">@yield('subpage_active')</li>
+                                    </ol> 
+                                </div>
                             </div>
-                            <!-- end card -->
-                        
-                        </div> <!-- end col -->
+                        </div>
                     </div>
-                    @endif
-                    
-                    
-                    @if(Session::has('message'))
-                    <div class="row justify-content-center">
-                        <div class="col-md-8 col-lg-6 col-xl-4">
-                                
-                            <div class="card">
-                                <div class="card-body p-4"> 
-                                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                        <strong>SUCCESS : </strong> {{ Session::get('message') }}
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                    </div> 
-                                </div> <!-- end card-body -->
-                            </div>
-                            <!-- end card -->
-                        
-                        </div> <!-- end col -->
-                    </div>
-                    @endif
-
-                    @if ($errors->any())
-                    <div class="row justify-content-center">
-                        <div class="col-md-8 col-lg-6 col-xl-4">
-                            <div class="card">
-                                <div class="card-body p-4"> 
-                                    <div class="alert alert-danger">
-                                        @foreach ($errors->all() as $error)
-                                            <p>{{ $error }}</p>
-                                        @endforeach
-                                    </div>
-                                </div> <!-- end card-body -->
-                            </div>
-                            <!-- end card --> 
-                        </div> <!-- end col -->
-                    </div>
-                    @endif      
+                     
 
                     @yield('content')
                 </main>
@@ -137,24 +134,83 @@
             @endif
         </div>
     </div>
-     <!-- Vendor js -->
-     <script src="{{ asset('assets/js/vendor.min.j') }}s"></script>
- 
-     <!-- knob plugin 
-     <script src="{{ asset('assets/libs/jquery-knob/jquery.knob.min.js') }}"></script>
-    -->
-    {{-- @if (!Route::is('login'))
+
+    <!-- Vendor js -->
+    <script src="{{ asset('assets/js/vendor.min.js') }}"></script>
+    
+    <!-- knob plugin -->
+    <script src="{{ asset('assets/libs/jquery-knob/jquery.knob.min.js') }}"></script>
+    
+    @if (!Route::is('login'))
         <!--Morris Chart-->
-        <script src="{{ asset('assets/libs/morris.js06/morris.min.js') }}"></script>
+        <script src="{{ asset('assets/libs/morris.js06/morris.min.js') }}"></script> 
         <script src="{{ asset('assets/libs/raphael/raphael.min.js') }}"></script>
         <!-- Dashboar init js-->
         <script src="{{ asset('assets/js/pages/dashboard.init.js') }}"></script>
-    @endif     --}}
+    @endif      
+    
     
     <!-- JS Extras -->
     @yield('js')
 
+   
+    
     <!-- App js-->
     <script src="{{ asset('assets/js/app.min.js') }}"></script>
+
+    <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.all.min.js') }}"></script>
+
+    <script>
+        function deleteConfirm(url)
+        {
+            Swal.fire({
+                    title: '¿Estas seguro(a)?',
+                    text: "Estas a punto de eliminar este elemento.",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'SI, Eliminar!'
+                }).then((result) => {
+                    if (result.value) {
+                        Swal.fire(
+                            'Eliminado!',
+                            'Este elemento ha sido eliminado con éxito.',
+                            'success'
+                        )
+
+                        window.location = url;
+                    }
+            });
+        }
+
+        function confirmAlert(url)
+        {
+            Swal.fire({
+                    title: '¿Estas seguro(a)?',
+                    text: "",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si, Hacerlo!'
+                }).then((result) => {
+                    if (result.value) {
+                        Swal.fire(
+                            'Cambio!',
+                            'Este elemento ha sido actualizado con éxito.',
+                            'success'
+                        )
+
+                        window.location = url;
+                    }
+        })
+        }
+
+        function showMsg(data)
+        {
+            Swal.fire(data);
+        } 
+    </script>
 </body>
 </html>

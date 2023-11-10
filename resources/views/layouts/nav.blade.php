@@ -156,7 +156,7 @@
         </li>
 
         <li>
-            <h4 class="page-title-main"> @yield('inner_page') </h4>
+            <h4 class="page-title-main"> @yield('page_active') </h4>
         </li>
         
     </ul>

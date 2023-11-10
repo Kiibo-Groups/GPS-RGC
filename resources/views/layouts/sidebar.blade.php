@@ -18,9 +18,49 @@
                 </li>
 
                 <li>
-                    <a href="{{ route('conexiones') }}">
-                        <i class="mdi mdi-antenna"></i>
-                        <span> Conexiones </span>
+                    <a href="{{ asset('/subaccounts') }}">
+                        <i class="mdi mdi-account"></i>
+                        <span>Cuentas de Usuario </span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#rutas" data-bs-toggle="collapse">
+                        <i class="mdi mdi-ticket"></i>
+                        <span> Gestor de Rutas </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="rutas">
+                        <ul class="nav-second-level">
+                            <li>
+                                <a href="{{ asset('/rutas') }}">Control de rutas</a>
+                            </li> 
+                        </ul>
+                    </div>
+                </li>
+
+                <li>
+                    <a href="#cargas" data-bs-toggle="collapse">
+                        <i class="mdi mdi-ticket"></i>
+                        <span> Gestor de Cargas </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="cargas">
+                        <ul class="nav-second-level">
+                            <li>
+                                <a href="{{ asset('/cargas') }}">Vista de Cargas</a>
+                            </li>
+                            <li>
+                                <a href="{{ asset('/history_cargas') }}">Historial</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li>
+                    <a href="{{ asset('/ticket') }}" >
+                        <i class="mdi mdi-headset"></i> 
+                        <span> Tickets de soporte </span>
                     </a>
                 </li>
 
@@ -33,32 +73,17 @@
                     <div class="collapse" id="dispositivos">
                         <ul class="nav-second-level">
                             <li>
-                                <a href="{{ asset('/dispositivos') }}">Dispositivos</a>
+                                <a href="{{ asset('/dispositivos') }}">
+                                    Dispositivos
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('conexiones') }}">
+                                    Conexiones
+                                </a>
                             </li>
                         </ul>
                     </div>
-                </li>
-
-                <li>
-                    <a href="{{ asset('/usuarios') }}">
-                        <i class="mdi mdi-account"></i>
-                        <span> Usuarios </span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="{{ asset('/servicios') }}">
-                        <i class="mdi mdi-ticket"></i>
-                        <span> Servicios </span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="{{ asset('/ticket') }}" >
-                        <i class="mdi mdi-headset"></i>
-                        <span class="badge bg-success float-end">Nuevo</span>
-                        <span> Ticket de soporte </span>
-                    </a>
                 </li>
 
                 <li>
