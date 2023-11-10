@@ -96,7 +96,7 @@
                         </div>
                         @endif      
                     
- 
+                    @if (!Route::is('login'))
                     <div class="container-fluid">
                         <div class="row">
                             <h4 class="header-title mt-3 mt-sm-0">Te encuentras en:</h4>
@@ -112,7 +112,7 @@
                             </div>
                         </div>
                     </div>
-                     
+                    @endif
 
                     @yield('content')
                 </main>
