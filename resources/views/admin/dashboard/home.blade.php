@@ -1,7 +1,11 @@
 @extends("layouts.app")
 
 @section('title') Dashboard | Fletes RGC - Empresa Mexicana especializada en el autotransporte de carga terrestre. @endsection
-@section('inner_page') Dashboard @endsection
+
+@section('page_active') Dashboard @endsection 
+@section('subpage_active') Home @endsection 
+
+
 @section('css')
 <!-- plugin css -->
 <link href="{{ asset('assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css') }}" rel="stylesheet" type="text/css" />
