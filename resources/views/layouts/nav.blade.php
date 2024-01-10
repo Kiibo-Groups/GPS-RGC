@@ -118,7 +118,7 @@
                 <div class="dropdown-divider"></div>
 
                 <!-- item-->
-                <a href="{{ Asset('/logout') }}" class="dropdown-item notify-item">
+                <a href="{{ url('/logout') }}" class="dropdown-item notify-item">
                     <i class="fe-log-out"></i>
                     <span>Cerrar sessión</span>
                 </a> 
@@ -156,7 +156,7 @@
         </li>
 
         <li>
-            <h4 class="page-title-main"> @yield('inner_page') </h4>
+            <h4 class="page-title-main"> @yield('page_active') </h4>
         </li>
         
     </ul>

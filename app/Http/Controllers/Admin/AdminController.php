@@ -52,6 +52,6 @@ class AdminController extends Controller
 	{
 		auth()->guard()->logout();
 
-		return Redirect::to('/login')->with('message', 'Ha cerrado sesión con éxito !');
+		return Redirect::to('/')->with('message', 'Ha cerrado sesión con éxito !');
 	}
 }

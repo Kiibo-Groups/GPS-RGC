@@ -14,11 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Auth::routes();
-
-
-// Route::group(['namespace' => 'App\Http\Controllers\Admin','prefix' => env('admin')], function(){
-//     Route::group(['middleware' => 'auth'], function(){
-    
+ 
 Route::prefix(env('user'))->namespace('User')->group(static function() {
     Route::middleware('auth')->group(static function () {
 
@@ -33,6 +29,27 @@ Route::prefix(env('user'))->namespace('User')->group(static function() {
         Route::get('setting',[App\Http\Controllers\Admin\AdminController::class, 'setting'])->name('setting'); 
         Route::post('/setting',[App\Http\Controllers\Admin\AdminController::class, 'update']); 
         Route::get('logout',[App\Http\Controllers\Admin\AdminController::class, 'logout'])->name('logoutAdmin');
+
+        /*
+        |-----------------------------------------
+        |Gestor de SubCuentas de administracion
+        |-----------------------------------------
+        */ 
+        Route::resource('subaccounts','\App\Http\Controllers\Admin\SubAccountController');
+        Route::get('subaccounts',[App\Http\Controllers\Admin\SubAccountController::class, 'index'])->name('subaccounts');
+        Route::get('subaccounts/delete/{id}',[App\Http\Controllers\Admin\SubAccountController::class, 'delete']);
+        Route::get('subaccounts/status/{id}',[App\Http\Controllers\Admin\SubAccountController::class, 'status']);
+
+        /*
+        |-----------------------------------------
+        |Gestor de Rutas
+        |-----------------------------------------
+        */ 
+        Route::resource('rutas','\App\Http\Controllers\Admin\RutasController');
+        Route::get('rutas',[App\Http\Controllers\Admin\RutasController::class, 'index'])->name('rutas');
+        Route::get('rutas/delete/{id}',[App\Http\Controllers\Admin\RutasController::class, 'delete']);
+        Route::get('rutas/status/{id}',[App\Http\Controllers\Admin\RutasController::class, 'status']); 
+        
         /*
         |-----------------------------------------
         |Conexiones

@@ -1,7 +1,11 @@
 @extends("layouts.app")
 
 @section('title') Dashboard | Fletes RGC - Empresa Mexicana especializada en el autotransporte de carga terrestre. @endsection
-@section('inner_page') Dashboard @endsection
+
+@section('page_active') Dashboard @endsection 
+@section('subpage_active') Home @endsection 
+
+
 @section('css')
 <!-- plugin css -->
 <link href="{{ asset('assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css') }}" rel="stylesheet" type="text/css" />
@@ -102,47 +106,52 @@
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Project Name</th>
-                                <th>Start Date</th>
-                                <th>Due Date</th>
-                                <th>Status</th>
-                                <th>Assign</th>
+                                <th>Unidad</th>
+                                <th>Origen</th>
+                                <th>Destino</th>
+                                <th>Operador</th>
+                                <th>Destinatario</th>
+                                <th>Fecha</th>
                             </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td>1</td>
-                                    <td>Adminto Admin v1</td>
+                                    <td>U/55</td>
+                                    <td>Monterrey NL</td>
+                                    <td>Merida</td>
+                                    <td>ICECOOL</td> 
+                                    <td><span class="badge bg-danger">Admin</span></td>
                                     <td>01/01/2017</td>
-                                    <td>26/04/2017</td>
-                                    <td><span class="badge bg-danger">Released</span></td>
-                                    <td>Coderthemes</td>
                                 </tr>
                                 <tr>
-                                    <td>2</td>
-                                    <td>Adminto Frontend v1</td>
+                                    <td>1</td>
+                                    <td>U/55</td>
+                                    <td>Monterrey NL</td>
+                                    <td>Merida</td>
+                                    <td>ICECOOL</td> 
+                                    <td><span class="badge bg-danger">Admin</span></td>
                                     <td>01/01/2017</td>
-                                    <td>26/04/2017</td>
-                                    <td><span class="badge bg-success">Released</span></td>
-                                    <td>Adminto admin</td>
                                 </tr>
                                 <tr>
-                                    <td>3</td>
-                                    <td>Adminto Admin v1.1</td>
-                                    <td>01/05/2017</td>
-                                    <td>10/05/2017</td>
-                                    <td><span class="badge bg-pink">Pending</span></td>
-                                    <td>Coderthemes</td>
+                                    <td>1</td>
+                                    <td>U/55</td>
+                                    <td>Monterrey NL</td>
+                                    <td>Merida</td>
+                                    <td>ICECOOL</td> 
+                                    <td><span class="badge bg-danger">Admin</span></td>
+                                    <td>01/01/2017</td>
                                 </tr>
                                 <tr>
-                                    <td>4</td>
-                                    <td>Adminto Frontend v1.1</td>
+                                    <td>1</td>
+                                    <td>U/55</td>
+                                    <td>Monterrey NL</td>
+                                    <td>Merida</td>
+                                    <td>ICECOOL</td> 
+                                    <td><span class="badge bg-danger">Admin</span></td>
                                     <td>01/01/2017</td>
-                                    <td>31/05/2017</td>
-                                    <td><span class="badge bg-purple">Work in Progress</span>
-                                    </td>
-                                    <td>Adminto admin</td>
                                 </tr>
+                                
                               
                             </tbody>
                         </table>
