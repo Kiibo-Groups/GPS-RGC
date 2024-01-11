@@ -14,6 +14,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//  return $request->user();
+
+Route::group(array('namespace' => 'App\Http\Controllers\Api'), function () {
+
+    Route::get('welcome','ApiController@welcome');
+
+    Route::post('Webhook_rgc_api','ApiController@Webhook_rgc_api');
+    
+   
 });

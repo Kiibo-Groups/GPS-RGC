@@ -1,9 +1,9 @@
 @extends('layouts.app')
+@section('title') Fletes RGC, S.A DE C.V. | Ingresa a tu panel de control  @endsection
 
 @section('content')
 <div class="row justify-content-center">
     <div class="col-md-8 col-lg-6 col-xl-4">
-         
         <div class="card">
             <div class="card-body p-4" style="box-shadow: 0 4px 24px 0 rgba(34,41,47,.1);">
                 
@@ -57,8 +57,6 @@
 
             </div> <!-- end card-body -->
         </div>
-        <!-- end card -->
- 
-    </div> <!-- end col -->
+    </div>
 </div>
 @endsection

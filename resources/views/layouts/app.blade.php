@@ -12,11 +12,9 @@
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
 
-    <!-- CSS Extras -->
-    @yield('css')
     <!-- App css -->
     <link href="{{ asset('assets/css/config/default/bootstrap.min.css') }}" rel="stylesheet" type="text/css" id="bs-default-stylesheet" />
-    <link href="{{ asset('assets/css/config/default/app.min.css') }}" rel="stylesheet" type="text/css" id="app-default-stylesheet" />
+    <link href="{{ asset('assets/css/config/default/app.css') }}" rel="stylesheet" type="text/css" id="app-default-stylesheet" />
 
     <link href="{{ asset('assets/css/config/default/bootstrap-dark.min.css') }}" rel="stylesheet" type="text/css" id="bs-dark-stylesheet" disabled="disabled" />
     <link href="{{ asset('assets/css/config/default/app-dark.min.css?v='.now()) }}" rel="stylesheet" type="text/css" id="app-dark-stylesheet" disabled="disabled" />
@@ -25,12 +23,12 @@
     <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
 
     <link href="{{ asset('assets/css/main.css') }}" rel="stylesheet" type="text/css" />
- 
-
+    <!-- CSS Extras -->
+    @yield('css')
 </head>
 <body class="loading" data-layout='{
         "mode": "light", "width": "fluid", "menuPosition": "fixed",
-        "sidebar": { "color": "dark", "size": "default", "showuser": true}, 
+        "sidebar": { "color": "dark", "size": "fluid", "showuser": true}, 
         "topbar": { "color": "light" }, 
         "showRightSidebarOnPageLoad": true}'
         data-topbar-color="light"
@@ -56,10 +54,11 @@
         <!-- Start Page Content here -->
         <!-- ============================================================== -->
 
-        <div class="@if (!Route::is('login')) content-page @else account-pages my-5 @endif">
+        <div class="@if(!Route::is('login'))content-page @else account-pages my-5 @endif" 
+                    @if(Route::is('rutas')) style="padding: 0 !important;min-height: 100vh;margin-top: 0;" @endif>
             <div class="@if (!Route::is('login')) content @else container @endif">
                 
-                <main class="py-4">
+                <main class="py-4" @if (Route::is('rutas')) style="padding-top: 0 !important;height: 100vh;" @endif>
                     
                         @if(Session::has('error'))
                         <div class="row justify-content-center">
@@ -96,7 +95,7 @@
                         </div>
                         @endif      
                     
-                    @if (!Route::is('login'))
+                    @if (!Route::is('login') && !Route::is('rutas') && !Route::is('chats_inbox'))
                     <div class="container-fluid">
                         <div class="row">
                             <h4 class="header-title mt-3 mt-sm-0">Te encuentras en:</h4>
@@ -118,7 +117,7 @@
                 </main>
             </div>
 
-            @if (!Route::is('login'))
+            @if (!Route::is('login') && !Route::is('rutas'))
             <!-- Footer Start -->
             <footer class="footer">
                 <div class="container-fluid">
@@ -142,21 +141,22 @@
     <script src="{{ asset('assets/libs/jquery-knob/jquery.knob.min.js') }}"></script>
     
     @if (!Route::is('login'))
-        <!--Morris Chart-->
-        <script src="{{ asset('assets/libs/morris.js06/morris.min.js') }}"></script> 
         <script src="{{ asset('assets/libs/raphael/raphael.min.js') }}"></script>
-        <!-- Dashboar init js-->
-        <script src="{{ asset('assets/js/pages/dashboard.init.js') }}"></script>
+        @if (Route::is('dash'))
+            <!--Morris Chart-->
+            <script src="{{ asset('assets/libs/morris.js06/morris.min.js') }}"></script> 
+            <!-- Dashboar init js-->
+            <script src="{{ asset('assets/js/pages/dashboard.init.js') }}"></script>
+        @endif
     @endif      
     
     
     <!-- JS Extras -->
     @yield('js')
 
-   
-    
+
     <!-- App js-->
-    <script src="{{ asset('assets/js/app.min.js') }}"></script>
+    <script src="{{ asset('assets/js/app.js') }}"></script>
 
     <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.all.min.js') }}"></script>
 
@@ -212,5 +212,20 @@
             Swal.fire(data);
         } 
     </script>
+
+    @if (Route::is('dash'))
+        <script>
+            const audio = document.createElement("audio");
+            audio.preload = "auto"; 
+            audio.src = "{{ asset('assets/sounds/init3.mp3') }}";
+            audio.className = 'audio_new_order';
+            
+            setTimeout(() => {
+                audio.play();
+                document.body.appendChild(audio);
+            }, 500);
+        </script>
+    @endif
+
 </body>
 </html>

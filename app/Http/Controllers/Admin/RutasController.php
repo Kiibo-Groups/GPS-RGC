@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Rutas;
+use App\Models\Settings;
 
 use Auth;
 use DB;
@@ -22,7 +23,8 @@ class RutasController extends Controller
     public function index()
     {
         return View($this->folder.'index',[
-			'data' 	=> Rutas::get(),
+			'data' 	=> Rutas::OrderBy('id','DESC')->get(),
+            'ApiKey_google' => Settings::find(1)->ApiKey_google,
 			'link' 	=> '/rutas/'
 		]);
 
@@ -41,60 +43,27 @@ class RutasController extends Controller
             'array'		=> []
 		]);
     }
+    public function getPoly($origin, $destin)
+	{ 
+		$url = "https://maps.googleapis.com/maps/api/directions/json?origin=".$origin."&destination=".$destin."&mode=driving&key=".Settings::find(1)->ApiKey_google;
+		$max      = 0;
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+        curl_setopt($ch, CURLOPT_URL,$url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $output = curl_exec ($ch);
+        $info = curl_getinfo($ch);
+        $http_result = $info['http_code'];
+        curl_close ($ch);
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+		$req_routes = json_decode($output, true); 
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+		return response()->json([
+            'data' => $req_routes,
+            'url'  => $url
+        ]);
+	}
 }

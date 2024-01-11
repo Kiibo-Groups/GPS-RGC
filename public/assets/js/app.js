@@ -553,7 +553,7 @@ function ($) {
                 showuser: false
             },
             topbar: {
-                color: "dark"
+                color: "light"
             },
             showRightSidebarOnPageLoad: false
         });
@@ -734,13 +734,6 @@ function ($) {
 
     $.LayoutThemeApp = new LayoutThemeApp, $.LayoutThemeApp.Constructor = LayoutThemeApp
 }(window.jQuery);
-/*
-Template Name: Adminto - Responsive Bootstrap 5 Admin Dashboard
-Author: CoderThemes
-Website: https://coderthemes.com/
-Contact: support@coderthemes.com
-File: Main Js File
-*/
 
 
 !function ($) {
@@ -1068,8 +1061,11 @@ function ($) {
     $.App.init();
 }(window.jQuery);
 
+ 
+
 // Waves Effect
 Waves.init();
 
 // Feather Icons
 feather.replace()
+ 

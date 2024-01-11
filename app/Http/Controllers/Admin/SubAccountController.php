@@ -25,7 +25,7 @@ class SubAccountController extends Controller
     public function index()
     {
         return View($this->folder.'index',[
-			'data' 	=> User::where('id','!=',1)->get(),
+			'data' 	=> User::where('id','!=',1)->where('role',1)->get(),
 			'link' 	=> '/subaccounts/'
 		]);
 
@@ -59,6 +59,7 @@ class SubAccountController extends Controller
             $input = $request->all();
             $lims_settings_data = new User;
             
+            $data['role']           = 1;
             $data['name']           = ucwords($input['name']);
             $data['username']       = $input['username'];
             $data['email']          = $input['email'];
@@ -147,7 +148,7 @@ class SubAccountController extends Controller
     public function delete($id)
     {
         User::where('id',$id)->delete();
-		return redirect(env('admin').'/subaccounts')->with('message','SubCuenta eliminad con éxito...');
+		return redirect(env('admin').'/subaccounts')->with('message','SubCuenta eliminada con éxito...');
     }
 
     /**

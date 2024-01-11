@@ -18,13 +18,20 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'role',
+        'logo',
+        'logo_top',
+        'logo_top_sm',
         'name',
         'email',
-        'username',
+        'whatsapp_1',
+        'whatsapp_2',
         'perm',
-        'status',
+        'username',
+        'email_verified_at',
         'password',
-        'shw_password'
+        'shw_password',
+        'status',
     ];
 
     /**

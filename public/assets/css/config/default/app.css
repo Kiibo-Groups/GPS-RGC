@@ -58,7 +58,9 @@ body {
       color: #71b6f9;
       text-decoration: none; }
     #sidebar-menu > ul > li > a > span {
-      vertical-align: middle; }
+      vertical-align: middle;
+      font-size: 15px;
+      color: #000; }
     #sidebar-menu > ul > li > a i {
       display: inline-block;
       line-height: 1.0625rem;
@@ -66,7 +68,7 @@ body {
       text-align: center;
       vertical-align: middle;
       width: 16px;
-      font-size: .95rem; }
+      font-size: 1.30rem; }
     #sidebar-menu > ul > li > a svg {
       width: 16px;
       height: 16px;
