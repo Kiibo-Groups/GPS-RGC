@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitd3a33356c1ef9e676b8190a1207a48f6
+class ComposerStaticInitb2650b894860f9eaa088ec42be85d217
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
@@ -167,10 +167,7 @@ class ComposerStaticInitd3a33356c1ef9e676b8190a1207a48f6
         array (
             'Cron\\' => 5,
             'Collective\\Html\\' => 16,
-<<<<<<< HEAD
             'Carbon\\Doctrine\\' => 16,
-=======
->>>>>>> 4f0e6dbcdb3ef02bdd6b1b0ec4331bd1d709adc3
             'Carbon\\' => 7,
         ),
         'B' => 
@@ -525,13 +522,10 @@ class ComposerStaticInitd3a33356c1ef9e676b8190a1207a48f6
         array (
             0 => __DIR__ . '/..' . '/laravelcollective/html/src',
         ),
-<<<<<<< HEAD
         'Carbon\\Doctrine\\' => 
         array (
             0 => __DIR__ . '/..' . '/carbonphp/carbon-doctrine-types/src/Carbon/Doctrine',
         ),
-=======
->>>>>>> 4f0e6dbcdb3ef02bdd6b1b0ec4331bd1d709adc3
         'Carbon\\' => 
         array (
             0 => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon',
@@ -551,10 +545,7 @@ class ComposerStaticInitd3a33356c1ef9e676b8190a1207a48f6
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\Http\\Controllers\\Admin\\AdminController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/AdminController.php',
-<<<<<<< HEAD
         'App\\Http\\Controllers\\Admin\\RutasController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/RutasController.php',
-=======
->>>>>>> 4f0e6dbcdb3ef02bdd6b1b0ec4331bd1d709adc3
         'App\\Http\\Controllers\\Admin\\SubAccountController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/SubAccountController.php',
         'App\\Http\\Controllers\\Auth\\ConfirmPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ConfirmPasswordController.php',
         'App\\Http\\Controllers\\Auth\\ForgotPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ForgotPasswordController.php',
@@ -573,6 +564,7 @@ class ComposerStaticInitd3a33356c1ef9e676b8190a1207a48f6
         'App\\Http\\Middleware\\TrustProxies' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustProxies.php',
         'App\\Http\\Middleware\\ValidateSignature' => __DIR__ . '/../..' . '/app/Http/Middleware/ValidateSignature.php',
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
+        'App\\Models\\Perm' => __DIR__ . '/../..' . '/app/Models/Perm.php',
         'App\\Models\\Rutas' => __DIR__ . '/../..' . '/app/Models/Rutas.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
@@ -699,6 +691,7 @@ class ComposerStaticInitd3a33356c1ef9e676b8190a1207a48f6
         'Cron\\MonthField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/MonthField.php',
         'Database\\Factories\\UserFactory' => __DIR__ . '/../..' . '/database/factories/UserFactory.php',
         'Database\\Seeders\\DatabaseSeeder' => __DIR__ . '/../..' . '/database/seeders/DatabaseSeeder.php',
+        'Database\\Seeders\\PermSeeder' => __DIR__ . '/../..' . '/database/seeders/PermSeeder.php',
         'Database\\Seeders\\UserSeeder' => __DIR__ . '/../..' . '/database/seeders/UserSeeder.php',
         'DateError' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateError.php',
         'DateException' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateException.php',
@@ -5933,9 +5926,9 @@ class ComposerStaticInitd3a33356c1ef9e676b8190a1207a48f6
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitd3a33356c1ef9e676b8190a1207a48f6::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitd3a33356c1ef9e676b8190a1207a48f6::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitd3a33356c1ef9e676b8190a1207a48f6::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitb2650b894860f9eaa088ec42be85d217::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitb2650b894860f9eaa088ec42be85d217::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitb2650b894860f9eaa088ec42be85d217::$classMap;
 
         }, null, ClassLoader::class);
     }

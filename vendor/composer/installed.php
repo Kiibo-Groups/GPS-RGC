@@ -3,11 +3,7 @@
         'name' => 'gps/proyect',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-<<<<<<< HEAD
-        'reference' => '03b1c0a2188f4b02d1e5b79bfc9e65a443eb2933',
-=======
-        'reference' => '9d028d7543001e8f98339b519737c59164abce16',
->>>>>>> 4f0e6dbcdb3ef02bdd6b1b0ec4331bd1d709adc3
+        'reference' => '65f33d9137e34fe15a2521fd44eac19858c0c9be',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -128,11 +124,7 @@
         'gps/proyect' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-<<<<<<< HEAD
-            'reference' => '03b1c0a2188f4b02d1e5b79bfc9e65a443eb2933',
-=======
-            'reference' => '9d028d7543001e8f98339b519737c59164abce16',
->>>>>>> 4f0e6dbcdb3ef02bdd6b1b0ec4331bd1d709adc3
+            'reference' => '65f33d9137e34fe15a2521fd44eac19858c0c9be',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -777,8 +769,8 @@
         'psr/log-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '1.0.0 || 2.0.0 || 3.0.0',
-                1 => '1.0|2.0|3.0',
+                0 => '1.0|2.0|3.0',
+                1 => '1.0.0 || 2.0.0 || 3.0.0',
             ),
         ),
         'psr/simple-cache' => array(
