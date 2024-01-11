@@ -167,7 +167,10 @@ class ComposerStaticInitd3a33356c1ef9e676b8190a1207a48f6
         array (
             'Cron\\' => 5,
             'Collective\\Html\\' => 16,
+<<<<<<< HEAD
             'Carbon\\Doctrine\\' => 16,
+=======
+>>>>>>> 4f0e6dbcdb3ef02bdd6b1b0ec4331bd1d709adc3
             'Carbon\\' => 7,
         ),
         'B' => 
@@ -522,10 +525,13 @@ class ComposerStaticInitd3a33356c1ef9e676b8190a1207a48f6
         array (
             0 => __DIR__ . '/..' . '/laravelcollective/html/src',
         ),
+<<<<<<< HEAD
         'Carbon\\Doctrine\\' => 
         array (
             0 => __DIR__ . '/..' . '/carbonphp/carbon-doctrine-types/src/Carbon/Doctrine',
         ),
+=======
+>>>>>>> 4f0e6dbcdb3ef02bdd6b1b0ec4331bd1d709adc3
         'Carbon\\' => 
         array (
             0 => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon',
@@ -545,7 +551,10 @@ class ComposerStaticInitd3a33356c1ef9e676b8190a1207a48f6
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\Http\\Controllers\\Admin\\AdminController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/AdminController.php',
+<<<<<<< HEAD
         'App\\Http\\Controllers\\Admin\\RutasController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/RutasController.php',
+=======
+>>>>>>> 4f0e6dbcdb3ef02bdd6b1b0ec4331bd1d709adc3
         'App\\Http\\Controllers\\Admin\\SubAccountController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/SubAccountController.php',
         'App\\Http\\Controllers\\Auth\\ConfirmPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ConfirmPasswordController.php',
         'App\\Http\\Controllers\\Auth\\ForgotPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ForgotPasswordController.php',

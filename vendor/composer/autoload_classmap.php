@@ -9,7 +9,10 @@ return array(
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
     'App\\Http\\Controllers\\Admin\\AdminController' => $baseDir . '/app/Http/Controllers/Admin/AdminController.php',
+<<<<<<< HEAD
     'App\\Http\\Controllers\\Admin\\RutasController' => $baseDir . '/app/Http/Controllers/Admin/RutasController.php',
+=======
+>>>>>>> 4f0e6dbcdb3ef02bdd6b1b0ec4331bd1d709adc3
     'App\\Http\\Controllers\\Admin\\SubAccountController' => $baseDir . '/app/Http/Controllers/Admin/SubAccountController.php',
     'App\\Http\\Controllers\\Auth\\ConfirmPasswordController' => $baseDir . '/app/Http/Controllers/Auth/ConfirmPasswordController.php',
     'App\\Http\\Controllers\\Auth\\ForgotPasswordController' => $baseDir . '/app/Http/Controllers/Auth/ForgotPasswordController.php',
