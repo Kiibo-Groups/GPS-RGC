@@ -92,10 +92,10 @@
     <div class="logo-box">
         <a href="{{ url('./') }}" class="logo logo-light text-center">
             <span class="logo-sm">
-                <img src="{{ asset('assets/images/users/'.Auth::guard()->user()->logo_top_sm) }}" alt="" height="60">
+                <img src="{{ asset('assets/images/users/'.Auth::guard()->user()->logo_top_sm) }}" alt="" height="60" style="width: 100%;">
             </span>
             <span class="logo-lg">
-                <img src="{{ asset('assets/images/users/'.Auth::guard()->user()->logo_top) }}" alt="">
+                <img src="{{ asset('assets/images/users/'.Auth::guard()->user()->logo_top) }}" alt="" style="width: 100%;">
             </span>
         </a>
         <a href="{{ url('./') }}" class="logo logo-dark text-center">

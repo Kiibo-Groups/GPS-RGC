@@ -3,7 +3,7 @@
         'name' => 'gps/proyect',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '55380e2d0599cddd557978d856be84124d88501b',
+        'reference' => '95066a7613bcbc9b9dfbb857fbe4a9d8eb57f1e7',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -133,7 +133,7 @@
         'gps/proyect' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '55380e2d0599cddd557978d856be84124d88501b',
+            'reference' => '95066a7613bcbc9b9dfbb857fbe4a9d8eb57f1e7',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

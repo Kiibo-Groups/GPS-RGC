@@ -55,8 +55,54 @@
                             </div> 
                         </div>
                         <div class="tab-pane" id="rutas_assign">
-                            <p>Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim.</p>
-                            <p class="mb-0">Vakal text here dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.</p>
+                            <div id="sidebar-menu" style="overflow: hidden;overflow-y: scroll;height: 90vh;">
+                                <ul id="list-group mb-0 user-list"> 
+                                    @foreach ($data as $rutas)
+                                        <li class="list-group-item" style="border-bottom: 1px solid #e1e1e1;padding: 10px 0 !important;">
+                                            <a href="#route-inner-{{ $rutas->id }}" data-bs-toggle="collapse" class="route-inner" onclick="chkRoutes(this)" 
+                                                data-route-container="route-inner-{{ $rutas->id }}"
+                                                data-origin="{{ $rutas->origen }}" 
+                                                data-destin="{{ $rutas->destino }}">
+                                                <div class="user float-start me-3">
+                                                    <i class="mdi mdi-account"></i>
+                                                </div>
+                                                <div class="user-desc overflow-hidden">
+                                                    <h5 class="name mt-0 mb-1">{{ $rutas->operador }}</h5>
+                                                    <span class="desc text-muted font-12 text-truncate d-block"> 
+                                                        {{ $rutas->origen }}, {{ $rutas->destino }}
+                                                        <br />
+                                                        <small>{{ $rutas->created_at }}</small>
+                                                    </span>
+                                                </div> 
+                                            </a>
+                                            <div class="collapse" id="route-inner-{{ $rutas->id }}">
+                                                
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item" style="border-bottom: 1px solid #e1e1e1;padding: 10px 0 !important;">
+                                            <a href="#route-inner-{{ $rutas->id }}" data-bs-toggle="collapse" class="route-inner" onclick="chkRoutes(this)" 
+                                                data-route-container="route-inner-{{ $rutas->id }}"
+                                                data-origin="{{ $rutas->origen }}" 
+                                                data-destin="{{ $rutas->destino }}">
+                                                <div class="user float-start me-3">
+                                                    <i class="mdi mdi-account"></i>
+                                                </div>
+                                                <div class="user-desc overflow-hidden">
+                                                    <h5 class="name mt-0 mb-1">{{ $rutas->operador }}</h5>
+                                                    <span class="desc text-muted font-12 text-truncate d-block"> 
+                                                        {{ $rutas->origen }}, {{ $rutas->destino }}
+                                                        <br />
+                                                        <small>{{ $rutas->created_at }}</small>
+                                                    </span>
+                                                </div> 
+                                            </a>
+                                            <div class="collapse" id="route-inner-{{ $rutas->id }}">
+                                                
+                                            </div>
+                                        </li>
+                                    @endforeach 
+                                </ul>
+                            </div> 
                         </div> 
                     </div>
                 </div>
@@ -89,7 +135,7 @@
             
             var geocoder = new google.maps.Geocoder;
             directionsService = new google.maps.DirectionsService();
-            dirRenderer = new google.maps.DirectionsRenderer({ suppressMarkers: true });
+            dirRenderer = new google.maps.DirectionsRenderer({ draggable: true, });
             dr = new google.maps.DirectionsRenderer();
 
             navigator.geolocation.getCurrentPosition((position) => {
@@ -116,12 +162,8 @@
             },() => {
                 handleLocationError(true, infoWindow, map.getCenter());
             });
-        
         }
  
-
-        
-
         function chkRoutes(e)
         { 
             var elems = document.querySelectorAll(".collapse.show");
@@ -141,12 +183,11 @@
                 origin: origin,
                 destination: destin,
                 provideRouteAlternatives: true,
-                travelMode: 'DRIVING'
+                travelMode: 'DRIVING',
+                avoidTolls: true
             }, function (response, status) {
                 if (status == google.maps.DirectionsStatus.OK) {
                     console.log(response.routes);
-
-                
 
                     let htmlContent = '<ul class="nav-second-level">';
                     for (var i = 0; i < response.routes.length; i++) {

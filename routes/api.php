@@ -21,6 +21,7 @@ Route::group(array('namespace' => 'App\Http\Controllers\Api'), function () {
 
     Route::get('welcome','ApiController@welcome');
 
+    Route::post('getToken','ApiController@getToken');
     Route::post('Webhook_rgc_api','ApiController@Webhook_rgc_api');
     
    

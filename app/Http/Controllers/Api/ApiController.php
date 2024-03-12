@@ -4,25 +4,36 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller; 
 
 use Illuminate\Http\Request;
-use Auth;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use JWTAuth;
+use Tymon\JWTAuth\Contracts\JWTSubject; 
 use DB;
 use Validator;
-use Redirect;
-use JWTAuth;
+use Redirect; 
+use App\Models\{User};
 
 class ApiController extends Controller 
 {
-
-
     public function __construct()
 	{
-		$this->middleware('delivery:api');
+		$this->middleware('authApi:api',['except' => ['getToken']]);
 	}
 
     public function welcome()
 	{
 		return response()->json(['data' => "Bienvenido al API de RGC"]);
 	}
+
+	public function getToken(Request $request)
+    {
+        try {
+            $token = new User;
+            return response()->json($token->GenToken($request));
+        } catch (\Exception $th) {
+			return response()->json(['status' => 'ERROR','code' => 500, 'message' => $th->getMessage()], 500);
+		}
+    }
 
     public function Webhook_rgc_api(Request $request)
     {
@@ -50,5 +61,4 @@ class ApiController extends Controller
 			return response()->json(['data' => [], 'msg' => $th->getMessage()], 500);
 		}  
     }
-
 }
