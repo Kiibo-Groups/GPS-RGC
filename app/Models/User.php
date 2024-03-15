@@ -74,7 +74,6 @@ class User extends Authenticatable   implements JWTSubject
 
     public function GenToken($request)
     {
-        
 
         $login = $request->input('email');
         $user = User::where('email', $login)->orWhere('username', $login)->first();
@@ -91,8 +90,6 @@ class User extends Authenticatable   implements JWTSubject
         $request->validate([
             'password' => 'required|min:8',
         ]);
-
-         
 
         if (Auth::attempt(['email' => $user->email, 'password' => $request->password]) || Auth::attempt(['username' => $user->username, 'password' => $request->password])) {
              

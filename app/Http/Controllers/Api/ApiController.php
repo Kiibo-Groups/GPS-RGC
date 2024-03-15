@@ -51,14 +51,24 @@ class ApiController extends Controller
 
 			if ($validator->fails()) {
 				$errors = $validator->errors();
-				return response()->json(['data' => [], 'msg' => $errors], 400);
+				return response()->json([
+					'data' => [],
+					'message' => $errors,
+					'status' => "FAILE",
+					"code" => 400
+				]);
 			}
 
             $data = $request->all();
 			
 			return response()->json($data, 200);
 		} catch (\Exception $th) {
-			return response()->json(['data' => [], 'msg' => $th->getMessage()], 500);
+			return response()->json([
+				'data' => [],
+				'message' => $th->getMessage(),
+				'status' => "FAILE",
+				"code" => 500
+			]);
 		}  
     }
 }
