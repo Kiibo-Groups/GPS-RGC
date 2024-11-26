@@ -4,6 +4,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller; 
 use App\Providers\SocketServer;
 use App\Http\Controllers\{BlacsolController, SamsaraController};
+use Illuminate\Support\Facades\Log;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -124,6 +125,8 @@ class ApiController extends Controller
 	 */
 	public function PosiCont()
 	{
+		Log::channel()->info('[*]['.date('H:i:s')."] Inicializacion de Peticion de PosiCont.... .\r\n");
+
 		try {
 			$Samsara = new SamsaraController;
 			$data = $Samsara->GetAllVehicleAssignments();
@@ -161,6 +164,8 @@ class ApiController extends Controller
 
 	public function Idle()
 	{
+		Log::channel()->info('[*]['.date('H:i:s')."] Inicializacion de Peticion de Idle.... .\r\n");
+
 		try {
 			$Samsara = new SamsaraController;
 			$data = $Samsara->GetAllVehicleAssignments();
@@ -199,6 +204,8 @@ class ApiController extends Controller
 
 	public function Mov()
 	{
+		Log::channel()->info('[*]['.date('H:i:s')."] Inicializacion de Peticion de Mov.... .\r\n");
+
 		try {
 			$Samsara = new SamsaraController;
 			$data = $Samsara->GetAllVehicleAssignments();
@@ -237,6 +244,8 @@ class ApiController extends Controller
 
 	public function Detenido()
 	{
+		Log::channel()->info('[*]['.date('H:i:s')."] Inicializacion de Peticion de Detenido.... .\r\n");
+
 		try {
 			$Samsara = new SamsaraController;
 			$data = $Samsara->GetAllVehicleAssignments();
@@ -275,6 +284,8 @@ class ApiController extends Controller
 
 	public function IgnEnc()
 	{
+		Log::channel()->info('[*]['.date('H:i:s')."] Inicializacion de Peticion de IgnEnc.... .\r\n");
+
 		try {
 			$Samsara = new SamsaraController;
 			$data = $Samsara->GetAllVehicleAssignments();
@@ -313,6 +324,8 @@ class ApiController extends Controller
 
 	public function IgnApa()
 	{
+		Log::channel()->info('[*]['.date('H:i:s')."] Inicializacion de Peticion de IgnApa.... .\r\n");
+
 		try {
 			$Samsara = new SamsaraController;
 			$data = $Samsara->GetAllVehicleAssignments();
@@ -351,6 +364,8 @@ class ApiController extends Controller
 
 	public function DetJamm()
 	{
+		Log::channel()->info('[*]['.date('H:i:s')."] Inicializacion de Peticion de DetJamm.... .\r\n");
+
 		try {
 			$Samsara = new SamsaraController;
 			$data = $Samsara->GetAllVehicleAssignments();
@@ -389,6 +404,8 @@ class ApiController extends Controller
 
 	public function DesconBat()
 	{
+		Log::channel()->info('[*]['.date('H:i:s')."] Inicializacion de Peticion de DesconBat.... .\r\n");
+
 		try {
 			$Samsara = new SamsaraController;
 			$data = $Samsara->GetAllVehicleAssignments();
@@ -427,6 +444,8 @@ class ApiController extends Controller
 
 	public function ReconBat()
 	{
+		Log::channel()->info('[*]['.date('H:i:s')."] Inicializacion de Peticion de ReconBat.... .\r\n");
+
 		try {
 			$Samsara = new SamsaraController;
 			$data = $Samsara->GetAllVehicleAssignments();
