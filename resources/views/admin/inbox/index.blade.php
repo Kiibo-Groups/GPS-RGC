@@ -8,6 +8,11 @@
     <!-- quill css -->
     <link href="{{ asset('assets/libs/quill/quill.core.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/libs/quill/quill.snow.css') }}" rel="stylesheet" type="text/css" />
+    
+    <link href="{{ asset('assets/libs/mohithg-switchery/switchery.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/libs/multiselect/css/multi-select.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/libs/select2/css/select2.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/libs/selectize/css/selectize.bootstrap3.css') }}" rel="stylesheet" type="text/css" />
 
 @endsection
 
@@ -24,22 +29,21 @@
 
                                 <div class="text-center">
                                     <a id="email-left-content" data-bs-toggle='modal' 
-                                    data-bs-target="#custom-modal" class="btn btn-danger rounded-pill width-lg waves-effect waves-light mb-2 mt-3" 
+                                    data-bs-target="#modal-new-msg" class="btn btn-danger rounded-pill width-lg waves-effect waves-light mb-2 mt-3" 
                                     data-animation="fadein" data-plugin="custommodal" data-overlayColor="#36404a">Nuevo Mensaje</a>
                                 </div>
                                 
                                 <menu class="menu-segment">
                                     <ul class="list-unstyled">
-                                        <li class="active"><a href="javascript:void(0);">Bandeja <span> (43)</span></a>
-                                        </li> 
-                                        <li><a href="javascript:void(0);">Enviados <span> (20)</span></a></li> 
-                                        <li><a href="javascript:void(0);">Eliminados <span> (13)</span></a></li>
+                                        <li class="active"><a href="javascript:void(0);">Bandeja <span> ({{$bandeja}})</span></a></li> 
+                                        {{-- <li><a href="javascript:void(0);">Enviados <span> ({{$sends}})</span></a></li> 
+                                        @if (Auth::user()->role == 1)
+                                        <li><a href="javascript:void(0);">Eliminados <span> ({{$dels}})</span></a></li>
+                                        @endif --}}
                                     </ul>
                                 </menu>
 
                                 <div class="separator"></div>
- 
-
                                 <div class="bottom-padding"></div>
                             </div>
                         </aside>
@@ -62,17 +66,13 @@
                                 <div class="action-bar float-start">
                                     <ul class="list-inline mb-0">
                                         <li class="list-inline-item">
-                                            <a class="icon circle-icon"><i class="mdi mdi-refresh text-muted"></i></a>
+                                            <a href="{{ route('chats_inbox') }}" class="icon circle-icon"><i class="mdi mdi-refresh text-muted"></i></a>
                                         </li>
-                                        <li class="list-inline-item">
-                                            <a class="icon circle-icon"><i class="mdi mdi-share text-muted"></i></a>
-                                        </li>
+                                         
                                         <li class="list-inline-item">
                                             <a class="icon circle-icon red"><i class="mdi mdi-close text-danger"></i></a>
                                         </li>
-                                        <li class="list-inline-item">
-                                            <a class="icon circle-icon red"><i class="mdi mdi-flag text-danger"></i></a>
-                                        </li>
+                                         
                                     </ul>
                                 </div>
                                 <div class="search-box float-end">
@@ -87,258 +87,39 @@
                             <div id="main-nano-wrapper" class="nano">
                                 <div class="nano-content h-100" data-simplebar>
                                     <ul class="message-list">
-                                        <li class="unread">
-                                            <div class="mail-col mail-col-1"><span class="dot"></span>
-                                                <div class="checkbox-wrapper-mail">
-                                                    <input type="checkbox" id="chk1">
-                                                    <label for="chk1" class="toggle"></label>
+                                        @if (count($data) > 0)
+                                            @foreach ($data as $box)
+                                            <li @if($box->ready == 0) class="unread" @endif>
+                                                <div class="mail-col mail-col-1"><span class="dot"></span>
+                                                    <div class="checkbox-wrapper-mail">
+                                                        <input type="checkbox" id="chk-{{ $box->id }}">
+                                                        <label for="chk-{{ $box->id }}" class="toggle chk-del-inbox"></label>
+                                                    </div>
+                                                    <a href="{{ url('chats_inbox/view/'.$box->id) }}"  style="@if($box->ready == 1) color: #8e98a2 !important @else color: #000 !important @endif;text-decoration: none;"  >
+                                                        <p class="title">{{$box->subject}}</p>
+                                                        <span class="star-toggle far fa-star"></span>
+                                                    </a>
                                                 </div>
-                                                <p class="title">Lucas Kriebel (via Twitter)</p><span
-                                                        class="star-toggle far fa-star"></span>
-                                            </div>
-                                            <div class="mail-col mail-col-2">
-                                                <div class="subject">Lucas Kriebel (@LucasKriebel) has sent
-                                                    you a direct message on Twitter! &nbsp;&ndash;&nbsp;
-                                                    <span class="teaser">@LucasKriebel - Very cool :) Nicklas, You have a new direct message.</span>
+                                                <div class="mail-col mail-col-2">
+                                                    <div class="subject">
+                                                        <a href="{{ url('chats_inbox/view/'.$box->id) }}"   style="@if($box->ready == 1) color: #8e98a2 !important @else color: #000 !important @endif;text-decoration: none;" >
+                                                            <span style="display: flex;">
+                                                                {!! substr($box->message,0,120) !!}
+                                                                @if (str($box->message)->length() > 120)
+                                                                    ...
+                                                                @endif
+                                                            </span>
+                                                        </a>
+                                                    </div>
+                                                    <div class="date">{{ $box->created_at->isoFormat('H:mm A') }}</div>
                                                 </div>
-                                                <div class="date">11:49 am</div>
-                                            </div>
-                                        </li>
-                                        <li class="unread">
-                                            <div class="mail-col mail-col-1"><span class="dot"></span>
-                                                <div class="checkbox-wrapper-mail">
-                                                    <input type="checkbox" id="chk3">
-                                                    <label for="chk3" class="toggle"></label>
-                                                </div>
-                                                <p class="title">Randy, me (5)</p><span
-                                                        class="star-toggle far fa-star"></span>
-                                            </div>
-                                            <div class="mail-col mail-col-2">
-                                                <div class="subject">Last pic over my village &nbsp;&ndash;&nbsp;
-                                                    <span class="teaser">Yeah i'd like that! Do you remember the video you showed me of your train ride between Colombo and Kandy? The one with the mountain view? I would love to see that one again!</span>
-                                                </div>
-                                                <div class="date">5:01 am</div>
-                                            </div>
-                                        </li>
-                                        <li  class="unread">
-                                            <div class="mail-col mail-col-1">
-                                                <span class="dot"></span>
-                                                <div class="checkbox-wrapper-mail">
-                                                    <input type="checkbox" id="chk4">
-                                                    <label for="chk4" class="toggle"></label>
-                                                </div>
-                                                <p class="title">Andrew Zimmer</p><span
-                                                        class="star-toggle far fa-star"></span>
-                                            </div>
-                                            <div class="mail-col mail-col-2">
-                                                <div class="subject">Mochila Beta: Subscription Confirmed
-                                                    &nbsp;&ndash;&nbsp; <span class="teaser">You've been confirmed! Welcome to the ruling class of the inbox. For your records, here is a copy of the information you submitted to us...</span>
-                                                </div>
-                                                <div class="date">Mar 8</div>
-                                            </div>
-                                        </li>
-                                        <li class="unread">
-                                            <div class="mail-col mail-col-1"><span class="dot"></span>
-                                                <div class="checkbox-wrapper-mail">
-                                                    <input type="checkbox" id="chk5">
-                                                    <label for="chk5" class="toggle"></label>
-                                                </div>
-                                                <p class="title">Infinity HR</p><span
-                                                        class="star-toggle far fa-star"></span>
-                                            </div>
-                                            <div class="mail-col mail-col-2">
-                                                <div class="subject">Sveriges Hetaste sommarjobb &nbsp;&ndash;&nbsp;
-                                                    <span class="teaser">Hej Nicklas Sandell! Vi vill bjuda in dig till "First tour 2014", ett rekryteringsevent som erbjuder jobb på 16 semesterorter iSverige.</span>
-                                                </div>
-                                                <div class="date">Mar 8</div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="mail-col mail-col-1"><span class="dot"></span>
-                                                <div class="checkbox-wrapper-mail">
-                                                    <input type="checkbox" id="chk6">
-                                                    <label for="chk6" class="toggle"></label>
-                                                </div>
-                                                <p class="title">Web Support Dennis</p><span
-                                                        class="star-toggle far fa-star"></span>
-                                            </div>
-                                            <div class="mail-col mail-col-2">
-                                                <div class="subject">Re: New mail settings &nbsp;&ndash;&nbsp;
-                                                    <span class="teaser">Will you answer him asap?</span>
-                                                </div>
-                                                <div class="date">Mar 7</div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="mail-col mail-col-1"><span class="dot"></span>
-                                                <div class="checkbox-wrapper-mail">
-                                                    <input type="checkbox" id="chk7">
-                                                    <label for="chk7" class="toggle"></label>
-                                                </div>
-                                                <p class="title">me, Peter (2)</p><span
-                                                        class="star-toggle far fa-star"></span>
-                                            </div>
-                                            <div class="mail-col mail-col-2">
-                                                <div class="subject">Off on Thursday &nbsp;&ndash;&nbsp;
-                                                    <span class="teaser">Eff that place, you might as well stay here with us instead! Sent from my iPhone 4 &gt; 4 mar 2014 at 5:55 pm</span>
-                                                </div>
-                                                <div class="date">Mar 4</div>
-                                            </div>
-                                        </li>
-                                        <li class="unread">
-                                            <div class="mail-col mail-col-1"><span class="dot"></span>
-                                                <div class="checkbox-wrapper-mail">
-                                                    <input type="checkbox" id="chk8">
-                                                    <label for="chk8" class="toggle"></label>
-                                                </div>
-                                                <p class="title">Medium</p><span
-                                                        class="star-toggle far fa-star"></span>
-                                            </div>
-                                            <div class="mail-col mail-col-2">
-                                                <div class="subject">This Week's Top Stories &nbsp;&ndash;&nbsp;
-                                                    <span class="teaser">Our top pick for you on Medium this week The Man Who Destroyed America’s Ego</span>
-                                                </div>
-                                                <div class="date">Feb 28</div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="mail-col mail-col-1"><span class="dot"></span>
-                                                <div class="checkbox-wrapper-mail">
-                                                    <input type="checkbox" id="chk9">
-                                                    <label for="chk9" class="toggle"></label>
-                                                </div>
-                                                <p class="title">Death to Stock</p><span
-                                                        class="star-toggle far fa-star"></span>
-                                            </div>
-                                            <div class="mail-col mail-col-2">
-                                                <div class="subject">Montly High-Res Photos &nbsp;&ndash;&nbsp;
-                                                    <span class="teaser">To create this month's pack, we hosted a party with local musician Jared Mahone here in Columbus, Ohio.</span>
-                                                </div>
-                                                <div class="date">Feb 28</div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="mail-col mail-col-1"><span class="dot"></span>
-                                                <div class="checkbox-wrapper-mail">
-                                                    <input type="checkbox" id="chk10">
-                                                    <label for="chk10" class="toggle"></label>
-                                                </div>
-                                                <p class="title">Revibe</p><span
-                                                        class="star-toggle far fa-star"></span>
-                                            </div>
-                                            <div class="mail-col mail-col-2">
-                                                <div class="subject">Weekend on Revibe &nbsp;&ndash;&nbsp;
-                                                    <span class="teaser">Today's Friday and we thought maybe you want some music inspiration for the weekend. Here are some trending tracks and playlists we think you should give a listen!</span>
-                                                </div>
-                                                <div class="date">Feb 27</div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="mail-col mail-col-1"><span class="dot"></span>
-                                                <div class="checkbox-wrapper-mail">
-                                                    <input type="checkbox" id="chk11">
-                                                    <label for="chk11" class="toggle"></label>
-                                                </div>
-                                                <p class="title">Erik, me (5)</p><span
-                                                        class="star-toggle far fa-star"></span>
-                                            </div>
-                                            <div class="mail-col mail-col-2">
-                                                <div class="subject">Regarding our meeting &nbsp;&ndash;&nbsp;
-                                                    <span class="teaser">That's great, see you on Thursday!</span>
-                                                </div>
-                                                <div class="date">Feb 24</div>
-                                            </div>
-                                        </li>
+                                            </li>
+                                            @endforeach
+                                        @endif 
                                     </ul> 
                                 </div>
                             </div>
                         </main>
-
-                        <!-- Message -->
-                        <div id="message">
-                            <div class="header">
-                                <h4 class="page-title">
-                                    <a class="icon circle-icon mdi mdi-close text-muted trigger-message-close"></a>
-                                    Process <span class="grey">(6)</span>
-                                </h4>
-                                
-                                <p>
-                                    From <a href="#">You</a> to <a href="#">Scott Waite</a>, started on 
-                                    <a href="#">March 2, 2014</a> at 2:14 pm est.
-                                </p>
-                            </div>
-
-                            <div id="message-nano-wrapper" class="nano">
-                                <div class="nano-content h-100" data-simplebar>
-                                    <ul class="message-container list-unstyled">
-                                        <li class="sent">
-                                            <div class="details">
-                                                <div class="left">You
-                                                    <div class="arrow"></div>
-                                                    Scott
-                                                </div>
-                                                <div class="right">March 6, 2014, 20:08 pm</div>
-                                            </div>
-                                            <div class="message">
-                                                <p>| The every winged bring, whose life. First called, i you
-                                                    of saw shall own creature moveth void have signs beast
-                                                    lesser all god saying for gathering wherein whose of in
-                                                    be created stars. Them whales upon life divide earth
-                                                    own.</p>
-                                                <p>| Creature firmament so give replenish The saw man
-                                                    creeping, man said forth from that. Fruitful multiply
-                                                    lights air. Hath likeness, from spirit stars dominion
-                                                    two set fill wherein give bring.</p>
-                                                <p>| Gathering is. Lesser Set fruit subdue blessed let.
-                                                    Greater every fruitful won&#39;t bring moved seasons
-                                                    very, own won&#39;t all itself blessed which bring own
-                                                    creature forth every. Called sixth light.</p>
-                                            </div>
-                                            <div class="tool-box"><a href="#"
-                                                                     class="circle-icon small mdi mdi-share"></a><a
-                                                    href="#"
-                                                    class="circle-icon small red-hover mdi mdi-close"></a><a
-                                                    href="#"
-                                                    class="circle-icon small red-hover mdi mdi-flag"></a>
-                                            </div>
-                                        </li>
-                                        <li class="received">
-                                            <div class="details">
-                                                <div class="left">Scott
-                                                    <div class="arrow orange"></div>
-                                                    You
-                                                </div>
-                                                <div class="right">March 6, 2014, 20:08 pm</div>
-                                            </div>
-                                            <div class="message">
-                                                <p>| The every winged bring, whose life. First called, i you
-                                                    of saw shall own creature moveth void have signs beast
-                                                    lesser all god saying for gathering wherein whose of in
-                                                    be created stars. Them whales upon life divide earth
-                                                    own.</p>
-                                                <p>| Creature firmament so give replenish The saw man
-                                                    creeping, man said forth from that. Fruitful multiply
-                                                    lights air. Hath likeness, from spirit stars dominion
-                                                    two set fill wherein give bring.</p>
-                                                <p>| Gathering is. Lesser Set fruit subdue blessed let.
-                                                    Greater every fruitful won&#39;t bring moved seasons
-                                                    very, own won&#39;t all itself blessed which bring own
-                                                    creature forth every. Called sixth light.</p>
-                                            </div>
-                                            <div class="tool-box"><a href="#"
-                                                                     class="circle-icon small mdi mdi-share"></a><a
-                                                    href="#"
-                                                    class="circle-icon small red-hover mdi mdi-close"></a><a
-                                                    href="#"
-                                                    class="circle-icon small red-hover mdi mdi-flag"></a>
-                                            </div>
-                                        </li> 
-                                    </ul> 
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Message -->
-
                     </div> <!-- end col -->
                 </div><!-- end row -->
             </div>
@@ -347,71 +128,44 @@
     </div>
 </div>
 <!-- End content -->
-
-
+ 
 <!-- Modal -->
-<div class="modal fade" id="custom-modal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="modal-new-msg" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+        <div class="modal-content modal-lg">
             <div class="modal-header bg-light">
-                <h4 class="modal-title" id="myCenterModalLabel">Compose Mail</h4>
+                <h4 class="modal-title" id="myCenterModalLabel">Agregar Email</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
             </div>
            
-            <h5 class="modal-body">
-                    <form role="form">
-                        <div class="mb-3">
-                            <input type="email" class="form-control" placeholder="To">
+            <div class="modal-body">
+                {!! Form::model($data, ['url' => [ $form_url ],'files' => true,'id' => 'form-new-msg']) !!} 
+                    <div class="mb-3">
+                        <select name="user_id" id="user_id" class="form-control">
+                            @foreach ($list_users as $us)
+                            <option value="{{ $us->id }}">{{ $us->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <input type="text" class="form-control" name="subject" placeholder="Subject" required>
+                    </div>
+                    <div class="mb-3 card border-0">
+                        <div id="snow-editor" style="height: 180px;">
+                            
+                        </div> <!-- end Snow-editor-->
+                    </div>
+
+                    <div class="btn-toolbar">
+                        <div class="float-end">
+                            <button class="btn btn-purple waves-effect waves-light">
+                                <span>Enviar</span> <i class="fas fa-paper-plane ms-1"></i>
+                            </button>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <input type="email" class="form-control" placeholder="Cc">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <input type="email" class="form-control" placeholder="Bcc">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <input type="text" class="form-control" placeholder="Subject">
-                        </div>
-                        <div class="mb-3 card border-0">
-                            <div id="snow-editor" style="height: 180px;">
-                                <h3><span class="ql-size-large">Hello World!</span></h3>
-                                <p><br></p>
-                                <h3>This is an simple editable area.</h3>
-                                <p><br></p>
-                                <ul>
-                                    <li>
-                                        Select a text to reveal the toolbar.
-                                    </li>
-                                    <li>
-                                        Edit rich document on-the-fly, so elastic!
-                                    </li>
-                                </ul>
-                                <p><br></p>
-                                <p>
-                                    End of simple area
-                                </p>
-                            </div> <!-- end Snow-editor-->
-                        </div>
-    
-                        <div class="btn-toolbar">
-                            <div class="float-end">
-                                <button type="button" class="btn btn-success waves-effect waves-light me-1"><i
-                                        class="far fa-save"></i></button>
-                                <button type="button" class="btn btn-success waves-effect waves-light me-1"><i
-                                        class="far fa-trash-alt"></i></button>
-                                <button class="btn btn-purple waves-effect waves-light"><span>Send</span> <i
-                                        class="fas fa-paper-plane ms-1"></i></button>
-                            </div>
-                        </div>
-    
-                    </form>
-            </h5>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -420,8 +174,70 @@
 @section('js')
     <!-- Quill js -->
     <script src="{{ asset('assets/libs/quill/quill.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/selectize/js/standalone/selectize.min.js') }}"></script>
 
-     <!-- Inbox init -->
-     <script src="{{ asset('assets/js/pages/inbox.js') }}"></script>
+    {{-- Inbox --}}
+    <script src="{{ asset('assets/js/pages/inbox.js') }}"></script>
+    <script>
+    jQuery(document).ready(function(i) {
+        
+        $("#form-new-msg").on("submit",function(e) {
+            e.preventDefault();
 
+            let action = $(this).attr('action');
+            let user_id = $("select[name='user_id']").val();
+            let subject = $("input[name='subject']").val();
+
+            postData(action, { 
+                'user_id' : user_id,
+                'subject' : subject,
+                'message' : $("#snow-editor .ql-editor").html(),
+             }).then((data) => {
+                $('#modal-new-msg').modal('toggle');
+                if (data.status || data.code == 200) {
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "Mensaje enviado con éxito.",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                }else {
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "danger",
+                        title: 'Algo ha pasado',
+                        text: "El mensaje no pudo enviarse, Consulta con Administración.",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                }
+            });
+        });
+
+        async function postData(url = "", data = {}) {
+            const token = document.head.querySelector("[name~=csrf-token][content]").content;
+ 
+            // Default options are marked with *
+            const response = await fetch(url, {
+                method: "POST", // *GET, POST, PUT, DELETE, etc.
+                mode: "cors", // no-cors, *cors, same-origin
+                cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: "same-origin", // include, *same-origin, omit
+                headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-Token": token
+                },
+                redirect: "follow", // manual, *follow, error
+                referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                body: JSON.stringify(data), // body data type must match "Content-Type" header
+            });
+            return response.json(); // parses JSON response into native JavaScript objects
+        }       
+    });
+    </script>
 @endsection

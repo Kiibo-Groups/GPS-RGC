@@ -142,12 +142,7 @@
     
     @if (!Route::is('login'))
         <script src="{{ asset('assets/libs/raphael/raphael.min.js') }}"></script>
-        @if (Route::is('dash'))
-            <!--Morris Chart-->
-            <script src="{{ asset('assets/libs/morris.js06/morris.min.js') }}"></script> 
-            <!-- Dashboar init js-->
-            <script src="{{ asset('assets/js/pages/dashboard.init.js') }}"></script>
-        @endif
+        
     @endif      
     
     

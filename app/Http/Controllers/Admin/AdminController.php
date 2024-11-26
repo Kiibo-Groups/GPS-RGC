@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\{BlacsolController, SamsaraController};
 use App\Http\Requests;
 
 
@@ -24,8 +25,10 @@ class AdminController extends Controller
 	|------------------------------------------------------------------
 	*/
 	public function index()
-	{
-		return View($this->folder.'dashboard.home');
+	{ 
+		return View($this->folder.'dashboard.home',[ 
+            'ApiKey_google' => Settings::find(1)->ApiKey_google
+		]);
 	}
 
 	/*
@@ -35,7 +38,9 @@ class AdminController extends Controller
 	*/
 	public function home()
 	{
-		return View($this->folder.'dashboard.home');
+		return View($this->folder.'dashboard.home',[ 
+            'ApiKey_google' => Settings::find(1)->ApiKey_google
+		]);
 	}
 
 	/*

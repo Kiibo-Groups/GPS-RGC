@@ -17,8 +17,7 @@ class RutasController extends Controller
 	public $folder  = "admin/Rutas.";
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * 
      */
     public function index()
     {

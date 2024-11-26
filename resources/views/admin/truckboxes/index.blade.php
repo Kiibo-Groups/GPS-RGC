@@ -42,7 +42,7 @@
                                        {{ $row->descript_truck_box }}
                                     </td>
                                     <td>
-                                        {{ ($row->gps != null) ? $Models->GetNameGPS($row->gps) : "Sin Asignar" ; }}
+                                        {{ ($row->gps != null) ? $Models->GetNameGPS($row->gps) : "Sin Asignar" }}
                                      </td>
                                     <td>
                                         @if ($row->status == 0)

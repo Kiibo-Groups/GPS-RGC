@@ -2,6 +2,8 @@
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller; 
+use App\Providers\SocketServer;
+use App\Http\Controllers\{BlacsolController, SamsaraController};
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +19,18 @@ class ApiController extends Controller
 {
     public function __construct()
 	{
-		$this->middleware('authApi:api',['except' => ['getToken']]);
+		$this->middleware('authApi:api',['except' => [
+			'getToken', 
+			'getDevice',
+			'PosiCont',
+			'Idle',
+			'Mov',
+			'Detenido',
+			'IgnEnc',
+			'IgnApa',
+			'DetJamm',
+			'DesconBat',
+			'ReconBat',]]);
 	}
 
     public function welcome()
@@ -71,4 +84,382 @@ class ApiController extends Controller
 			]);
 		}  
     }
+
+	public function getDevice()
+	{
+
+		$server = new SocketServer("185.213.2.33",31337); // Create a Server binding to the given ip address and listen to port 31337 for connections
+		$server->max_clients = 10; // Allow no more than 10 people to connect at a time
+		$server->hook("CONNECT","handle_connect"); // Run handle_connect every time someone connects
+		$server->hook("INPUT","handle_input"); // Run handle_input whenever text is sent to the server
+		$server->infinite_loop(); // Run Server Code Until Process is terminated.
+
+
+		function handle_connect(&$server,&$client,$input)
+		{
+			SocketServer::socket_write_smart($client->socket,"String? ","");
+		}
+		function handle_input(&$server,&$client,$input)
+		{
+			// You probably want to sanitize your inputs here
+			$trim = trim($input); // Trim the input, Remove Line Endings and Extra Whitespace.
+
+			if(strtolower($trim) == "quit") // User Wants to quit the server
+			{
+				SocketServer::socket_write_smart($client->socket,"Oh... Goodbye..."); // Give the user a sad goodbye message, meany!
+				$server->disconnect($client->server_clients_index); // Disconnect this client.
+				return; // Ends the function
+			}
+
+			$output = strrev($trim); // Reverse the String
+
+			SocketServer::socket_write_smart($client->socket,$output); // Send the Client back the String
+			SocketServer::socket_write_smart($client->socket,"String? ",""); // Request Another String
+		}
+	}
+
+	/**
+	 * Conexion con el WebService
+	 * BlackSoul
+	 */
+	public function PosiCont()
+	{
+		try {
+			$Samsara = new SamsaraController;
+			$data = $Samsara->GetAllVehicleAssignments();
+			
+			for ($i=0; $i < count($data)-1; $i++) { 
+				$BlacSol = new BlacsolController(
+					$data[$i]['username'],	// username
+					$data[$i]['imei'],	// imei
+					$data[$i]['latitude'],	// latitude
+					$data[$i]['longitude'],	// longitude
+					$data[$i]['altitude'],	// altitude
+					$data[$i]['speed'],	// speed
+					$data[$i]['azimuth'],	// azimuth
+					$data[$i]['odometer'],	// odometer
+					$data[$i]['dateTimeUTC']	// dateTimeUTC
+				);
+				
+				$BlacSol->PosiCont();
+				unset($BlacSol);
+			} 
+
+
+			return response()->json([
+				'status' => true,
+				'code'   => 200
+			]);
+		} catch (\Exception $th) {
+			return response()->json([
+				'status' => false,
+				'code'   => 500,
+				'error'  => $th->getMessage()
+			]);
+		}
+	}
+
+	public function Idle()
+	{
+		try {
+			$Samsara = new SamsaraController;
+			$data = $Samsara->GetAllVehicleAssignments();
+			
+			for ($i=0; $i < count($data)-1; $i++) { 
+				$BlacSol = new BlacsolController(
+					$data[$i]['username'],	// username
+					$data[$i]['imei'],	// imei
+					$data[$i]['latitude'],	// latitude
+					$data[$i]['longitude'],	// longitude
+					$data[$i]['altitude'],	// altitude
+					$data[$i]['speed'],	// speed
+					$data[$i]['azimuth'],	// azimuth
+					$data[$i]['odometer'],	// odometer
+					$data[$i]['dateTimeUTC']	// dateTimeUTC
+				);
+				
+				$BlacSol->Idle();
+				unset($BlacSol);
+			} 
+
+
+			return response()->json([
+				'status' => true,
+				'code'   => 200
+			]);
+		} catch (\Exception $th) {
+			return response()->json([
+				'status' => false,
+				'code'   => 500,
+				'error'  => $th->getMessage()
+			]);
+		}
+
+	}
+
+	public function Mov()
+	{
+		try {
+			$Samsara = new SamsaraController;
+			$data = $Samsara->GetAllVehicleAssignments();
+			
+			for ($i=0; $i < count($data)-1; $i++) { 
+				$BlacSol = new BlacsolController(
+					$data[$i]['username'],	// username
+					$data[$i]['imei'],	// imei
+					$data[$i]['latitude'],	// latitude
+					$data[$i]['longitude'],	// longitude
+					$data[$i]['altitude'],	// altitude
+					$data[$i]['speed'],	// speed
+					$data[$i]['azimuth'],	// azimuth
+					$data[$i]['odometer'],	// odometer
+					$data[$i]['dateTimeUTC']	// dateTimeUTC
+				);
+				
+				$BlacSol->Mov();
+				unset($BlacSol);
+			} 
+
+
+			return response()->json([
+				'status' => true,
+				'code'   => 200
+			]);
+		} catch (\Exception $th) {
+			return response()->json([
+				'status' => false,
+				'code'   => 500,
+				'error'  => $th->getMessage()
+			]);
+		}
+
+	}
+
+	public function Detenido()
+	{
+		try {
+			$Samsara = new SamsaraController;
+			$data = $Samsara->GetAllVehicleAssignments();
+			
+			for ($i=0; $i < count($data)-1; $i++) { 
+				$BlacSol = new BlacsolController(
+					$data[$i]['username'],	// username
+					$data[$i]['imei'],	// imei
+					$data[$i]['latitude'],	// latitude
+					$data[$i]['longitude'],	// longitude
+					$data[$i]['altitude'],	// altitude
+					$data[$i]['speed'],	// speed
+					$data[$i]['azimuth'],	// azimuth
+					$data[$i]['odometer'],	// odometer
+					$data[$i]['dateTimeUTC']	// dateTimeUTC
+				);
+				
+				$BlacSol->Detenido();
+				unset($BlacSol);
+			} 
+
+
+			return response()->json([
+				'status' => true,
+				'code'   => 200
+			]);
+		} catch (\Exception $th) {
+			return response()->json([
+				'status' => false,
+				'code'   => 500,
+				'error'  => $th->getMessage()
+			]);
+		}
+
+	}
+
+	public function IgnEnc()
+	{
+		try {
+			$Samsara = new SamsaraController;
+			$data = $Samsara->GetAllVehicleAssignments();
+			
+			for ($i=0; $i < count($data)-1; $i++) { 
+				$BlacSol = new BlacsolController(
+					$data[$i]['username'],	// username
+					$data[$i]['imei'],	// imei
+					$data[$i]['latitude'],	// latitude
+					$data[$i]['longitude'],	// longitude
+					$data[$i]['altitude'],	// altitude
+					$data[$i]['speed'],	// speed
+					$data[$i]['azimuth'],	// azimuth
+					$data[$i]['odometer'],	// odometer
+					$data[$i]['dateTimeUTC']	// dateTimeUTC
+				);
+				
+				$BlacSol->IgnEnc();
+				unset($BlacSol);
+			} 
+
+
+			return response()->json([
+				'status' => true,
+				'code'   => 200
+			]);
+		} catch (\Exception $th) {
+			return response()->json([
+				'status' => false,
+				'code'   => 500,
+				'error'  => $th->getMessage()
+			]);
+		}
+
+	}
+
+	public function IgnApa()
+	{
+		try {
+			$Samsara = new SamsaraController;
+			$data = $Samsara->GetAllVehicleAssignments();
+			
+			for ($i=0; $i < count($data)-1; $i++) { 
+				$BlacSol = new BlacsolController(
+					$data[$i]['username'],	// username
+					$data[$i]['imei'],	// imei
+					$data[$i]['latitude'],	// latitude
+					$data[$i]['longitude'],	// longitude
+					$data[$i]['altitude'],	// altitude
+					$data[$i]['speed'],	// speed
+					$data[$i]['azimuth'],	// azimuth
+					$data[$i]['odometer'],	// odometer
+					$data[$i]['dateTimeUTC']	// dateTimeUTC
+				);
+				
+				$BlacSol->IgnApa();
+				unset($BlacSol);
+			} 
+
+
+			return response()->json([
+				'status' => true,
+				'code'   => 200
+			]);
+		} catch (\Exception $th) {
+			return response()->json([
+				'status' => false,
+				'code'   => 500,
+				'error'  => $th->getMessage()
+			]);
+		}
+
+	}
+
+	public function DetJamm()
+	{
+		try {
+			$Samsara = new SamsaraController;
+			$data = $Samsara->GetAllVehicleAssignments();
+			
+			for ($i=0; $i < count($data)-1; $i++) { 
+				$BlacSol = new BlacsolController(
+					$data[$i]['username'],	// username
+					$data[$i]['imei'],	// imei
+					$data[$i]['latitude'],	// latitude
+					$data[$i]['longitude'],	// longitude
+					$data[$i]['altitude'],	// altitude
+					$data[$i]['speed'],	// speed
+					$data[$i]['azimuth'],	// azimuth
+					$data[$i]['odometer'],	// odometer
+					$data[$i]['dateTimeUTC']	// dateTimeUTC
+				);
+				
+				$BlacSol->DetJamm();
+				unset($BlacSol);
+			} 
+
+
+			return response()->json([
+				'status' => true,
+				'code'   => 200
+			]);
+		} catch (\Exception $th) {
+			return response()->json([
+				'status' => false,
+				'code'   => 500,
+				'error'  => $th->getMessage()
+			]);
+		}
+
+	}
+
+	public function DesconBat()
+	{
+		try {
+			$Samsara = new SamsaraController;
+			$data = $Samsara->GetAllVehicleAssignments();
+			
+			for ($i=0; $i < count($data)-1; $i++) { 
+				$BlacSol = new BlacsolController(
+					$data[$i]['username'],	// username
+					$data[$i]['imei'],	// imei
+					$data[$i]['latitude'],	// latitude
+					$data[$i]['longitude'],	// longitude
+					$data[$i]['altitude'],	// altitude
+					$data[$i]['speed'],	// speed
+					$data[$i]['azimuth'],	// azimuth
+					$data[$i]['odometer'],	// odometer
+					$data[$i]['dateTimeUTC']	// dateTimeUTC
+				);
+				
+				$BlacSol->DesconBat();
+				unset($BlacSol);
+			} 
+
+
+			return response()->json([
+				'status' => true,
+				'code'   => 200
+			]);
+		} catch (\Exception $th) {
+			return response()->json([
+				'status' => false,
+				'code'   => 500,
+				'error'  => $th->getMessage()
+			]);
+		}
+
+	}
+
+	public function ReconBat()
+	{
+		try {
+			$Samsara = new SamsaraController;
+			$data = $Samsara->GetAllVehicleAssignments();
+			
+			for ($i=0; $i < count($data)-1; $i++) { 
+				$BlacSol = new BlacsolController(
+					$data[$i]['username'],	// username
+					$data[$i]['imei'],	// imei
+					$data[$i]['latitude'],	// latitude
+					$data[$i]['longitude'],	// longitude
+					$data[$i]['altitude'],	// altitude
+					$data[$i]['speed'],	// speed
+					$data[$i]['azimuth'],	// azimuth
+					$data[$i]['odometer'],	// odometer
+					$data[$i]['dateTimeUTC']	// dateTimeUTC
+				);
+				
+				$BlacSol->ReconBat();
+				unset($BlacSol);
+			} 
+
+
+			return response()->json([
+				'status' => true,
+				'code'   => 200
+			]);
+		} catch (\Exception $th) {
+			return response()->json([
+				'status' => false,
+				'code'   => 500,
+				'error'  => $th->getMessage()
+			]);
+		}
+
+	}
 }

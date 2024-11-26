@@ -3,7 +3,7 @@
         'name' => 'gps/proyect',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '95066a7613bcbc9b9dfbb857fbe4a9d8eb57f1e7',
+        'reference' => 'fd59de1f51904cd79c0ace398d968110782e4124',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -133,7 +133,7 @@
         'gps/proyect' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '95066a7613bcbc9b9dfbb857fbe4a9d8eb57f1e7',
+            'reference' => 'fd59de1f51904cd79c0ace398d968110782e4124',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -1027,6 +1027,15 @@
             'install_path' => __DIR__ . '/../spatie/ignition',
             'aliases' => array(),
             'dev_requirement' => true,
+        ),
+        'spatie/laravel-html' => array(
+            'pretty_version' => '3.5.0',
+            'version' => '3.5.0.0',
+            'reference' => 'ead179a8b6802647027486049f5209bd23b610a9',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../spatie/laravel-html',
+            'aliases' => array(),
+            'dev_requirement' => false,
         ),
         'spatie/laravel-ignition' => array(
             'pretty_version' => '1.6.4',

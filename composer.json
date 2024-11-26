@@ -10,8 +10,8 @@
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
-        "laravel/ui": "^4.2",
-        "laravelcollective/html": "^6.4",
+        "laravel/ui": "^4.2", 
+        "spatie/laravel-html": "^3.5",
         "tymon/jwt-auth": "^2.0"
     },
     "require-dev": {

@@ -2190,7 +2190,7 @@ h3.timeline-title {
   #main .message-list {
     display: block;
     padding-left: 0; }
-    #main .message-list li {
+    #main .message-list li  {
       position: relative;
       display: block;
       height: 50px;
@@ -2198,6 +2198,7 @@ h3.timeline-title {
       cursor: default;
       transition-duration: .3s;
       color: #6c757d; }
+      
       #main .message-list li:hover {
         background: #f8f9fa;
         transition-duration: .05s; }
@@ -2312,16 +2313,18 @@ body[data-layout="horizontal"] #message {
 #message {
   position: fixed;
   top: 72px;
-  left: 60%;
+  left: 25%;
   bottom: 0;
-  width: 40%;
+  width: 75%;
   z-index: 5;
-  transform: translateX(200%);
+  /* transform: translateY(200%); */
   transition-duration: .5s;
   padding: 20px 30px;
   background: white;
-  box-shadow: 0 0px 77px 0 rgba(0, 0, 0, 0.08), 0 1px 0px 0 rgba(0, 0, 0, 0.02); }
-  #message .header {
+  box-shadow: 0 0px 77px 0 rgba(0, 0, 0, 0.08), 0 1px 0px 0 rgba(0, 0, 0, 0.02); 
+}
+
+#message .header {
     padding-bottom: 20px;
     border-bottom: 2px solid rgba(152, 166, 173, 0.2); }
     #message .header .page-title {
@@ -2424,7 +2427,7 @@ body[data-layout="horizontal"] #message {
   transition-duration: .3s; }
 
 .show-message #main {
-  margin-right: 40%; }
+  margin-right: 0%; }
 
 @media only screen and (min-width: 1499px) {
   #main .overlay {

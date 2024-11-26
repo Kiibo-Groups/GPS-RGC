@@ -104,9 +104,10 @@ Route::prefix(env('user'))->namespace('User')->group(static function() {
         */  
         Route::resource('chats_inbox','\App\Http\Controllers\Admin\ChatsInboxController');
         Route::get('chats_inbox',[App\Http\Controllers\Admin\ChatsInboxController::class, 'index'])->name('chats_inbox');
+        Route::get('chats_inbox/view/{id}',[App\Http\Controllers\Admin\ChatsInboxController::class, 'view_inbox'])->name('view_inbox');
         Route::get('chats_inbox/delete/{id}',[App\Http\Controllers\Admin\ChatsInboxController::class, 'delete']);
         Route::get('chats_inbox/status/{id}',[App\Http\Controllers\Admin\ChatsInboxController::class, 'status']); 
-
+        Route::post('chats_reply_inbox',[App\Http\Controllers\Admin\ChatsInboxController::class, 'chats_reply_inbox']); 
         /*
         |-----------------------------------------
         |Ajustes

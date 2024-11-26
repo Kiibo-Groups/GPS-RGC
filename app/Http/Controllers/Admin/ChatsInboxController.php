@@ -27,9 +27,20 @@ class ChatsInboxController extends Controller
      */
     public function index()
     {
+        // return response()->json([
+        //     'data' 	=> ChatsInbox::get(),
+		// 	'form_url' 	=> '/chats_inbox/'
+        // ]);
+
         return View($this->folder.'index',[
-			'data' 	=> ChatsInbox::get(),
-			'link' 	=> '/chats_inbox/'
+			'data' 	        => ChatsInbox::where('cc',0)->OrderBy('id','DESC')->get(),
+            'bandeja'       => ChatsInbox::where('ready','0')->count(),  // 0 = no leido, 1 = Leido
+            // 0 = Enviado Admin, 1 = Enviado por usuario, 2 = eliminado
+
+            'sends'         => (Auth::user()->role == 1) ? ChatsInbox::where('status','0')->count() : ChatsInbox::where('status','1')->count(), 
+            'dels'          => ChatsInbox::where('status','2')->count(), // 0 = Enviado Admin, 1 = Enviado por usuario, 2 = eliminado
+            'list_users'    => User::where('role','!=','1')->get(),
+			'form_url' 	    => '/chats_inbox/'
 		]);
     }
 
@@ -38,13 +49,61 @@ class ChatsInboxController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function view_inbox($id)
     {
-        return View($this->folder.'add',[
-			'data' 		=> new ChatsInbox,
-			'form_url' 	=> '/chats_inbox',
-            'array'		=> []
+        $inboxs = new ChatsInbox;
+        $inbox = ChatsInbox::find($id);
+        // Lo marcamos como leido
+        if ($inbox->ready == 0) {
+            
+            $inbox->ready = 1;
+            $inbox->save();
+        }
+
+        // return response()->json([
+        //     'data' 	        => $inboxs->getInbox($id)
+        // ]);
+
+        return View($this->folder.'view_msg',[
+			'data' 	        => $inboxs->getInbox($id),
+            'bandeja'       => ChatsInbox::where('ready','0')->count(),  // 0 = no leido, 1 = Leido
+            // 0 = Enviado Admin, 1 = Enviado por usuario, 2 = eliminado
+            'sends'         => (Auth::user()->role == 1) ? ChatsInbox::where('status','0')->count() : ChatsInbox::where('status','1')->count(), 
+            'dels'          => ChatsInbox::where('status','2')->count(), // 0 = Enviado Admin, 1 = Enviado por usuario, 2 = eliminado
+            'list_users'    => User::where('role','!=','1')->get(),
+			'form_url' 	    => '/chats_inbox/',
+            'form_reply'    => '/chats_reply_inbox/'
 		]);
+    }
+
+    public function chats_reply_inbox(Request $request)
+    {
+        try {
+            $input = $request->all();
+            $lims_inbox_data = new ChatsInbox;
+            
+            $input['user_id']   = $input['user_id'];
+            $input['cc']        = $input['reply_cc'];
+            $input['subject']   = $input['subject'];
+            $input['message']   = $input['message'];
+            $input['ready']     = 0; // 0 = no leido, 1 = Leido
+            $input['status']    = (Auth::user()->role == 1) ? 0 : 1; // 0 = Enviado Admin, 1 = Enviado por usuario, 2 = eliminado
+            
+            $lims_inbox_data->create($input);
+
+            return response()->json([
+                'status' => true,
+                'code'  => 200,
+                'msg'   => $input
+            ]);
+            
+        } catch (\Exception $th) {
+            return response()->json([
+                'status' => false,
+                'code'  => 500,
+                'msg'   => $th->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -58,11 +117,28 @@ class ChatsInboxController extends Controller
         try {
             $input = $request->all();
             $lims_inbox_data = new ChatsInbox;
+            
+            $input['user_id']   = $input['user_id'];
+            
+            $input['subject']   = $input['subject'];
+            $input['message']   = $input['message'];
+            $input['ready']     = 0; // 0 = no leido, 1 = Leido
+            $input['status']    = (Auth::user()->role == 1) ? 0 : 1;; // 0 = Enviado Admin, 1 = Enviado por usuario, 2 = eliminado
+            
             $lims_inbox_data->create($input);
 
-            return redirect(env('admin').'/chats_inbox')->with('message', 'Nuevo Mensaje enviado...');
+            return response()->json([
+                'status' => true,
+                'code'  => 200,
+                'msg'   => 'msg_send'
+            ]);
+            
         } catch (\Exception $th) {
-            return redirect(env('admin').'/chats_inbox')->with('error', $th->getMessage());
+            return response()->json([
+                'status' => false,
+                'code'  => 500,
+                'msg'   => $th->getMessage()
+            ]);
         }
     }
 

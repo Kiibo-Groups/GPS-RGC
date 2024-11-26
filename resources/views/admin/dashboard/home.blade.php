@@ -6,9 +6,7 @@
 @section('subpage_active') Home @endsection 
 
 
-@section('css')
-<!-- plugin css -->
-<link href="{{ asset('assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css') }}" rel="stylesheet" type="text/css" />
+@section('css') 
 @endsection
 
 @section('content')
@@ -169,7 +167,7 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="header-title mb-3">Control de GPS activos</h4>
-                    <div id="world-map-markers" style="height: 550px"></div>
+                    <div id="map" style="width:100%;height:500px;"></div>
                 </div> <!-- end card-body-->
             </div> <!-- end card-->
         </div> <!-- end col-->
@@ -179,19 +177,43 @@
 @endsection
 
 @section('js')
-    <!-- Plugins js-->
-    <script src="{{ asset('assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-world-mill-en.js') }}"></script>
-    <script src="{{ asset('assets/libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-us-merc-en.js') }}"></script>
-    <script src="{{ asset('assets/libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-in-mill-en.js') }}"></script>
-    <script src="{{ asset('assets/libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-au-mill-en.js') }}"></script>
-    <script src="{{ asset('assets/libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-us-il-chicago-mill-en.js') }}"></script>
-    <script src="{{ asset('assets/libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-uk-mill-en.js') }}"></script>
-    <script src="{{ asset('assets/libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-ca-lcc-en.js') }}"></script>
-    <script src="{{ asset('assets/libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-europe-mill-en.js') }}"></script>
-    <script src="{{ asset('assets/libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-fr-merc-en.js') }}"></script>
-    <script src="{{ asset('assets/libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-es-merc.js') }}"></script>
-    <script src="{{ asset('assets/libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-es-mill.js') }}"></script>
-    <!-- Init js-->
-    <script src="{{ asset('assets/js/pages/vector-maps.init.js') }}"></script>
+<script>
+    let lat = 31.326015;
+    let lng = 75.576180;
+      function initMap() {
+        var map;
+        var marker;
+        let h3index; 
+         
+        
+        var geocoder = new google.maps.Geocoder;
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                  lat = position.coords.latitude;
+                  lng = position.coords.longitude;
+                  map = new google.maps.Map(
+                      document.getElementById('map'),
+                      {
+                        center: {lat: lat, lng: lng},
+                        zoom: 12,
+                        disableDefaultUI: true
+                      }
+                  );
+     
+                     
+                  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+     
+              },
+              () => {
+                handleLocationError(true, infoWindow, map.getCenter());
+              }
+            );
+      
+      }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{$ApiKey_google}}&libraries=places&callback=initMap"></script>
+<!--Morris Chart-->
+<script src="{{ asset('assets/libs/morris.js06/morris.min.js') }}"></script>
+<!-- Dashboar init js-->
+<script src="{{ asset('assets/js/pages/dashboard.init.js') }}"></script>
 @endsection

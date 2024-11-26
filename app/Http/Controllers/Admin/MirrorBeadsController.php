@@ -58,11 +58,10 @@ class MirrorBeadsController extends Controller
             $lims_mirrorbeads_data = new User;
 
             
-
             $input['role']           = 2; // 0 = Admin, 1 = SubAccount, 2 Cuenta Espejo
             $input['name']           = ucwords($input['name']);
             $input['password']       =  bcrypt($input['password']);
-            $input['show_password']  =  $input['password'];
+            $input['shw_password']  =  $input['password'];
  
             $lims_mirrorbeads_data->create($input);
 
