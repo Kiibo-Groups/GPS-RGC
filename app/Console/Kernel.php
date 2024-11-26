@@ -4,9 +4,19 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Log;
+
+use App\Jobs\PosiContJob;
 
 class Kernel extends ConsoleKernel
 {
+
+    
+    protected $commands = [
+        'App\Jobs\PosiContJob'
+    ];
+    
+
     /**
      * Define the application's command schedule.
      *
@@ -16,6 +26,12 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
+
+        Log::channel()->info('[*]['.date('H:i:s')."] Inicializacion de CRONS.... .\r\n");
+
+
+        // Validamos los post programados para su activación
+        $schedule->job(new PosiContJob)->everyMinute();
     }
 
     /**
