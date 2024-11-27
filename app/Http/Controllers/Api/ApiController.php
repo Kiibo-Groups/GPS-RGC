@@ -131,7 +131,7 @@ class ApiController extends Controller
 			$Samsara = new SamsaraController;
 			$data = $Samsara->GetAllVehicleAssignments();
 			$req  = [];
-			for ($i=0; $i < count($data)-1; $i++) { 
+			for ($i=0; $i < count($data); $i++) { 
 				$BlacSol = new BlacsolController(
 					$data[$i]['username'],	// username
 					$data[$i]['imei'],	// imei
@@ -148,6 +148,7 @@ class ApiController extends Controller
 				unset($BlacSol);
 			} 
 
+			
  
 			return response()->json([
 				'data'   => $req, 
@@ -172,7 +173,7 @@ class ApiController extends Controller
 			$data = $Samsara->GetAllVehicleAssignments();
 			$req = [];
 			
-			for ($i=0; $i < count($data)-1; $i++) { 
+			for ($i=0; $i < count($data); $i++) { 
 				$BlacSol = new BlacsolController(
 					$data[$i]['username'],	// username
 					$data[$i]['imei'],	// imei
@@ -214,7 +215,7 @@ class ApiController extends Controller
 			$data = $Samsara->GetAllVehicleAssignments();
 			$req = [];
 			
-			for ($i=0; $i < count($data)-1; $i++) { 
+			for ($i=0; $i < count($data); $i++) { 
 				$BlacSol = new BlacsolController(
 					$data[$i]['username'],	// username
 					$data[$i]['imei'],	// imei
@@ -256,7 +257,7 @@ class ApiController extends Controller
 			$data = $Samsara->GetAllVehicleAssignments();
 			$req = [];
 			
-			for ($i=0; $i < count($data)-1; $i++) { 
+			for ($i=0; $i < count($data); $i++) { 
 				$BlacSol = new BlacsolController(
 					$data[$i]['username'],	// username
 					$data[$i]['imei'],	// imei
@@ -298,7 +299,7 @@ class ApiController extends Controller
 			$data = $Samsara->GetAllVehicleAssignments();
 			$req = [];
 			
-			for ($i=0; $i < count($data)-1; $i++) { 
+			for ($i=0; $i < count($data); $i++) { 
 				$BlacSol = new BlacsolController(
 					$data[$i]['username'],	// username
 					$data[$i]['imei'],	// imei
@@ -340,7 +341,7 @@ class ApiController extends Controller
 			$data = $Samsara->GetAllVehicleAssignments();
 			$req  = [];
 			
-			for ($i=0; $i < count($data)-1; $i++) { 
+			for ($i=0; $i < count($data); $i++) { 
 				$BlacSol = new BlacsolController(
 					$data[$i]['username'],	// username
 					$data[$i]['imei'],	// imei
@@ -382,7 +383,7 @@ class ApiController extends Controller
 			$data = $Samsara->GetAllVehicleAssignments();
 			$req = [];
 
-			for ($i=0; $i < count($data)-1; $i++) { 
+			for ($i=0; $i < count($data); $i++) { 
 				$BlacSol = new BlacsolController(
 					$data[$i]['username'],	// username
 					$data[$i]['imei'],	// imei
@@ -424,7 +425,7 @@ class ApiController extends Controller
 			$data = $Samsara->GetAllVehicleAssignments();
 			$req = [];
 
-			for ($i=0; $i < count($data)-1; $i++) { 
+			for ($i=0; $i < count($data); $i++) { 
 				$BlacSol = new BlacsolController(
 					$data[$i]['username'],	// username
 					$data[$i]['imei'],	// imei
@@ -465,7 +466,7 @@ class ApiController extends Controller
 			$Samsara = new SamsaraController;
 			$data = $Samsara->GetAllVehicleAssignments();
 			$req = [];
-			for ($i=0; $i < count($data)-1; $i++) { 
+			for ($i=0; $i < count($data); $i++) { 
 				$BlacSol = new BlacsolController(
 					$data[$i]['username'],	// username
 					$data[$i]['imei'],	// imei

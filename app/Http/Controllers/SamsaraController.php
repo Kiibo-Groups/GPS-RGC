@@ -13,7 +13,7 @@ class SamsaraController {
     const GetAllDrivers = "https://api.samsara.com/fleet/drivers";
     const GetAllAddress = "https://api.samsara.com/addresses";
     const GetLocations  = "https://api.samsara.com/fleet/vehicles/locations";
-    const GetVehicles   = "https://api.samsara.com/fleet/vehicles/stats?types=gps";
+    const GetVehicles   = "https://api.samsara.com/fleet/vehicles/stats?vehicleIds=281474977607689&types=gps";
 
     public function __construct()
     {
@@ -31,20 +31,31 @@ class SamsaraController {
             $x = 0;
 
             foreach ($req['data'] as $key) {   
-                if ($x <= 5) {
-                    $data[] = [ 
-                        'username'  => $key['name'],
-                        "imei"      => $key['id'],
-                        "latitude"  => $key['gps']['latitude'],
-                        "longitude" => $key['gps']['longitude'],
-                        "altitude"  => "0.00",
-                        "speed"     => $key['gps']['speedMilesPerHour'],
-                        "azimuth"   => "0",
-                        "odometer"  => "0",
-                        "dateTimeUTC" => date('YmdHis')
-                    ];
-                }
-                $x++;
+                $data[] = [ 
+                    'username'  => $key['name'],
+                    "imei"      => $key['id'],
+                    "latitude"  => $key['gps']['latitude'],
+                    "longitude" => $key['gps']['longitude'],
+                    "altitude"  => "0.00",
+                    "speed"     => $key['gps']['speedMilesPerHour'],
+                    "azimuth"   => "0",
+                    "odometer"  => "0",
+                    "dateTimeUTC" => date('YmdHis')
+                ];
+                // if ($x <= 5) {
+                //     $data[] = [ 
+                //         'username'  => $key['name'],
+                //         "imei"      => $key['id'],
+                //         "latitude"  => $key['gps']['latitude'],
+                //         "longitude" => $key['gps']['longitude'],
+                //         "altitude"  => "0.00",
+                //         "speed"     => $key['gps']['speedMilesPerHour'],
+                //         "azimuth"   => "0",
+                //         "odometer"  => "0",
+                //         "dateTimeUTC" => date('YmdHis')
+                //     ];
+                // }
+                // $x++;
                 
             }
 
