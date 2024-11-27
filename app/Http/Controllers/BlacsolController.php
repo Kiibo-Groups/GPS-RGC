@@ -70,7 +70,6 @@ class BlacsolController {
         try {
             $this->json["username"] = $this->UserName;
             $this->json["event"] = 'PosiCont';
-            $this->json['imei']  = "281474977589063";
 
             $req = $this->SendCurlPetition(self::URLGetEvent, $this->json);
 
@@ -102,6 +101,7 @@ class BlacsolController {
     
             return response()->json([
                 'data' => $req,
+                'json' => $this->json,
                 'code' => 200
             ]);
         } catch (\Exception $th) {
@@ -130,6 +130,7 @@ class BlacsolController {
     
             return response()->json([
                 'data' => $req,
+                'json' => $this->json,
                 'code' => 200
             ]);
         } catch (\Exception $th) {
@@ -158,6 +159,7 @@ class BlacsolController {
     
             return response()->json([
                 'data' => $req,
+                'json' => $this->json,
                 'code' => 200
             ]);
         } catch (\Exception $th) {
@@ -183,6 +185,7 @@ class BlacsolController {
     
             return response()->json([
                 'data' => $req,
+                'json' => $this->json,
                 'code' => 200
             ]);
         } catch (\Exception $th) {
@@ -208,6 +211,7 @@ class BlacsolController {
     
             return response()->json([
                 'data' => $req,
+                'json' => $this->json,
                 'code' => 200
             ]);
         } catch (\Exception $th) {
@@ -233,6 +237,7 @@ class BlacsolController {
     
             return response()->json([
                 'data' => $req,
+                'json' => $this->json,
                 'code' => 200
             ]);
         } catch (\Exception $th) {
@@ -259,6 +264,7 @@ class BlacsolController {
     
             return response()->json([
                 'data' => $req,
+                'json' => $this->json,
                 'code' => 200
             ]);
         } catch (\Exception $th) {
@@ -285,6 +291,7 @@ class BlacsolController {
     
             return response()->json([
                 'data' => $req,
+                'json' => $this->json,
                 'code' => 200
             ]);
         } catch (\Exception $th) {

@@ -131,39 +131,24 @@ class ApiController extends Controller
 			$Samsara = new SamsaraController;
 			$data = $Samsara->GetAllVehicleAssignments();
 			$req  = [];
-			// for ($i=0; $i < count($data)-1; $i++) { 
-			// 	$BlacSol = new BlacsolController(
-			// 		$data[$i]['username'],	// username
-			// 		$data[$i]['imei'],	// imei
-			// 		$data[$i]['latitude'],	// latitude
-			// 		$data[$i]['longitude'],	// longitude
-			// 		$data[$i]['altitude'],	// altitude
-			// 		$data[$i]['speed'],	// speed
-			// 		$data[$i]['azimuth'],	// azimuth
-			// 		$data[$i]['odometer'],	// odometer
-			// 		$data[$i]['dateTimeUTC']	// dateTimeUTC
-			// 	);
+			for ($i=0; $i < count($data)-1; $i++) { 
+				$BlacSol = new BlacsolController(
+					$data[$i]['username'],	// username
+					$data[$i]['imei'],	// imei
+					$data[$i]['latitude'],	// latitude
+					$data[$i]['longitude'],	// longitude
+					$data[$i]['altitude'],	// altitude
+					$data[$i]['speed'],	// speed
+					$data[$i]['azimuth'],	// azimuth
+					$data[$i]['odometer'],	// odometer
+					$data[$i]['dateTimeUTC']	// dateTimeUTC
+				);
 				
-			// 	$req[] = $BlacSol->PosiCont();
-			// 	unset($BlacSol);
-			// } 
+				$req[] = $BlacSol->PosiCont();
+				unset($BlacSol);
+			} 
 
-
-			$BlacSol = new BlacsolController(
-				$data[0]['username'],	// username
-				$data[0]['imei'],	// imei
-				$data[0]['latitude'],	// latitude
-				$data[0]['longitude'],	// longitude
-				$data[0]['altitude'],	// altitude
-				$data[0]['speed'],	// speed
-				$data[0]['azimuth'],	// azimuth
-				$data[0]['odometer'],	// odometer
-				$data[0]['dateTimeUTC']	// dateTimeUTC
-			);
-			
-			$req[] = $BlacSol->PosiCont();
-
-
+ 
 			return response()->json([
 				'data'   => $req, 
 				'status' => true,
@@ -185,6 +170,7 @@ class ApiController extends Controller
 		try {
 			$Samsara = new SamsaraController;
 			$data = $Samsara->GetAllVehicleAssignments();
+			$req = [];
 			
 			for ($i=0; $i < count($data)-1; $i++) { 
 				$BlacSol = new BlacsolController(
@@ -199,12 +185,13 @@ class ApiController extends Controller
 					$data[$i]['dateTimeUTC']	// dateTimeUTC
 				);
 				
-				$BlacSol->Idle();
+				$req[] = $BlacSol->Idle();
 				unset($BlacSol);
 			} 
 
 
 			return response()->json([
+				'data'   => $req,
 				'status' => true,
 				'code'   => 200
 			]);
@@ -225,6 +212,7 @@ class ApiController extends Controller
 		try {
 			$Samsara = new SamsaraController;
 			$data = $Samsara->GetAllVehicleAssignments();
+			$req = [];
 			
 			for ($i=0; $i < count($data)-1; $i++) { 
 				$BlacSol = new BlacsolController(
@@ -239,12 +227,13 @@ class ApiController extends Controller
 					$data[$i]['dateTimeUTC']	// dateTimeUTC
 				);
 				
-				$BlacSol->Mov();
+				$req[] = $BlacSol->Mov();
 				unset($BlacSol);
 			} 
 
 
 			return response()->json([
+				'data'   => $req,
 				'status' => true,
 				'code'   => 200
 			]);
@@ -265,6 +254,7 @@ class ApiController extends Controller
 		try {
 			$Samsara = new SamsaraController;
 			$data = $Samsara->GetAllVehicleAssignments();
+			$req = [];
 			
 			for ($i=0; $i < count($data)-1; $i++) { 
 				$BlacSol = new BlacsolController(
@@ -279,12 +269,13 @@ class ApiController extends Controller
 					$data[$i]['dateTimeUTC']	// dateTimeUTC
 				);
 				
-				$BlacSol->Detenido();
+				$req[] = $BlacSol->Detenido();
 				unset($BlacSol);
 			} 
 
 
 			return response()->json([
+				'data'   => $req,
 				'status' => true,
 				'code'   => 200
 			]);
@@ -305,6 +296,7 @@ class ApiController extends Controller
 		try {
 			$Samsara = new SamsaraController;
 			$data = $Samsara->GetAllVehicleAssignments();
+			$req = [];
 			
 			for ($i=0; $i < count($data)-1; $i++) { 
 				$BlacSol = new BlacsolController(
@@ -319,12 +311,13 @@ class ApiController extends Controller
 					$data[$i]['dateTimeUTC']	// dateTimeUTC
 				);
 				
-				$BlacSol->IgnEnc();
+				$req[] = $BlacSol->IgnEnc();
 				unset($BlacSol);
 			} 
 
 
 			return response()->json([
+				'data'   => $req,
 				'status' => true,
 				'code'   => 200
 			]);
@@ -345,6 +338,7 @@ class ApiController extends Controller
 		try {
 			$Samsara = new SamsaraController;
 			$data = $Samsara->GetAllVehicleAssignments();
+			$req  = [];
 			
 			for ($i=0; $i < count($data)-1; $i++) { 
 				$BlacSol = new BlacsolController(
@@ -359,12 +353,13 @@ class ApiController extends Controller
 					$data[$i]['dateTimeUTC']	// dateTimeUTC
 				);
 				
-				$BlacSol->IgnApa();
+				$req[] = $BlacSol->IgnApa();
 				unset($BlacSol);
 			} 
 
 
 			return response()->json([
+				'data'   => $req,
 				'status' => true,
 				'code'   => 200
 			]);
@@ -385,7 +380,8 @@ class ApiController extends Controller
 		try {
 			$Samsara = new SamsaraController;
 			$data = $Samsara->GetAllVehicleAssignments();
-			
+			$req = [];
+
 			for ($i=0; $i < count($data)-1; $i++) { 
 				$BlacSol = new BlacsolController(
 					$data[$i]['username'],	// username
@@ -399,12 +395,13 @@ class ApiController extends Controller
 					$data[$i]['dateTimeUTC']	// dateTimeUTC
 				);
 				
-				$BlacSol->DetJamm();
+				$req[] = $BlacSol->DetJamm();
 				unset($BlacSol);
 			} 
 
 
 			return response()->json([
+				'data'   => $req,
 				'status' => true,
 				'code'   => 200
 			]);
@@ -425,7 +422,8 @@ class ApiController extends Controller
 		try {
 			$Samsara = new SamsaraController;
 			$data = $Samsara->GetAllVehicleAssignments();
-			
+			$req = [];
+
 			for ($i=0; $i < count($data)-1; $i++) { 
 				$BlacSol = new BlacsolController(
 					$data[$i]['username'],	// username
@@ -439,12 +437,13 @@ class ApiController extends Controller
 					$data[$i]['dateTimeUTC']	// dateTimeUTC
 				);
 				
-				$BlacSol->DesconBat();
+				$req[] = $BlacSol->DesconBat();
 				unset($BlacSol);
 			} 
 
 
 			return response()->json([
+				'data'   => $req,
 				'status' => true,
 				'code'   => 200
 			]);
@@ -465,7 +464,7 @@ class ApiController extends Controller
 		try {
 			$Samsara = new SamsaraController;
 			$data = $Samsara->GetAllVehicleAssignments();
-			
+			$req = [];
 			for ($i=0; $i < count($data)-1; $i++) { 
 				$BlacSol = new BlacsolController(
 					$data[$i]['username'],	// username
@@ -479,12 +478,13 @@ class ApiController extends Controller
 					$data[$i]['dateTimeUTC']	// dateTimeUTC
 				);
 				
-				$BlacSol->ReconBat();
+				$req[] = $BlacSol->ReconBat();
 				unset($BlacSol);
 			} 
 
 
 			return response()->json([
+				'data'   => $req,
 				'status' => true,
 				'code'   => 200
 			]);
