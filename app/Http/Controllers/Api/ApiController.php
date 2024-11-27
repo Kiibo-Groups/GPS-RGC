@@ -130,26 +130,42 @@ class ApiController extends Controller
 		try {
 			$Samsara = new SamsaraController;
 			$data = $Samsara->GetAllVehicleAssignments();
-			
-			for ($i=0; $i < count($data)-1; $i++) { 
-				$BlacSol = new BlacsolController(
-					$data[$i]['username'],	// username
-					$data[$i]['imei'],	// imei
-					$data[$i]['latitude'],	// latitude
-					$data[$i]['longitude'],	// longitude
-					$data[$i]['altitude'],	// altitude
-					$data[$i]['speed'],	// speed
-					$data[$i]['azimuth'],	// azimuth
-					$data[$i]['odometer'],	// odometer
-					$data[$i]['dateTimeUTC']	// dateTimeUTC
-				);
+			$req  = [];
+			// for ($i=0; $i < count($data)-1; $i++) { 
+			// 	$BlacSol = new BlacsolController(
+			// 		$data[$i]['username'],	// username
+			// 		$data[$i]['imei'],	// imei
+			// 		$data[$i]['latitude'],	// latitude
+			// 		$data[$i]['longitude'],	// longitude
+			// 		$data[$i]['altitude'],	// altitude
+			// 		$data[$i]['speed'],	// speed
+			// 		$data[$i]['azimuth'],	// azimuth
+			// 		$data[$i]['odometer'],	// odometer
+			// 		$data[$i]['dateTimeUTC']	// dateTimeUTC
+			// 	);
 				
-				$BlacSol->PosiCont();
-				unset($BlacSol);
-			} 
+			// 	$req[] = $BlacSol->PosiCont();
+			// 	unset($BlacSol);
+			// } 
+
+
+			$BlacSol = new BlacsolController(
+				$data[0]['username'],	// username
+				$data[0]['imei'],	// imei
+				$data[0]['latitude'],	// latitude
+				$data[0]['longitude'],	// longitude
+				$data[0]['altitude'],	// altitude
+				$data[0]['speed'],	// speed
+				$data[0]['azimuth'],	// azimuth
+				$data[0]['odometer'],	// odometer
+				$data[0]['dateTimeUTC']	// dateTimeUTC
+			);
+			
+			$req[] = $BlacSol->PosiCont();
 
 
 			return response()->json([
+				'data'   => $req, 
 				'status' => true,
 				'code'   => 200
 			]);

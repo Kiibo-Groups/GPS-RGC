@@ -70,6 +70,7 @@ class BlacsolController {
         try {
             $this->json["username"] = $this->UserName;
             $this->json["event"] = 'PosiCont';
+            $this->json['imei']  = "281474977589063";
 
             $req = $this->SendCurlPetition(self::URLGetEvent, $this->json);
 
