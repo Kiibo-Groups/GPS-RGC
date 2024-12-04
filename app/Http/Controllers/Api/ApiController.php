@@ -27,6 +27,7 @@ class ApiController extends Controller
 			'Idle',
 			'Mov',
 			'Detenido',
+			'ChkIgn',
 			'IgnEnc',
 			'IgnApa',
 			'DetJamm',
@@ -129,8 +130,9 @@ class ApiController extends Controller
 
 		try {
 			$Samsara = new SamsaraController;
-			$data = $Samsara->GetAllVehicleAssignments();
+			$data = $Samsara->PosiCont();
 			$req  = [];
+
 			for ($i=0; $i < count($data); $i++) { 
 				$BlacSol = new BlacsolController(
 					$data[$i]['username'],	// username
@@ -148,10 +150,8 @@ class ApiController extends Controller
 				unset($BlacSol);
 			} 
 
-			
- 
 			return response()->json([
-				'data'   => $req, 
+				'data'   => $data, 
 				'status' => true,
 				'code'   => 200
 			]);
@@ -170,7 +170,7 @@ class ApiController extends Controller
 
 		try {
 			$Samsara = new SamsaraController;
-			$data = $Samsara->GetAllVehicleAssignments();
+			$data = $Samsara->Idle();
 			$req = [];
 			
 			for ($i=0; $i < count($data); $i++) { 
@@ -212,7 +212,7 @@ class ApiController extends Controller
 
 		try {
 			$Samsara = new SamsaraController;
-			$data = $Samsara->GetAllVehicleAssignments();
+			$data = $Samsara->Mov();
 			$req = [];
 			
 			for ($i=0; $i < count($data); $i++) { 
@@ -254,7 +254,7 @@ class ApiController extends Controller
 
 		try {
 			$Samsara = new SamsaraController;
-			$data = $Samsara->GetAllVehicleAssignments();
+			$data = $Samsara->Detenido();
 			$req = [];
 			
 			for ($i=0; $i < count($data); $i++) { 
@@ -290,35 +290,14 @@ class ApiController extends Controller
 
 	}
 
-	public function IgnEnc()
+	public function ChkIgn()
 	{
 		Log::channel()->info('[*]['.date('H:i:s')."] Inicializacion de Peticion de IgnEnc.... .\r\n");
-
 		try {
 			$Samsara = new SamsaraController;
-			$data = $Samsara->GetAllVehicleAssignments();
-			$req = [];
-			
-			for ($i=0; $i < count($data); $i++) { 
-				$BlacSol = new BlacsolController(
-					$data[$i]['username'],	// username
-					$data[$i]['imei'],	// imei
-					$data[$i]['latitude'],	// latitude
-					$data[$i]['longitude'],	// longitude
-					$data[$i]['altitude'],	// altitude
-					$data[$i]['speed'],	// speed
-					$data[$i]['azimuth'],	// azimuth
-					$data[$i]['odometer'],	// odometer
-					$data[$i]['dateTimeUTC']	// dateTimeUTC
-				);
-				
-				$req[] = $BlacSol->IgnEnc();
-				unset($BlacSol);
-			} 
-
-
+			$data = $Samsara->ChkIgn();
 			return response()->json([
-				'data'   => $req,
+				'data'   => $data,
 				'status' => true,
 				'code'   => 200
 			]);
@@ -338,29 +317,29 @@ class ApiController extends Controller
 
 		try {
 			$Samsara = new SamsaraController;
-			$data = $Samsara->GetAllVehicleAssignments();
-			$req  = [];
+			$data = $Samsara->IgnApa();
+			// $req  = [];
 			
-			for ($i=0; $i < count($data); $i++) { 
-				$BlacSol = new BlacsolController(
-					$data[$i]['username'],	// username
-					$data[$i]['imei'],	// imei
-					$data[$i]['latitude'],	// latitude
-					$data[$i]['longitude'],	// longitude
-					$data[$i]['altitude'],	// altitude
-					$data[$i]['speed'],	// speed
-					$data[$i]['azimuth'],	// azimuth
-					$data[$i]['odometer'],	// odometer
-					$data[$i]['dateTimeUTC']	// dateTimeUTC
-				);
+			// for ($i=0; $i < count($data); $i++) { 
+			// 	$BlacSol = new BlacsolController(
+			// 		$data[$i]['username'],	// username
+			// 		$data[$i]['imei'],	// imei
+			// 		$data[$i]['latitude'],	// latitude
+			// 		$data[$i]['longitude'],	// longitude
+			// 		$data[$i]['altitude'],	// altitude
+			// 		$data[$i]['speed'],	// speed
+			// 		$data[$i]['azimuth'],	// azimuth
+			// 		$data[$i]['odometer'],	// odometer
+			// 		$data[$i]['dateTimeUTC']	// dateTimeUTC
+			// 	);
 				
-				$req[] = $BlacSol->IgnApa();
-				unset($BlacSol);
-			} 
+			// 	$req[] = $BlacSol->IgnApa();
+			// 	unset($BlacSol);
+			// } 
 
 
 			return response()->json([
-				'data'   => $req,
+				'data'   => $data,
 				'status' => true,
 				'code'   => 200
 			]);

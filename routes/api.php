@@ -32,6 +32,7 @@ Route::group(array('namespace' => 'App\Http\Controllers\Api'), function () {
     Route::get('Idle','ApiController@Idle');
     Route::get('Mov','ApiController@Mov');
     Route::get('Detenido','ApiController@Detenido');
+    Route::get('ChkIgn','ApiController@ChkIgn');
     Route::get('IgnEnc','ApiController@IgnEnc');
     Route::get('IgnApa','ApiController@IgnApa');
     Route::get('DetJamm','ApiController@DetJamm');
