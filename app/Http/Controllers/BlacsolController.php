@@ -344,7 +344,7 @@ class BlacsolController {
 
             setcookie('token_blacsol_ws', json_encode($req['message']), time() + (60 * 10));
             
-            $this->Token    = $req['messaage'];
+            $this->Token    = $req['message'];
         }
     }
 
