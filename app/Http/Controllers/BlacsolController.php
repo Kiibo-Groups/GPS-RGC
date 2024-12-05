@@ -337,7 +337,7 @@ class BlacsolController {
         if ($req['status_code'] === 200) { 
             // Helper::envUpdate('BLACSOL_TOKEN', ' "' . $req['message'] . '" ', true);
 
-            $lim_new_settings = new Settings;
+            $lim_new_settings = Settings::find(1);
             $lim_new_settings->update([
                 'SamsaraToken' => $req['message']
             ]);
