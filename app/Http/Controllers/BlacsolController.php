@@ -339,7 +339,7 @@ class BlacsolController {
 
             $lim_new_settings = new Settings;
             $lim_new_settings->update([
-                'SamsaraToken' => $req['messaage']
+                'SamsaraToken' => $req['message']
             ]);
 
             setcookie('token_blacsol_ws', json_encode($req['message']), time() + (60 * 10));
