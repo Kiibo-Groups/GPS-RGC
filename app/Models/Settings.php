@@ -13,7 +13,8 @@ class Settings extends Model
         'admin',
         'ApiKey_google',
         'stripe_api_id',
-        'stripe_client_id'
+        'stripe_client_id',
+        'SamsaraToken'
     ];
 
 }

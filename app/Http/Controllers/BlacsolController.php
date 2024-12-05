@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helper; 
+use App\Models\Settings; 
 
 use Cookie;
 
@@ -36,6 +37,8 @@ class BlacsolController {
         $odometer,
         $dateTimeUTC)
     {
+        $settings = Settings::find(1);
+
         $this->UserName = env('BLACSOL_USERNAME');
         $this->Password = env('BLACSOL_PASSWORD');
 
@@ -45,7 +48,7 @@ class BlacsolController {
             $this->CrateToken(); // Solicitamos el Token
         } 
 
-        $this->Token    = env('BLACSOL_TOKEN');
+        $this->Token    = $settings->SamsaraToken;
 
         $this->json = [
             "username"  => $username,
@@ -332,9 +335,16 @@ class BlacsolController {
         $req = json_decode($response, true);
   
         if ($req['status_code'] === 200) { 
-            Helper::envUpdate('BLACSOL_TOKEN', ' "' . $req['message'] . '" ', true);
+            // Helper::envUpdate('BLACSOL_TOKEN', ' "' . $req['message'] . '" ', true);
+
+            $lim_new_settings = new Settings;
+            $lim_new_settings->update([
+                'SamsaraToken' => $req['messaage']
+            ]);
+
             setcookie('token_blacsol_ws', json_encode($req['message']), time() + (60 * 10));
-            $this->Token    = env('BLACSOL_TOKEN');
+            
+            $this->Token    = $req['messaage'];
         }
     }
 
