@@ -32,7 +32,8 @@ class ApiController extends Controller
 			'IgnApa',
 			'DetJamm',
 			'DesconBat',
-			'ReconBat',]]);
+			'ReconBat',
+			'getGSMInfo']]);
 	}
 
     public function welcome()
