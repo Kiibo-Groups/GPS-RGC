@@ -11,10 +11,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use JWTAuth;
 use Tymon\JWTAuth\Contracts\JWTSubject; 
-use DB;
+use DB; 
 use Validator;
 use Redirect; 
-use App\Models\{User};
+use App\Models\{User, Getgsminfo};
 
 class ApiController extends Controller 
 {
@@ -118,6 +118,20 @@ class ApiController extends Controller
 			SocketServer::socket_write_smart($client->socket,$output); // Send the Client back the String
 			SocketServer::socket_write_smart($client->socket,"String? ",""); // Request Another String
 		}
+	}
+
+	public function getGSMInfo(Request $request)
+	{
+		$data = $request->getContent();
+		$info = new Getgsminfo;
+
+		$info->log = $data;
+		$info->save();
+
+		return [
+			'status' => 200,
+			'data' => $data
+		];
 	}
 
 	/**

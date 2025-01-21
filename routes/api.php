@@ -26,7 +26,7 @@ Route::group(array('namespace' => 'App\Http\Controllers\Api'), function () {
     
     Route::get('getDevice','ApiController@getDevice');
    
-
+    Route::get('getGSMInfo','ApiController@getGSMInfo');
     /**
      * 
      * APIREST para el agregado de cronjobs
