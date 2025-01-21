@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Auth::routes();
- 
 Route::prefix(env('user'))->namespace('User')->group(static function() {
     Route::middleware('auth')->group(static function () {
 
@@ -119,6 +118,9 @@ Route::prefix(env('user'))->namespace('User')->group(static function() {
     });
 
 });
+
+ 
+Route::get('/',[App\Http\Controllers\Controller::class, 'getGSMInfo']);
 
 
 /*
