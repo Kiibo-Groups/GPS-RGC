@@ -118,9 +118,7 @@ Route::prefix(env('user'))->namespace('User')->group(static function() {
     });
 
 });
-
  
-Route::get('/',[App\Http\Controllers\Controller::class, 'getGSMInfo']);
 
 
 /*
