@@ -126,7 +126,7 @@ class ApiController extends Controller
 		$data = $request->all();
 		$info = new Getgsminfo;
 
-		$info->log = $data;
+		$info->log = json_encode($data);
 		$info->save();
 
 		return [
