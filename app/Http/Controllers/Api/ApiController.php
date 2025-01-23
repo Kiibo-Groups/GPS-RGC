@@ -123,7 +123,7 @@ class ApiController extends Controller
 
 	public function getGSMInfo(Request $request)
 	{
-		$data = $request->getContent();
+		$data = $request->all();
 		$info = new Getgsminfo;
 
 		$info->log = $data;
