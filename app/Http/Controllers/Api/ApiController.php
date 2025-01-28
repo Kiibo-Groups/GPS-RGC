@@ -14,7 +14,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 use DB; 
 use Validator;
 use Redirect; 
-use App\Models\{User, Getgsminfo};
+use App\Models\{User, GpsDevices, vehicle_units, Getgsminfo};
 
 class ApiController extends Controller 
 {
@@ -123,11 +123,53 @@ class ApiController extends Controller
 
 	public function getGSMInfo(Request $request)
 	{
-		$data = $request->all();
-		$info = new Getgsminfo;
+		/**
+		 * DataPacket Recibido
+		 * {
+		 * "length":970,
+		 * "crc":"5F9F",
+		 * "crc_status":"CRC check passed",
+		 * "imei":860369051174330,
+		 * "command_id":68,
+		 * "timestamp":"2025-01-23T06:59:27+00:00",
+		 * "priority":0,
+		 * "longitude":-214.7483648,
+		 * "latitude":-214.7483648,
+		 * "altitude":-3276.8,
+		 * "angle":655.35,
+		 * "satellites":255,
+		 * "speed":65535,
+		 * "hdop":25.5,
+		 * "event_io":7,
+		 * "status":"OK",
+		 * "status_code":200
+		 * }
+		 */
 
-		$info->log = json_encode($data);
-		$info->save();
+		
+		$data = $request->all();
+		$gsminfo = new Getgsminfo;
+
+		// Validamos el IMEI si existe
+		$chkImei = Getgsminfo::where('imei', $data->imei)->count();
+		if ($chkImei > 0) {
+			$gsminfo->update($data);
+		}else {
+			// Validamos el Dispositivo GPS
+			$chkGPS = GpsDevices::where('uuid_device', $data->imei)->first();
+			if (isset($chkGPS) && $chkGPS->id) {
+				$data['gps_devices_id'] = $chkGPS->id;
+			}
+
+			// Validamos el Vehiculo
+			$chkVehicle = vehicle_units::where('gps', $data->imei)->first();
+			if (isset($chkVehicle) && $chkVehicle->id) {
+				$data['vehicle_units_id'] = $chkVehicle->id;
+			}
+
+			// Creamos
+			$gsminfo->create($data);
+		}
 
 		return [
 			'status' => 200,

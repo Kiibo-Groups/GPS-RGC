@@ -13,6 +13,8 @@ class vehicle_units extends Model
         'id_unit',
         'registration_unit',
         'descript',
+        'box',
+        'gps',
         'status',
     ];
 

@@ -10,6 +10,24 @@ class Getgsminfo extends Model
     use HasFactory;
 
     protected $fillable = [
-        'log',
+        'length',
+        'crc',
+        'crc_status',
+        'imei',
+        'gps_devices_id',
+        'vehicle_units_id',
+        'command_id',
+        'timestamp',
+        'priority',
+        'longitude',
+        'latitude',
+        'altitude',
+        'angle',
+        'satellites',
+        'speed',
+        'hdop',
+        'event_io',
+        'status',
+        'status_code',
     ];
 }
