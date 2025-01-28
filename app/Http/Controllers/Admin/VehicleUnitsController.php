@@ -29,13 +29,16 @@ class VehicleUnitsController extends Controller
      */
     public function index()
     { 
-        // $data = vehicle_units::get();
+        // $data = vehicle_units::whereHas('getGPS', function($q) {
+        //     $q->where('uuid_device', '860369051174330');
+        // })->with('getGPS')->first();
+        
         // return response()->json([
         //     'data' 	=>  $data
         // ]);
 
         return View($this->folder.'index',[
-			'data' 	=> vehicle_units::get(),
+			'data' 	=> vehicle_units::with('getGPS')->get(),
 			'link' 	=> '/vehicle_units/',
             'boxes' => TruckBoxes::where('status',0)->get(),
             'gps' => GpsDevices::where('status',0)->get(),
@@ -150,7 +153,7 @@ class VehicleUnitsController extends Controller
             
             // Validamos la existencia
             $chkVehicle = vehicle_units::find($data['vehicle_units_id']);
-            $chkVehicle->box = $data['truck_box_id'];
+            $chkVehicle->truck_boxes_id = $data['truck_box_id'];
             $chkVehicle->save();
 
             return redirect(env('admin').'/vehicle_units')->with('message', 'Unidad Asignada con éxito...');
@@ -165,7 +168,7 @@ class VehicleUnitsController extends Controller
         try {
             $data = $request->all();
             $chkVehicle = vehicle_units::find($data['vehicle_units_id']);
-            $chkVehicle->gps = $data['gps_devices_id'];
+            $chkVehicle->gps_devices_id = $data['gps_devices_id'];
             $chkVehicle->save();
             return redirect(env('admin').'/vehicle_units')->with('message', 'GPS Asignado con éxito...');
         } catch (\Exception $th) {

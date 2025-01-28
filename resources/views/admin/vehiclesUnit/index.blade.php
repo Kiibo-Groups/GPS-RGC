@@ -42,10 +42,18 @@
                                        {{ $row->descript }}
                                     </td>
                                     <td>
-                                       {{ ($row->box != null) ? $Models->GetNameTruckBox($row->box) : "Sin Asignar" }}
+                                        @if(isset($row->truck_boxes_id))
+                                       {{ $row->truck_boxes_id->name_truck_box }}
+                                       @else 
+                                       Sin Asignar 
+                                       @endif
                                     </td>
                                     <td>
-                                        {{ ($row->gps != null) ? $Models->GetNameGPS($row->gps) : "Sin Asignar" }}
+                                       @if($row->getGPS)
+                                       <span class="badge bg-success">{{ $row->getGPS->uuid_device }}</span>
+                                       @else 
+                                       Sin Asignar 
+                                       @endif
                                      </td>
                                     <td>
                                         @if ($row->status == 0)

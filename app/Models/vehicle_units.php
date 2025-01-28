@@ -13,8 +13,8 @@ class vehicle_units extends Model
         'id_unit',
         'registration_unit',
         'descript',
-        'box',
-        'gps',
+        'truck_boxes_id',
+        'gps_devices_id',
         'status',
     ];
 
@@ -23,6 +23,15 @@ class vehicle_units extends Model
         return $this->hasOne('App\Models\Assignments');
     }
  
+    public function getGPS()
+    {
+        return $this->belongsTo('App\Models\GpsDevices', 'gps_devices_id');
+    }
+
+    public function getBox()
+    {
+        return $this->belongsTo('App\Models\TruckBoxes', 'truck_boxes_id');
+    }
 
     public function GetNameTruckBox($id)
     {
