@@ -151,9 +151,9 @@ class ApiController extends Controller
 		$gsminfo = new Getgsminfo;
 
 		// Validamos el IMEI si existe
-		$chkImei = Getgsminfo::where('imei', $data['imei'])->count();
-		if ($chkImei > 0) {
-			$gsminfo->update($data);
+		$chkImei = Getgsminfo::where('imei', $data['imei'])->first();
+		if (isset($chkImei->id)) {
+			$chkImei->update($data);
 		}else {
 			// Validamos el Dispositivo GPS
 			$chkGPS = GpsDevices::where('uuid_device', $data['imei'])->first();
