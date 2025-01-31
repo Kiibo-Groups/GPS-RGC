@@ -5,24 +5,27 @@ use App\Http\Controllers\Controller;
 use App\Providers\SocketServer;
 use App\Http\Controllers\{BlacsolController, SamsaraController};
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use JWTAuth;
 use Tymon\JWTAuth\Contracts\JWTSubject; 
-use DB; 
-use Validator;
+use DB;  
 use Redirect; 
 use App\Models\{User, GpsDevices, vehicle_units, Getgsminfo};
 
-class ApiController extends Controller 
+
+// Pusher to Ruptela Services
+use App\Events\RuptelaServer;
+use Pusher\Pusher;
+class ApiController  extends Controller  
 {
     public function __construct()
 	{
 		$this->middleware('authApi:api',['except' => [
-			'getToken', 
-			'getDevice',
+			'getToken',  
 			'PosiCont',
 			'Idle',
 			'Mov',
@@ -33,7 +36,9 @@ class ApiController extends Controller
 			'DetJamm',
 			'DesconBat',
 			'ReconBat',
-			'getGSMInfo']]);
+			'getGSMInfo',
+			'getAllDispositives'
+		]]);
 	}
 
     public function welcome()
@@ -85,41 +90,8 @@ class ApiController extends Controller
 				'status' => "FAILE",
 				"code" => 500
 			]);
-		}  
+		}
     }
-
-	public function getDevice()
-	{
-
-		$server = new SocketServer("185.213.2.33",31337); // Create a Server binding to the given ip address and listen to port 31337 for connections
-		$server->max_clients = 10; // Allow no more than 10 people to connect at a time
-		$server->hook("CONNECT","handle_connect"); // Run handle_connect every time someone connects
-		$server->hook("INPUT","handle_input"); // Run handle_input whenever text is sent to the server
-		$server->infinite_loop(); // Run Server Code Until Process is terminated.
-
-
-		function handle_connect(&$server,&$client,$input)
-		{
-			SocketServer::socket_write_smart($client->socket,"String? ","");
-		}
-		function handle_input(&$server,&$client,$input)
-		{
-			// You probably want to sanitize your inputs here
-			$trim = trim($input); // Trim the input, Remove Line Endings and Extra Whitespace.
-
-			if(strtolower($trim) == "quit") // User Wants to quit the server
-			{
-				SocketServer::socket_write_smart($client->socket,"Oh... Goodbye..."); // Give the user a sad goodbye message, meany!
-				$server->disconnect($client->server_clients_index); // Disconnect this client.
-				return; // Ends the function
-			}
-
-			$output = strrev($trim); // Reverse the String
-
-			SocketServer::socket_write_smart($client->socket,$output); // Send the Client back the String
-			SocketServer::socket_write_smart($client->socket,"String? ",""); // Request Another String
-		}
-	}
 
 	public function getGSMInfo(Request $request)
 	{
@@ -184,9 +156,19 @@ class ApiController extends Controller
 				$gsminfo->create($data);
 			}
 
+			// Push to Event
+			$pusher = new pusher("8442d369ae2137d24bf4", "ff80680a66895a936bd1", "1934866", array('cluster' => 'us3'));
+
+			$channels = $pusher->trigger(
+				'ruptela-server',
+				'coords-gps',
+				'update_coords'
+			);
+
 			return response()->json([
 				'status' => 200,
-				'message' => "data_receibed"
+				'message' => "data_receibed",
+				'event'   => $channels
 			],200);
 		}else {
 			return response()->json([
@@ -195,6 +177,14 @@ class ApiController extends Controller
 			],400);
 		}
 	}
+
+	public function getAllDispositives()
+	{
+
+		$getAll = Getgsminfo::get();
+
+	}
+
 
 	/**
 	 * Conexion con el WebService

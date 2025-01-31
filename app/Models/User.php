@@ -5,12 +5,11 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Auth; 
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use JWTAuth; 
-use Auth;
-use Tymon\JWTAuth\Contracts\JWTSubject;
-
+use JWTAuth;  
+use Tymon\JWTAuth\Contracts\JWTSubject; 
 class User extends Authenticatable   implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -93,10 +92,10 @@ class User extends Authenticatable   implements JWTSubject
 
         if (Auth::attempt(['email' => $user->email, 'password' => $request->password]) || Auth::attempt(['username' => $user->username, 'password' => $request->password])) {
              
-            $token = JWTAuth::fromUser($user);
+            $token = auth()->attempt($user);
 
             return [
-                'token' => $token,
+                'token' => $this->respondWithToken($token),
                 'message' => 'success_token_created',
                 'status' => "OK",
                 "code" => 200

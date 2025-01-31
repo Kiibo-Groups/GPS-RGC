@@ -184,7 +184,6 @@
         var map;
         var marker;
         let h3index; 
-         
         
         var geocoder = new google.maps.Geocoder;
             navigator.geolocation.getCurrentPosition(
@@ -201,7 +200,7 @@
                   );
      
                      
-                  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+                  map.controls[google.maps.ControlPosition.TOP_LEFT];
      
               },
               () => {
@@ -216,4 +215,20 @@
 <script src="{{ asset('assets/libs/morris.js06/morris.min.js') }}"></script>
 <!-- Dashboar init js-->
 <script src="{{ asset('assets/js/pages/dashboard.init.js') }}"></script>
+
+<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+<script>
+
+  // Enable pusher logging - don't include this in production
+  Pusher.logToConsole = true;
+
+  var pusher = new Pusher('8442d369ae2137d24bf4', {
+    cluster: 'us3'
+  });
+
+  var channel = pusher.subscribe('ruptela-server');
+  channel.bind('coords-gps', function(data) {
+    console.log(JSON.stringify(data));
+  });
+</script>
 @endsection

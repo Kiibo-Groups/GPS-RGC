@@ -30,4 +30,10 @@ class Getgsminfo extends Model
         'status',
         'status_code',
     ];
+
+    public function getGPS()
+    {
+        return $this->belongsTo('App\Models\GpsDevices', 'gps_devices_id');
+    }
+
 }

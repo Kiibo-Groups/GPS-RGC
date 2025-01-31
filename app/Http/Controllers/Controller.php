@@ -14,18 +14,4 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-
-    public function getGSMInfo(Request $request)
-	{
-		$data = $request->getContent();
-		$info = new Getgsminfo;
-
-		$info->log = $data;
-		$info->save();
-
-		return [
-			'status' => 200,
-			'data' => $data
-		];
-	}
 }
