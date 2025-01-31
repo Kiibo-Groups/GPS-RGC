@@ -147,7 +147,7 @@ class ApiController extends Controller
 		 */
 
 		
-		$data = json_decode($request->all(), true);
+		$data = $request->all(); 
 		$gsminfo = new Getgsminfo;
 
 		// Validamos el IMEI si existe
