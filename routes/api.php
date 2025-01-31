@@ -22,7 +22,7 @@ Route::group(array('namespace' => 'App\Http\Controllers\Api'), function () {
 
     Route::get('welcome',[ApiController::class, 'welcome']);
     Route::post('getToken',[ApiController::class, 'getToken']);
-    Route::get('setPusher',[ApiController::class, 'setPuhser']);
+    Route::get('setPusher',[ApiController::class, 'setPusher']);
     /**
      * Webhook para recibir informacion
      */

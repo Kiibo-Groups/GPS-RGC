@@ -30,6 +30,7 @@ class ApiController  extends Controller
 			'Idle',
 			'Mov',
 			'Detenido',
+			'setPusher',
 			'ChkIgn',
 			'IgnEnc',
 			'IgnApa',
@@ -38,7 +39,6 @@ class ApiController  extends Controller
 			'ReconBat',
 			'getGSMInfo',
 			'getAllDispositives',
-			'setPuhser'
 		]]);
 	}
 
@@ -169,7 +169,7 @@ class ApiController  extends Controller
 		}
 	}
 
-	public function setPuhser()
+	public function setPusher()
 	{
 		// Push to Event
 		$pusher = new pusher("8442d369ae2137d24bf4", "ff80680a66895a936bd1", "1934866", array('cluster' => 'us3'));
@@ -179,6 +179,10 @@ class ApiController  extends Controller
 			'coords-gps',
 			'update_coords'
 		);
+
+		return response()->json([
+			'data' => 'data_receibed'
+		]);
 	}
 
 	public function getAllDispositives()
