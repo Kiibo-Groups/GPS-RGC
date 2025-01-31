@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\api\ApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,38 +20,38 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(array('namespace' => 'App\Http\Controllers\Api'), function () {
 
-    Route::get('welcome',[App\Http\Controllers\api\ApiController::class, 'welcome']);
-    Route::post('getToken',[App\Http\Controllers\api\ApiController::class, 'getToken']);
+    Route::get('welcome',[ApiController::class, 'welcome']);
+    Route::post('getToken',[ApiController::class, 'getToken']);
 
     /**
      * Webhook para recibir informacion
      */
-    Route::post('Webhook_rgc_api',[App\Http\Controllers\api\ApiController::class, 'Webhook_rgc_api']);
+    Route::post('Webhook_rgc_api',[ApiController::class, 'Webhook_rgc_api']);
      
     /**
      * Guardado del Paquete del GPS fisico
      */
-    Route::post('getGSMInfo',[App\Http\Controllers\api\ApiController::class, 'getGSMInfo']);
-
+    Route::post('getGSMInfo',[ApiController::class, 'getGSMInfo']);
+            
     /**
      * Obtenemos todos los dispositivos en la BD
      */
-    Route::get('getAllDispositives',[App\Http\Controllers\api\ApiController::class, 'getAllDispositives'])->name('getAllDispositives');
+    Route::get('getAllDispositives',[ApiController::class, 'getAllDispositives'])->name('getAllDispositives');
 
     /**
      * 
      * APIREST para el agregado de cronjobs
      * 
      */
-    Route::get('PosiCont',[App\Http\Controllers\api\ApiController::class, 'PosiCont']);
-    Route::get('Idle', [App\Http\Controllers\api\ApiController::class, 'Idle']);
-    Route::get('Mov', [App\Http\Controllers\api\ApiController::class, 'Mov']);
-    Route::get('Detenido', [App\Http\Controllers\api\ApiController::class, 'Detenido']);
-    Route::get('ChkIgn', [App\Http\Controllers\api\ApiController::class, 'ChkIgn']);
-    Route::get('IgnEnc', [App\Http\Controllers\api\ApiController::class, 'IgnEnc']);
-    Route::get('IgnApa', [App\Http\Controllers\api\ApiController::class, 'IgnApa']);
-    Route::get('DetJamm', [App\Http\Controllers\api\ApiController::class, 'DetJamm']);
-    Route::get('DesconBat', [App\Http\Controllers\api\ApiController::class, 'DesconBat']);
-    Route::get('ReconBat', [App\Http\Controllers\api\ApiController::class, 'ReconBat']);
+    Route::get('PosiCont',[ApiController::class, 'PosiCont']);
+    Route::get('Idle', [ApiController::class, 'Idle']);
+    Route::get('Mov', [ApiController::class, 'Mov']);
+    Route::get('Detenido', [ApiController::class, 'Detenido']);
+    Route::get('ChkIgn', [ApiController::class, 'ChkIgn']);
+    Route::get('IgnEnc', [ApiController::class, 'IgnEnc']);
+    Route::get('IgnApa', [ApiController::class, 'IgnApa']);
+    Route::get('DetJamm', [ApiController::class, 'DetJamm']);
+    Route::get('DesconBat', [ApiController::class, 'DesconBat']);
+    Route::get('ReconBat', [ApiController::class, 'ReconBat']);
     
 });
