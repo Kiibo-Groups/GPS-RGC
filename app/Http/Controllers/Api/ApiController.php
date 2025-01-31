@@ -147,35 +147,32 @@ class ApiController extends Controller
 		 */
 
 		
-		$data = $request->all();
+		$data = json_decode($request->all());
 		$gsminfo = new Getgsminfo;
 
-		$gsminfo->imei = json_encode($data);
-		$gsminfo->save();
+		// Validamos el IMEI si existe
+		$chkImei = Getgsminfo::where('imei', $data['imei'])->first();
+		if (isset($chkImei->id)) {
+			$chkImei->update($data);
+		}else {
+			// Validamos el Dispositivo GPS
+			$chkGPS = GpsDevices::where('uuid_device', $data['imei'])->first();
+			if (isset($chkGPS) && $chkGPS->id) {
+				$data['gps_devices_id'] = $chkGPS->id;
+			}
 
-		// // Validamos el IMEI si existe
-		// $chkImei = Getgsminfo::where('imei', $data['imei'])->first();
-		// if (isset($chkImei->id)) {
-		// 	$chkImei->update($data);
-		// }else {
-		// 	// Validamos el Dispositivo GPS
-		// 	$chkGPS = GpsDevices::where('uuid_device', $data['imei'])->first();
-		// 	if (isset($chkGPS) && $chkGPS->id) {
-		// 		$data['gps_devices_id'] = $chkGPS->id;
-		// 	}
+			// Validamos el Vehiculo
+			$chkVehicle = vehicle_units::whereHas('getGPS', function($q) use($data) {
+				$q->where('uuid_device', $data['imei']);
+			})->first();
 
-		// 	// Validamos el Vehiculo
-		// 	$chkVehicle = vehicle_units::whereHas('getGPS', function($q) use($data) {
-		// 		$q->where('uuid_device', $data['imei']);
-		// 	})->first();
+			if (isset($chkVehicle) && $chkVehicle->id) {
+				$data['vehicle_units_id'] = $chkVehicle->id;
+			}
 
-		// 	if (isset($chkVehicle) && $chkVehicle->id) {
-		// 		$data['vehicle_units_id'] = $chkVehicle->id;
-		// 	}
-
-		// 	// Creamos
-		// 	$gsminfo->create($data);
-		// }
+			// Creamos
+			$gsminfo->create($data);
+		}
 
 		return [
 			'status' => 200,
