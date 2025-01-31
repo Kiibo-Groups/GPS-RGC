@@ -37,7 +37,8 @@ class ApiController  extends Controller
 			'DesconBat',
 			'ReconBat',
 			'getGSMInfo',
-			'getAllDispositives'
+			'getAllDispositives',
+			'setPuhser'
 		]]);
 	}
 
@@ -156,19 +157,9 @@ class ApiController  extends Controller
 				$gsminfo->create($data);
 			}
 
-			// Push to Event
-			$pusher = new pusher("8442d369ae2137d24bf4", "ff80680a66895a936bd1", "1934866", array('cluster' => 'us3'));
-
-			$channels = $pusher->trigger(
-				'ruptela-server',
-				'coords-gps',
-				'update_coords'
-			);
-
 			return response()->json([
 				'status' => 200,
-				'message' => "data_receibed",
-				'event'   => $channels
+				'message' => "data_receibed"
 			],200);
 		}else {
 			return response()->json([
@@ -176,6 +167,18 @@ class ApiController  extends Controller
 				'message' => "IMEI_not_found"
 			],400);
 		}
+	}
+
+	public function setPuhser()
+	{
+		// Push to Event
+		$pusher = new pusher("8442d369ae2137d24bf4", "ff80680a66895a936bd1", "1934866", array('cluster' => 'us3'));
+
+		$channels = $pusher->trigger(
+			'ruptela-server',
+			'coords-gps',
+			'update_coords'
+		);
 	}
 
 	public function getAllDispositives()
