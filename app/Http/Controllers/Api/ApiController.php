@@ -154,7 +154,16 @@ class ApiController extends Controller
 		if (isset($data['imei'])) {
 			$chkImei = Getgsminfo::where('imei', $data['imei'])->first();
 			if (isset($chkImei->id)) {
-				$chkImei->update($data);
+				
+				$chkImei->imei = $data['imei'];
+				$chkImei->longitude = $data['longitude'];
+				$chkImei->latitude = $data['latitude'];
+				$chkImei->altitude = $data['altitude'];
+				$chkImei->angle = $data['angle'];
+				$chkImei->speed = $data['speed'];
+
+				$chkImei->save();
+				
 			}else {
 				// Validamos el Dispositivo GPS
 				$chkGPS = GpsDevices::where('uuid_device', $data['imei'])->first();
