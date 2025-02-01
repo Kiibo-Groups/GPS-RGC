@@ -188,8 +188,23 @@ class ApiController  extends Controller
 	public function getAllDispositives()
 	{
 
-		$getAll = Getgsminfo::get();
+		$getAll = Getgsminfo::with('getGPS','getVehicle')->get([
+			'id',
+			'longitude',
+			'latitude',
+			'altitude',
+			'angle',
+			'speed',
+			'hdop',
+			'event_io',
+			'gps_devices_id',
+			'vehicle_units_id',
+		]);
+		$devices = collect($getAll);
 
+		return response()->json([
+			'devices' => $devices
+		]);
 	}
 
 

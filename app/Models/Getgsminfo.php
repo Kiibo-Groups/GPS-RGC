@@ -36,4 +36,9 @@ class Getgsminfo extends Model
         return $this->belongsTo('App\Models\GpsDevices', 'gps_devices_id');
     }
 
+    public function getVehicle()
+    {
+        return $this->belongsTo('App\Models\vehicle_units', 'vehicle_units_id');
+    }
+
 }

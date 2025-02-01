@@ -68,7 +68,7 @@
                                                     Asginar GPS
                                                 </a>
                                                 <div class="dropdown-divider"></div>
-                                                <a class="dropdown-item" href="deleteConfirm('{{ Asset($link . 'delete/' . $row->id) }}')">
+                                                <a class="dropdown-item" href="javascript:void()" onclick="deleteConfirm('{{ Asset($link . 'delete/' . $row->id) }}')">
                                                     <i class="mdi mdi-delete-forever"></i> Eliminar
                                                 </a>
                                             </div>

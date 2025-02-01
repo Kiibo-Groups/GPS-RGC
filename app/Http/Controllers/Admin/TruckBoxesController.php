@@ -112,8 +112,15 @@ class TruckBoxesController extends Controller
      */
     public function delete($id)
     {
-        TruckBoxes::where('id',$id)->delete();
-		return redirect(env('admin').'/truck_boxes')->with('message','Caja eliminada con éxito...');
+        // Validamos si la caja no esta asignada
+        $chkAssign = vehicle_units::where('truck_boxes_id',$id)->get();
+        if(count($chkAssign) > 0)
+        {
+            return redirect(env('admin').'/truck_boxes')->with('error','La caja esta asignada actualmente y no puede ser eliminada.');
+        }else {
+            TruckBoxes::where('id',$id)->delete();
+            return redirect(env('admin').'/truck_boxes')->with('message','Caja eliminada con éxito...');
+        }
     }
 
     /**

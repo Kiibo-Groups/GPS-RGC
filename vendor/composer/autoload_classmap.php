@@ -7,6 +7,8 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
+    'App\\Events\\RuptelaEvents' => $baseDir . '/app/Events/RuptelaEvents.php',
+    'App\\Events\\RuptelaServer' => $baseDir . '/app/Events/RuptelaServer.php',
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
     'App\\Helper' => $baseDir . '/app/Helper.php',
     'App\\Http\\Controllers\\Admin\\AdminController' => $baseDir . '/app/Http/Controllers/Admin/AdminController.php',
@@ -155,6 +157,13 @@ return array(
     'Carbon\\Translator' => $vendorDir . '/nesbot/carbon/src/Carbon/Translator.php',
     'Carbon\\TranslatorImmutable' => $vendorDir . '/nesbot/carbon/src/Carbon/TranslatorImmutable.php',
     'Carbon\\TranslatorStrongTypeInterface' => $vendorDir . '/nesbot/carbon/src/Carbon/TranslatorStrongTypeInterface.php',
+    'Collective\\Html\\Componentable' => $vendorDir . '/laravelcollective/html/src/Componentable.php',
+    'Collective\\Html\\Eloquent\\FormAccessible' => $vendorDir . '/laravelcollective/html/src/Eloquent/FormAccessible.php',
+    'Collective\\Html\\FormBuilder' => $vendorDir . '/laravelcollective/html/src/FormBuilder.php',
+    'Collective\\Html\\FormFacade' => $vendorDir . '/laravelcollective/html/src/FormFacade.php',
+    'Collective\\Html\\HtmlBuilder' => $vendorDir . '/laravelcollective/html/src/HtmlBuilder.php',
+    'Collective\\Html\\HtmlFacade' => $vendorDir . '/laravelcollective/html/src/HtmlFacade.php',
+    'Collective\\Html\\HtmlServiceProvider' => $vendorDir . '/laravelcollective/html/src/HtmlServiceProvider.php',
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'Cron\\AbstractField' => $vendorDir . '/dragonmantank/cron-expression/src/Cron/AbstractField.php',
     'Cron\\CronExpression' => $vendorDir . '/dragonmantank/cron-expression/src/Cron/CronExpression.php',

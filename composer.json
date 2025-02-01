@@ -11,6 +11,7 @@
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
         "laravel/ui": "^4.2",
+        "laravelcollective/html": "^6.4",
         "pusher/pusher-php-server": "^7.2",
         "spatie/laravel-html": "^3.5",
         "tymon/jwt-auth": "^2.0"

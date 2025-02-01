@@ -38,7 +38,7 @@ class VehicleUnitsController extends Controller
         // ]);
 
         return View($this->folder.'index',[
-			'data' 	=> vehicle_units::with('getGPS')->get(),
+			'data' 	=> vehicle_units::with('getGPS','getBox')->get(),
 			'link' 	=> '/vehicle_units/',
             'boxes' => TruckBoxes::where('status',0)->get(),
             'gps' => GpsDevices::where('status',0)->get(),

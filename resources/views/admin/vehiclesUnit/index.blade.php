@@ -42,8 +42,8 @@
                                        {{ $row->descript }}
                                     </td>
                                     <td>
-                                        @if(isset($row->truck_boxes_id))
-                                       {{ $row->truck_boxes_id->name_truck_box }}
+                                        @if(isset($row->getBox))
+                                       {{ $row->getBox->name_truck_box }}
                                        @else 
                                        Sin Asignar 
                                        @endif
@@ -82,7 +82,7 @@
                                                     Asginar GPS
                                                 </a>
                                                 <div class="dropdown-divider"></div>
-                                                <a class="dropdown-item" href="deleteConfirm('{{ Asset($link . 'delete/' . $row->id) }}')">
+                                                <a class="dropdown-item" href="javascript:void()" onclick="deleteConfirm('{{ Asset($link . 'delete/' . $row->id) }}')">
                                                     <i class="mdi mdi-delete-forever"></i> Eliminar
                                                 </a>
                                             </div>
