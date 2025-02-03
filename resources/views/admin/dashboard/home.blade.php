@@ -251,7 +251,6 @@
                         markers = [];
                     }
 
-
                     /**
                      * 
                      * Verificamos si hay algun cambio en las coordenadas de algun marker
