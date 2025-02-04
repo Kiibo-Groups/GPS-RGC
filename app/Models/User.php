@@ -95,7 +95,7 @@ class User extends Authenticatable   implements JWTSubject
             $token = auth()->attempt($user);
 
             return [
-                'token' => $this->respondWithToken($token),
+                'token' => $this->respondWithToken($user),
                 'message' => 'success_token_created',
                 'status' => "OK",
                 "code" => 200
