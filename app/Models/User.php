@@ -68,9 +68,9 @@ class User extends Authenticatable   implements JWTSubject
     {
         return [];
     }
-	
 
-
+   
+    
     public function GenToken($request)
     {
 
@@ -91,11 +91,9 @@ class User extends Authenticatable   implements JWTSubject
         ]);
 
         if (Auth::attempt(['email' => $user->email, 'password' => $request->password]) || Auth::attempt(['username' => $user->username, 'password' => $request->password])) {
-             
-            $token = auth()->attempt($user);
-
+            $user = Auth::user();
             return [
-                'token' => $this->respondWithToken($user),
+                'token' => JWTAuth::fromUser($user),
                 'message' => 'success_token_created',
                 'status' => "OK",
                 "code" => 200

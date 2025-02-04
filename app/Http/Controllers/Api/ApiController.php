@@ -51,7 +51,8 @@ class ApiController  extends Controller
     {
         try {
             $token = new User;
-            return response()->json($token->GenToken($request));
+			return response()->json($token->GenToken($request));
+
         } catch (\Exception $th) {
 			return response()->json(['status' => 'ERROR','code' => 500, 'message' => $th->getMessage()], 500);
 		}

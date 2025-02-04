@@ -14,7 +14,7 @@
         "laravelcollective/html": "^6.4",
         "pusher/pusher-php-server": "^7.2",
         "spatie/laravel-html": "^3.5",
-        "tymon/jwt-auth": "^2.0"
+        "tymon/jwt-auth": "^2.1"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
