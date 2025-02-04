@@ -84,7 +84,12 @@ class ApiController  extends Controller
 
             $data = $request->all();
 			
-			return response()->json($data, 200);
+			// return response()->json($data, 200);
+			return response()->json([
+				'message' => "informacion_recibida",
+				'status' => "success",
+				"code" => 200
+			],200);
 		} catch (\Exception $th) {
 			return response()->json([
 				'data' => [],
