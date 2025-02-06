@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use JWTAuth;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Contracts\JWTSubject; 
 use DB;  
 use Redirect; 
@@ -140,6 +140,7 @@ class ApiController  extends Controller
 				$chkImei->altitude = $data['altitude'];
 				$chkImei->angle = $data['angle'];
 				$chkImei->speed = $data['speed'];
+				$chkImei->date_update = now();
 
 				$chkImei->save();
 				
@@ -160,6 +161,7 @@ class ApiController  extends Controller
 				}
 
 				// Creamos
+				$data['date_update'] = now();
 				$gsminfo->create($data);
 			}
 

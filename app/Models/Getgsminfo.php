@@ -18,6 +18,7 @@ class Getgsminfo extends Model
         'vehicle_units_id',
         'command_id',
         'timestamp',
+        'date_update',
         'priority',
         'longitude',
         'latitude',
