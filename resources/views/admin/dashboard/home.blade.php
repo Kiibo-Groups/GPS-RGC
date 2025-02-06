@@ -279,13 +279,18 @@
                                     '<h3>Dispositivo GPS <span class="badge bg-info">' + origins.get_g_p_s.uuid_device +
                                     '</span> </h3>' +
                                     '<span>GPS Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                                    origins.get_g_p_s.name_device + '</b></span>' +
+                                        origins.get_g_p_s.name_device + '</b></span>' +
                                     '<span>Vehiculo Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                                    origins.get_vehicle.name_unit + '</b></span><br />' +
+                                        origins.get_vehicle.name_unit + '</b></span><br />' +
+                                    '<span>Ultima actualización: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                                        origins.date_update + '</b></span><br />' +
+                                    '<span>Coordenadas: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                                        '<a href="https://www.google.com/maps?q='+origins.latitude + ',' + origins.longitude+'" target="_blank">'+ origins.latitude + ',' + origins.longitude + '</a></b></span><br />' +
                                     '<span class="badge bg-success">Velocidad: ' + origins.speed +
                                     ' MPH</span>&nbsp;&nbsp;' +
                                     '<span class="badge bg-warning">HDOP: ' + origins.hdop + ' MPH</span><br />' +
                                     '</div>';
+
                                 var infowindow = new google.maps.InfoWindow({
                                     content: content
                                 });
@@ -340,6 +345,10 @@
                                                 origins.get_g_p_s.name_device + '</b></span>' +
                                             '<span>Vehiculo Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
                                                 origins.get_vehicle.name_unit + '</b></span><br />' +
+                                            '<span>Ultima actualización: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                                                origins.date_update + '</b></span><br />' +
+                                            '<span>Coordenadas: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                                               '<a href="https://www.google.com/maps?q='+origins.latitude + ',' + origins.longitude+'" target="_blank">'+ origins.latitude + ',' + origins.longitude + '</a></b></span><br />' +
                                             '<span class="badge bg-success">Velocidad: ' + origins.speed +
                                             ' MPH</span>&nbsp;&nbsp;' +
                                             '<span class="badge bg-warning">HDOP: ' + origins.hdop + ' MPH</span><br />' +
@@ -388,9 +397,13 @@
                             '<h3>Dispositivo GPS <span class="badge bg-info">' + element.get_g_p_s.uuid_device +
                             '</span> </h3>' +
                             '<span>GPS Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                            element.get_g_p_s.name_device + '</b></span>' +
+                                element.get_g_p_s.name_device + '</b></span>' +
                             '<span>Vehiculo Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                            element.get_vehicle.name_unit + '</b></span><br />' +
+                                element.get_vehicle.name_unit + '</b></span><br />' +
+                            '<span>Ultima actualización: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                                element.date_update + '</b></span><br />' +
+                            '<span>Coordenadas: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                               '<a href="https://www.google.com/maps?q='+element.latitude + ',' + element.longitude+'" target="_blank">'+ element.latitude + ',' + element.longitude + '</a></b></span><br />' +
                             '<span class="badge bg-success">Velocidad: ' + element.speed +
                             ' MPH</span>&nbsp;&nbsp;' +
                             '<span class="badge bg-warning">HDOP: ' + element.hdop + ' MPH</span><br />' +

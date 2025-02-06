@@ -207,6 +207,7 @@ class ApiController  extends Controller
 			'event_io',
 			'gps_devices_id',
 			'vehicle_units_id',
+			'date_update'
 		]);
 		$devices = collect($getAll);
 
