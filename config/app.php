@@ -195,7 +195,9 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
-        Spatie\Html\HtmlServiceProvider::class
+        Spatie\Html\HtmlServiceProvider::class,
+        // Excel
+        Maatwebsite\Excel\ExcelServiceProvider::class
     ],
 
     /*
@@ -211,7 +213,8 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
-        'Html' => Spatie\Html\Facades\Html::class
+        'Html' => Spatie\Html\Facades\Html::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class
     ])->toArray(),
 
 ];

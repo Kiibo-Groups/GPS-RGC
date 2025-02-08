@@ -14,12 +14,14 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Contracts\JWTSubject; 
 use DB;  
 use Redirect; 
-use App\Models\{User, GpsDevices, vehicle_units, Getgsminfo};
+use App\Models\{User, GpsDevices, vehicle_units, Getgsminfo, Rutas};
 
 
 // Pusher to Ruptela Services
 use App\Events\RuptelaServer;
 use Pusher\Pusher;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use Maatwebsite\Excel\Facades\Excel;
 class ApiController  extends Controller  
 {
     public function __construct()
@@ -39,6 +41,7 @@ class ApiController  extends Controller
 			'ReconBat',
 			'getGSMInfo',
 			'getAllDispositives',
+			'webhook_rgc_csv'
 		]]);
 	}
 
@@ -99,6 +102,58 @@ class ApiController  extends Controller
 			]);
 		}
     }
+
+	public function webhook_rgc_csv(Request $request)
+	{
+		try {
+			$data = $request->all();
+			if (isset($data['file'])) {
+				
+				$array = Excel::toArray(new Rutas, $data['file']);
+				$i = 0;
+				$input = []; 
+				foreach($array[0] as $a)
+				{
+					$i++; 
+					if($i > 1)
+					{
+						$input['unidad'] 		= $a[0];
+						$input['destino'] 		= $a[1];
+						$input['origen'] 		= $a[2];
+						$input['operador'] 		= $a[3];
+						$input['remitente'] 	= $a[4];
+						$input['destinatario'] 	= $a[5];
+						$input['remision_num'] 	= $a[6];
+						$input['caja_num'] 		= $a[7];
+
+						$lims_new_rutas  = new Rutas;
+						$lims_new_rutas->create($input);
+					}
+				}
+				// return response()->json($data, 200);
+				return response()->json([
+					'message' => "informacion_recibida",
+					'status' => "success",
+					"code" => 200
+				],200);
+				
+			}else {
+				return response()->json([
+					'data' => $request->all(),
+					'message' => "file_not_found",
+					'status' => "FAILE",
+					"code" => 500
+				]);
+			}
+		} catch (\Exception $th) {
+			return response()->json([
+				'data' => [],
+				'message' => $th->getMessage(),
+				'status' => "FAILE",
+				"code" => 500
+			]);
+		}
+	}
 
 	public function getGSMInfo(Request $request)
 	{

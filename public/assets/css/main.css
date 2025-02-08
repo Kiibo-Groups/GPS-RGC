@@ -1,21 +1,21 @@
-
 @import url("./animations/animate.css");
-  
+
 
 body[data-sidebar-color="dark"] .left-side-menu {
     background-color: rgb(245, 245, 245);
     /*  background-color: rgb(42, 48, 66); #313844;*/
-    box-shadow: none; 
+    box-shadow: none;
 }
+
 body[data-sidebar-color="dark"] .navbar-custom {
-    background-color: #ebeff2 !important; 
+    background-color: #ebeff2 !important;
 }
 
 body[data-sidebar-color="dark"] .logo-box {
     background-color: rgb(245, 245, 245);
     /* background-color: rgb(42, 48, 66); */
 }
- 
+
 .tag_top {
     position: absolute;
     bottom: 20px;
@@ -25,7 +25,7 @@ body[data-sidebar-color="dark"] .logo-box {
     border-top-right-radius: 25px;
     display: flex;
     justify-content: space-around;
-    box-shadow: 5px 10px 10px -5px rgba(0,0,0,0.36);
+    box-shadow: 5px 10px 10px -5px rgba(0, 0, 0, 0.36);
 }
 
 .shadow-drop-2-center {
@@ -35,17 +35,15 @@ body[data-sidebar-color="dark"] .logo-box {
     /* -webkit-animation: wobble-hor-bottom 1.8s both;
     animation: wobble-hor-bottom 1.8s both; */
 }
- 
 
 
-.modal.fade.modal-slide-right.show .modal-dialog
-{
-    -ms-transform: translate(0, 0); 
-        transform: translate3d(0, 0, 0);
+
+.modal.fade.modal-slide-right.show .modal-dialog {
+    -ms-transform: translate(0, 0);
+    transform: translate3d(0, 0, 0);
 }
 
-.modal.fade.modal-slide-right .modal-dialog
-{
+.modal.fade.modal-slide-right .modal-dialog {
     position: absolute;
     right: 0;
 
@@ -53,27 +51,144 @@ body[data-sidebar-color="dark"] .logo-box {
     height: 100%;
     margin: 0;
 
-    -ms-transform: translate(100%, 0); 
-        transform: translate3d(100%, 0, 0);
+    -ms-transform: translate(100%, 0);
+    transform: translate3d(100%, 0, 0);
 }
-.modal.fade.modal-slide-right .modal-dialog .modal-content-wrapper
-{
-    height: 100%;
-}
-.modal.fade.modal-slide-right .modal-dialog .modal-content
-{
+
+.modal.fade.modal-slide-right .modal-dialog .modal-content-wrapper {
     height: 100%;
 }
 
-.modal.fade.modal-slide-right .modal-content
-{
+.modal.fade.modal-slide-right .modal-dialog .modal-content {
+    height: 100%;
+}
+
+.modal.fade.modal-slide-right .modal-content {
     border-radius: 0;
 }
 
-@media (max-width: 767.98px)
-{
-    .modal.fade.modal-slide-right .modal-dialog
-    {
+@media (max-width: 767.98px) {
+    .modal.fade.modal-slide-right .modal-dialog {
         width: 100%;
     }
+}
+
+
+/**
+* Google Maps
+*/
+
+
+.gm-style .controls {
+    font-size: 28px;
+    /* this adjusts the size of all the controls */
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
+    box-sizing: border-box;
+    border-radius: 2px;
+    cursor: pointer;
+    font-weight: 300;
+    height: 1em;
+    margin: 6px;
+    text-align: center;
+    user-select: none;
+    padding: 2px;
+    width: 1em;
+}
+
+.gm-style .controls button {
+    border: 0;
+    background-color: white;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.gm-style .controls button:hover {
+    color: rgba(0, 0, 0, 0.9);
+}
+
+.gm-style .controls.zoom-control {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+}
+
+.gm-style .controls.zoom-control button {
+    font: 0.85em Arial;
+    margin: 1px;
+    padding: 0;
+}
+
+.gm-style .controls.maptype-control {
+    display: flex;
+    flex-direction: row;
+    width: auto;
+}
+
+.gm-style .controls.maptype-control button {
+    display: inline-block;
+    font-size: 0.5em;
+    margin: 0 1px;
+    padding: 0 6px;
+}
+
+.gm-style .controls.maptype-control.maptype-control-is-map .maptype-control-map {
+    font-weight: 700;
+}
+
+.gm-style .controls.maptype-control.maptype-control-is-satellite .maptype-control-satellite {
+    font-weight: 700;
+}
+
+.gm-style .controls.fullscreen-control button {
+    display: block;
+    font-size: 1em;
+    height: 100%;
+    width: 100%;
+}
+
+.gm-style .controls.fullscreen-control .fullscreen-control-icon {
+    border-style: solid;
+    height: 0.25em;
+    position: absolute;
+    width: 0.25em;
+}
+
+.gm-style .controls.fullscreen-control .fullscreen-control-icon.fullscreen-control-top-left {
+    border-width: 2px 0 0 2px;
+    left: 0.1em;
+    top: 0.1em;
+}
+
+.gm-style .controls.fullscreen-control.is-fullscreen .fullscreen-control-icon.fullscreen-control-top-left {
+    border-width: 0 2px 2px 0;
+}
+
+.gm-style .controls.fullscreen-control .fullscreen-control-icon.fullscreen-control-top-right {
+    border-width: 2px 2px 0 0;
+    right: 0.1em;
+    top: 0.1em;
+}
+
+.gm-style .controls.fullscreen-control.is-fullscreen .fullscreen-control-icon.fullscreen-control-top-right {
+    border-width: 0 0 2px 2px;
+}
+
+.gm-style .controls.fullscreen-control .fullscreen-control-icon.fullscreen-control-bottom-left {
+    border-width: 0 0 2px 2px;
+    left: 0.1em;
+    bottom: 0.1em;
+}
+
+.gm-style .controls.fullscreen-control.is-fullscreen .fullscreen-control-icon.fullscreen-control-bottom-left {
+    border-width: 2px 2px 0 0;
+}
+
+.gm-style .controls.fullscreen-control .fullscreen-control-icon.fullscreen-control-bottom-right {
+    border-width: 0 2px 2px 0;
+    right: 0.1em;
+    bottom: 0.1em;
+}
+
+.gm-style .controls.fullscreen-control.is-fullscreen .fullscreen-control-icon.fullscreen-control-bottom-right {
+    border-width: 2px 0 0 2px;
 }

@@ -27,7 +27,8 @@ Route::group(array('namespace' => 'App\Http\Controllers\Api'), function () {
      * Webhook para recibir informacion
      */
     Route::post('Webhook_rgc_api',[ApiController::class, 'Webhook_rgc_api']);
-     
+    Route::post('webhook_rgc_csv',[ApiController::class, 'webhook_rgc_csv']);
+    
     /**
      * Guardado del Paquete del GPS fisico
      */
