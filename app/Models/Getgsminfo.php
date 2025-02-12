@@ -10,6 +10,7 @@ class Getgsminfo extends Model
     use HasFactory;
 
     protected $fillable = [
+        'packet',
         'length',
         'crc',
         'crc_status',

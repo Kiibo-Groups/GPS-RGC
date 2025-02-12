@@ -188,7 +188,7 @@ class ApiController  extends Controller
 		if (isset($data['imei'])) {
 			$chkImei = Getgsminfo::where('imei', $data['imei'])->first();
 			if (isset($chkImei->id)) {
-				
+				$chkImei->packet = $data['packet'];
 				$chkImei->imei = $data['imei'];
 				$chkImei->longitude = $data['longitude'];
 				$chkImei->latitude = $data['latitude'];
