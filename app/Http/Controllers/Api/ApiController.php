@@ -223,6 +223,7 @@ class ApiController  extends Controller
 
 				// Creamos
 				$data['date_update'] = now();
+				$data['packet'] = $paqueteHex;
 				$gsminfo->create($data);
 			}
 
