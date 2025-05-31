@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ApiController;
 
+use App\Http\Controllers\AVLController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -55,4 +56,15 @@ Route::group(array('namespace' => 'App\Http\Controllers\Api'), function () {
     Route::get('DesconBat', [ApiController::class, 'DesconBat']);
     Route::get('ReconBat', [ApiController::class, 'ReconBat']);
     
+
+
+
+    Route::post('/avl/token', [AVLController::class, 'obtenerToken']);
+    Route::post('/avl/enviar-evento', [AVLController::class, 'enviarEvento']);
+
+    // Route::get('/avl/obtener-eventos', [AVLController::class, 'obtenerEventos']);
+    // Route::get('/avl/obtener-ubicacion', [AVLController::class, 'obtenerUbicacion']);
+    // Route::get('/avl/obtener-velocidad', [AVLController::class, 'obtenerVelocidad']);
+    // Route::get('/avl/obtener-bateria', [AVLController::class, 'obtenerBateria']);
+    // Route::get('/avl/obtener-senal', [AVLController::class, 'obtenerSenal']);
 });

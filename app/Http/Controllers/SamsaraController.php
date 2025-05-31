@@ -280,15 +280,15 @@ class SamsaraController {
     {
         try {
 			$BlacSol = new BlacsolController(
-                $data['username'],	// username
-                $data['imei'],	// imei
-                $data['latitude'],	// latitude
-                $data['longitude'],	// longitude
-                $data['altitude'],	// altitude
-                $data['speed'],	// speed
-                $data['azimuth'],	// azimuth
-                $data['odometer'],	// odometer
-                $data['dateTimeUTC']	// dateTimeUTC
+                'username',
+				'imei',
+				'latitude',
+				'longitude',
+				'altitude',
+				'speed',
+				'azimuth',
+				'odometer',
+				'dateTimeUTC',
             );
             
             $req = $BlacSol->IgnEnc();

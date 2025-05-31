@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 use Illuminate\Http\Request;
+use App\Services\AVLPacketParserService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -163,7 +164,7 @@ class ApiController  extends Controller
 		 * "length":970,
 		 * "crc":"5F9F",
 		 * "crc_status":"CRC check passed",
-		 * "imei":860369051174330,
+		 * "imei":861773070038757,
 		 * "command_id":68,
 		 * "timestamp":"2025-01-23T06:59:27+00:00",
 		 * "priority":0,
@@ -180,8 +181,12 @@ class ApiController  extends Controller
 		 * }
 		 */
 
-		
-		$data = $request->all(); 
+		$paqueteHex = $request->input('packet');
+
+		$parser = new AVLPacketParserService(json_encode($paqueteHex));
+		$datos = $parser->parse();
+
+		$data = $datos; 
 		$gsminfo = new Getgsminfo;
 
 		// Validamos el IMEI si existe
@@ -469,7 +474,17 @@ class ApiController  extends Controller
 
 		try {
 			$Samsara = new SamsaraController;
-			$data = $Samsara->IgnApa();
+			$data = $Samsara->IgnApa([
+				'username' => '',
+				'imei' => '',
+				'latitude' => '',
+				'longitude' => '',
+				'altitude' => '',
+				'speed' => '',
+				'azimuth' => '',
+				'odometer' => '',
+				'dateTimeUTC' => '',
+			]);
 			// $req  = [];
 			
 			// for ($i=0; $i < count($data); $i++) { 
