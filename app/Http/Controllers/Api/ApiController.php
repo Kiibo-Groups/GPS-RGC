@@ -213,13 +213,18 @@ class ApiController  extends Controller
 				}
 
 				// Validamos el Vehiculo
-				$chkVehicle = vehicle_units::whereHas('getGPS', function($q) use($data) {
-					$q->where('uuid_device', $data['imei']);
-				})->first();
-
+				$chkVehicle = vehicle_units::where('gps_devices_id', $data['gps_devices_id'])->first();
 				if (isset($chkVehicle) && $chkVehicle->id) {
 					$data['vehicle_units_id'] = $chkVehicle->id;
 				}
+
+				// $chkVehicle = vehicle_units::whereHas('getGPS', function($q) use($data) {
+				// 	$q->where('uuid_device', $data['imei']);
+				// })->first();
+
+				// if (isset($chkVehicle) && $chkVehicle->id) {
+				// 	$data['vehicle_units_id'] = $chkVehicle->id;
+				// }
 
 				// Creamos
 				$data['date_update'] = now();
