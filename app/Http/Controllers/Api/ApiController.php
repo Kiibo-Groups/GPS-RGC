@@ -182,7 +182,7 @@ class ApiController  extends Controller
 		 */
 
 		$paqueteHex = $request->input('packet');
-		Log::info('[*]['.date('H:i:s')."] Paquete Hexadecimal Recibido: ".$paqueteHex);
+		Log::info('[*]['.date('H:i:s')."] Paquete Hexadecimal Recibido: ".json_encode($paqueteHex));
 		$parser = new PacketParserService(json_encode($paqueteHex));
 		$datos = $parser->parse();
 
