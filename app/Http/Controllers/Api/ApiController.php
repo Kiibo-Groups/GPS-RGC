@@ -186,6 +186,7 @@ class ApiController  extends Controller
 		$parser = new PacketParserService(json_encode($paqueteHex));
 		$datos = $parser->parse();
 
+		Log::info('[*]['.date('H:i:s')."] Data Decifrada: ".json_encode($datos));
 		$data = $datos; 
 		$gsminfo = new Getgsminfo;
 
