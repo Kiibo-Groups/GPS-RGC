@@ -183,7 +183,7 @@ class ApiController  extends Controller
 
 		$paqueteHex = $request->input('packet');
 		Log::info('[*]['.date('H:i:s')."] Paquete Hexadecimal Recibido: ".json_encode($paqueteHex));
-		$parser = new PacketParserService(json_encode($paqueteHex));
+		$parser = new PacketParserService($paqueteHex);
 		$datos = $parser->parse();
 
 		Log::info('[*]['.date('H:i:s')."] Data Decifrada: ".json_encode($datos));
@@ -194,7 +194,7 @@ class ApiController  extends Controller
 		if (isset($data['imei'])) {
 			$chkImei = Getgsminfo::where('imei', $data['imei'])->first();
 			if (isset($chkImei->id)) {
-				$chkImei->packet = $data['packet'];
+				$chkImei->packet = $paqueteHex;
 				$chkImei->imei = $data['imei'];
 				$chkImei->longitude = $data['longitude'];
 				$chkImei->latitude = $data['latitude'];
