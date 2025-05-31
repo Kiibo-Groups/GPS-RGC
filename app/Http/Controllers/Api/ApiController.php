@@ -205,9 +205,15 @@ class ApiController  extends Controller
 		$datos['packet'] = $paqueteHex;
 		$datos['date_update'] = now();
 
-		$registroExistente = Getgsminfo::where('imei', $imei)->first();
-		if ($registroExistente) {
-			$registroExistente->fill([
+		$registro = Getgsminfo::where('imei', $imei)->first();
+
+		// Buscar GPS y vehículo actuales
+		$gps = GpsDevices::where('uuid_device', $imei)->first();
+		$vehiculo = $gps ? vehicle_units::where('gps_devices_id', $gps->id)->first() : null;
+
+
+		if ($registro) {
+			$cambios = [
 				'packet'    => $datos['packet'],
 				'longitude' => $datos['longitude'] ?? null,
 				'latitude'  => $datos['latitude'] ?? null,
@@ -215,15 +221,21 @@ class ApiController  extends Controller
 				'angle'     => $datos['angle'] ?? null,
 				'speed'     => $datos['speed'] ?? null,
 				'date_update' => $datos['date_update'],
-			])->save();
+			];
+
+			// Actualiza si se detectan nuevos IDs
+			if ($gps && $registro->gps_devices_id !== $gps->id) {
+				$cambios['gps_devices_id'] = $gps->id;
+			}
+
+			if ($vehiculo && $registro->vehicle_units_id !== $vehiculo->id) {
+				$cambios['vehicle_units_id'] = $vehiculo->id;
+			}
+
+			$registro->fill($cambios)->save();
 		} else {
-			// Buscar dispositivo GPS
-			$gps = GpsDevices::where('uuid_device', $imei)->first();
 			if ($gps) {
 				$datos['gps_devices_id'] = $gps->id;
-
-				// Buscar vehículo asociado al dispositivo
-				$vehiculo = vehicle_units::where('gps_devices_id', $gps->id)->first();
 				if ($vehiculo) {
 					$datos['vehicle_units_id'] = $vehiculo->id;
 				}
