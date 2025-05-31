@@ -203,6 +203,7 @@ class ApiController  extends Controller
 
 		$imei = $datos['imei'];
 		$datos['packet'] = $paqueteHex;
+		$data['status_code'] = 200; // Default to 200 if not present
 		$datos['date_update'] = now();
 
 		$registro = Getgsminfo::where('imei', $imei)->first();
