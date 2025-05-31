@@ -4,7 +4,7 @@ namespace App\Services;
 
 use DateTime;
 
-class AVLPacketParserService
+class PacketParserService
 {
     private string $packet;
     private int $index = 0;

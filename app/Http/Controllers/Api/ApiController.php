@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 use Illuminate\Http\Request;
-use App\Services\AVLPacketParserService;
+use App\Services\PacketParserService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -183,7 +183,7 @@ class ApiController  extends Controller
 
 		$paqueteHex = $request->input('packet');
 
-		$parser = new AVLPacketParserService(json_encode($paqueteHex));
+		$parser = new PacketParserService(json_encode($paqueteHex));
 		$datos = $parser->parse();
 
 		$data = $datos; 
