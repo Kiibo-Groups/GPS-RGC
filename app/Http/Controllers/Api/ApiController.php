@@ -25,6 +25,7 @@ use App\Models\{User, GpsDevices, vehicle_units, Getgsminfo, Rutas};
 use App\Events\RuptelaServer;
 use Pusher\Pusher;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ApiController  extends Controller
@@ -371,6 +372,10 @@ class ApiController  extends Controller
 				'message' => 'Pulsasiones enviadas correctamente'
 			]);
 		} catch (\Exception $th) {
+			// Decodifica error SOAP si es posible
+            if (str_contains($th->getMessage(), 'oken no es valido')) {
+                Cache::forget('avl_token'); // limpia token si es inválido
+            }
 			return response()->json([
 				'status' => 500,
 				'message' => $th->getMessage()
