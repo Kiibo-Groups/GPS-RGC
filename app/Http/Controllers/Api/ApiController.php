@@ -47,7 +47,8 @@ class ApiController  extends Controller
 			'ReconBat',
 			'getGSMInfo',
 			'getAllDispositives',
-			'webhook_rgc_csv'
+			'webhook_rgc_csv',
+			'SetPulseAVL'
 		]]);
 	}
 
