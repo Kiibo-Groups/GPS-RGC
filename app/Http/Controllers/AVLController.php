@@ -22,35 +22,13 @@ class AVLController extends Controller
      * Envía un evento al servicio AVL utilizando el token almacenado.
      * El evento incluye información del vehículo y sus condiciones actuales.
      */
-    public function enviarEvento()
+    public function enviarEvento($evento): \Illuminate\Http\JsonResponse
     {
+        // Validación del evento
+        if (!is_array($evento) || empty($evento)) {
+            return response()->json(['error' => 'Evento inválido.'], 400);
+        }
         
-        $evento = [
-            'altitude' => 0,
-            'asset' => 'SALGO1234',
-            'battery' => 100,
-            'code' => '1',
-            'course' => 0,
-            'customer' => [
-                'id' => '0',
-                'name' => 'SALGO FREIGHT LOGISTICS'
-            ],
-            'date' => now()->format('Y-m-d\TH:i:s'),
-            'direction' => 'Norte',
-            'humidity' => 75.5,
-            'ignition' => true,
-            'latitude' => 25.59145,
-            'longitude' => -100.24647,
-            'odometer' => 1000,
-            'serialNumber' => 'SN123456789',
-            'shipment' => '0',
-            'speed' => 80,
-            'temperature' => 32.5,
-            'vehicleType' => 'Tracto',
-            'vehicleBrand' => 'Kenworth',
-            'vehicleModel' => 'T680',
-        ];
-
         try {
             $idJob = $this->avlService->enviarEvento($evento);
             return response()->json(['idJob' => $idJob]);

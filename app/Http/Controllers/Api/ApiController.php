@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\AVLController;
 use App\Providers\SocketServer;
 use App\Http\Controllers\{BlacsolController, SamsaraController};
 use Illuminate\Support\Facades\Log;
@@ -212,7 +213,6 @@ class ApiController  extends Controller
 		$gps = GpsDevices::where('uuid_device', $imei)->first();
 		$vehiculo = $gps ? vehicle_units::where('gps_devices_id', $gps->id)->first() : null;
 
-
 		if ($registro) {
 			$cambios = [
 				'packet'    => $datos['packet'],
@@ -234,6 +234,40 @@ class ApiController  extends Controller
 			}
 
 			$registro->fill($cambios)->save();
+
+			// Enviamos pulsasión a AVLController
+			$avlController = new AVLController(new \App\Services\AVLService());
+			$eventoAVL = [
+				'altitude' => $datos['altitude'] ?? 0,
+				'asset' => $gps->name_device ?? 'Unknown',
+				'battery' => 100,
+				'code' => $datos['event_io'] ?? '1',
+				'course' => $datos['angle'] ?? 0,
+				'customer' => [
+					'id' => '0',
+					'name' => 'SALGO FREIGHT LOGISTICS'
+				],
+				'date' => now()->format('Y-m-d\TH:i:s'),
+				'direction' => $datos['angle'] > 0 ? 'Norte' : 'Desconocido',
+				'humidity' => 75.5,
+				'ignition' => true,
+				'latitude' => $datos['latitude'] ?? 0,
+				'longitude' => $datos['longitude'] ?? 0,
+				'odometer' => $datos['odometer'] ?? 0, // Asumiendo que odómetro es opcional
+				'serialNumber' => $datos['imei'] ?? 'Unknown',
+				'shipment' => '0',
+				'speed' => $datos['speed'] ?? 0,
+				'temperature' => $datos['temperature'] ?? 32.5, // Asumiendo que la temperatura es opcional
+				'vehicleType' => $gps->vehicle_type ?? 'Desconocido',
+				'vehicleBrand' => $vehiculo->name_unit ?? 'Desconocido',
+				'vehicleModel' => $vehiculo->descript ?? 'Desconocido',
+			];
+			// Enviamos el evento a AVLController
+			// Si el evento no se envía, se captura la excepción y se maneja
+			Log::info('[*][' . date('H:i:s') . "] Pulsasion enviada a AVLCONTROLLER: " . json_encode($eventoAVL));
+			$idJob = $avlController->enviarEvento($eventoAVL);
+			Log::info('[*][' . date('H:i:s') . "] IDJOB Obtenido: " . json_encode($idJob));
+
 		} else {
 			if ($gps) {
 				$datos['gps_devices_id'] = $gps->id;

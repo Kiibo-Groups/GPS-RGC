@@ -25,10 +25,8 @@ class SamsaraController {
 
     public function GetAllVehicleAssignments()
     {
-        try {
-            
+        try { 
             $response = $this->GetCurlPetition(self::GetVehicles);
-            
             $req = json_decode($response, true);
             $data = $this->PosiCont($req);
             return $data;
