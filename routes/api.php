@@ -55,11 +55,11 @@ Route::group(array('namespace' => 'App\Http\Controllers\Api'), function () {
     Route::get('DetJamm', [ApiController::class, 'DetJamm']);
     Route::get('DesconBat', [ApiController::class, 'DesconBat']);
     Route::get('ReconBat', [ApiController::class, 'ReconBat']);
+    // API Para CronJob de puslasiones
+    Route::post('/avl/cronjob-avl', [ApiController::class, 'SetPulseAVL']);
     
 
     Route::post('/avl/token', [AVLController::class, 'obtenerToken']);
     Route::post('/avl/enviar-evento', [AVLController::class, 'enviarEvento']);
     
-    // API Para CronJob de puslasiones
-    Route::post('/avl/cronjob-avl', [AVLController::class, 'SetPulseAVL']);
 });
