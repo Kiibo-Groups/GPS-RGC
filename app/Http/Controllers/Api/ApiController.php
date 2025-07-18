@@ -267,7 +267,6 @@ class ApiController  extends Controller
 			Log::info('[*][' . date('H:i:s') . "] Pulsasion enviada a AVLCONTROLLER: " . json_encode($eventoAVL));
 			$idJob = $avlController->enviarEvento($eventoAVL);
 			Log::info('[*][' . date('H:i:s') . "] IDJOB Obtenido: " . json_encode($idJob));
-
 		} else {
 			if ($gps) {
 				$datos['gps_devices_id'] = $gps->id;
@@ -322,6 +321,61 @@ class ApiController  extends Controller
 		return response()->json([
 			'devices' => $devices
 		]);
+	}
+
+	public function SetPulseAVL()
+	{
+		try {
+			$gsmInfo = Getgsminfo::where('status_code', 200)->get();
+			$avlController = new AVLController(new \App\Services\AVLService());
+
+			foreach ($gsmInfo as $datos) {
+				// Buscar GPS y vehículo actuales
+				$gps = GpsDevices::where('uuid_device', $datos['imei'])->first();
+				$vehiculo = $gps ? vehicle_units::where('gps_devices_id', $gps->id)->first() : null;
+				
+				$eventoAVL = [
+					'altitude' => $datos['altitude'] ?? 0,
+					'asset' => $gps->name_device ?? 'Unknown',
+					'battery' => 100,
+					'code' => $datos['event_io'] ?? '1',
+					'course' => $datos['angle'] ?? 0,
+					'customer' => [
+						'id' => '0',
+						'name' => 'SALGO FREIGHT LOGISTICS'
+					],
+					'date' => now()->format('Y-m-d\TH:i:s'),
+					'direction' => $datos['angle'] > 0 ? 'Norte' : 'Desconocido',
+					'humidity' => 75.5,
+					'ignition' => true,
+					'latitude' => $datos['latitude'] ?? 0,
+					'longitude' => $datos['longitude'] ?? 0,
+					'odometer' => $datos['odometer'] ?? 0, // Asumiendo que odómetro es opcional
+					'serialNumber' => $datos['imei'] ?? 'Unknown',
+					'shipment' => '0',
+					'speed' => $datos['speed'] ?? 0,
+					'temperature' => $datos['temperature'] ?? 32.5, // Asumiendo que la temperatura es opcional
+					'vehicleType' => $gps->vehicle_type ?? 'Desconocido',
+					'vehicleBrand' => $vehiculo->name_unit ?? 'Desconocido',
+					'vehicleModel' => $vehiculo->descript ?? 'Desconocido',
+				];
+				
+				// Enviamos el evento a AVLController
+				Log::info('[*][' . date('H:i:s') . "] Pulsasion enviada a AVLCONTROLLER: " . json_encode($eventoAVL));
+				$idJob = $avlController->enviarEvento($eventoAVL);
+				Log::info('[*][' . date('H:i:s') . "] IDJOB Obtenido: " . json_encode($idJob));
+			}
+
+			return response()->json([
+				'status' => 200,
+				'message' => 'Pulsasiones enviadas correctamente'
+			]);
+		} catch (\Exception $th) {
+			return response()->json([
+				'status' => 500,
+				'message' => $th->getMessage()
+			], 500);
+		}
 	}
 
 
