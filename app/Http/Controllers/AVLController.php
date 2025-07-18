@@ -44,4 +44,16 @@ class AVLController extends Controller
             ], 500);
         }
     }
+
+    public function obtenerToken(): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $token = $this->avlService->getOrGenerateToken();
+            return response()->json(['token' => $token]);
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => 'Error al obtener el token: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }
