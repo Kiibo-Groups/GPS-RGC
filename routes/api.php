@@ -56,7 +56,7 @@ Route::group(array('namespace' => 'App\Http\Controllers\Api'), function () {
     Route::get('DesconBat', [ApiController::class, 'DesconBat']);
     Route::get('ReconBat', [ApiController::class, 'ReconBat']);
     // API Para CronJob de puslasiones
-    Route::post('/avl/cronjob-avl', [ApiController::class, 'SetPulseAVL']);
+    Route::get('/avl/cronjob-avl', [ApiController::class, 'SetPulseAVL']);
     
 
     Route::post('/avl/token', [AVLController::class, 'obtenerToken']);
