@@ -370,7 +370,8 @@ class ApiController  extends Controller
 
 			return response()->json([
 				'status' => 200,
-				'message' => 'Pulsasiones enviadas correctamente'
+				'message' => 'Pulsasiones enviadas correctamente',
+				'data'  => 'IDJOB Obtenido: ' . json_encode(($idJob))
 			]);
 		} catch (\Exception $th) {
 			// Decodifica error SOAP si es posible
