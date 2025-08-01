@@ -34,6 +34,16 @@ Route::group(array('namespace' => 'App\Http\Controllers\Api'), function () {
      * Guardado del Paquete del GPS fisico
      */
     Route::post('getGSMInfo',[ApiController::class, 'getGSMInfo']);
+    
+    /**
+     * Obtiene coordenadas GPS en tiempo real de cualquier tipo de paquete
+     */
+    Route::post('getRealTimeCoordinates',[ApiController::class, 'getRealTimeCoordinates']);
+    
+    /**
+     * Obtiene coordenadas como string simple (lat,lon)
+     */
+    Route::post('getCoordinatesString',[ApiController::class, 'getCoordinatesString']);
             
     /**
      * Obtenemos todos los dispositivos en la BD
@@ -61,5 +71,8 @@ Route::group(array('namespace' => 'App\Http\Controllers\Api'), function () {
 
     Route::post('/avl/token', [AVLController::class, 'obtenerToken']);
     Route::post('/avl/enviar-evento', [AVLController::class, 'enviarEvento']);
+
+
+    Route::get('/decode-packet', [ApiController::class, 'DecodePacket']);
     
 });

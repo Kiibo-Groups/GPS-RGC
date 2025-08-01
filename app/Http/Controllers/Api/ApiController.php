@@ -48,7 +48,8 @@ class ApiController  extends Controller
 			'getGSMInfo',
 			'getAllDispositives',
 			'webhook_rgc_csv',
-			'SetPulseAVL'
+			'SetPulseAVL',
+			'DecodePacket'
 		]]);
 	}
 
@@ -236,39 +237,6 @@ class ApiController  extends Controller
 			}
 
 			$registro->fill($cambios)->save();
-
-			// Enviamos pulsasión a AVLController
-			// $avlController = new AVLController(new \App\Services\AVLService());
-			// $eventoAVL = [
-			// 	'altitude' => $datos['altitude'] ?? 0,
-			// 	'asset' => $gps->name_device ?? 'Unknown',
-			// 	'battery' => 100,
-			// 	'code' => $datos['event_io'] ?? '1',
-			// 	'course' => $datos['angle'] ?? 0,
-			// 	'customer' => [
-			// 		'id' => '0',
-			// 		'name' => 'SALGO FREIGHT LOGISTICS'
-			// 	],
-			// 	'date' => now()->format('Y-m-d\TH:i:s'),
-			// 	'direction' => $datos['angle'] > 0 ? 'Norte' : 'Desconocido',
-			// 	'humidity' => 75.5,
-			// 	'ignition' => true,
-			// 	'latitude' => $datos['latitude'] ?? 0,
-			// 	'longitude' => $datos['longitude'] ?? 0,
-			// 	'odometer' => $datos['odometer'] ?? 0, // Asumiendo que odómetro es opcional
-			// 	'serialNumber' => $datos['imei'] ?? 'Unknown',
-			// 	'shipment' => '0',
-			// 	'speed' => $datos['speed'] ?? 0,
-			// 	'temperature' => $datos['temperature'] ?? 32.5, // Asumiendo que la temperatura es opcional
-			// 	'vehicleType' => $gps->vehicle_type ?? 'Desconocido',
-			// 	'vehicleBrand' => $vehiculo->name_unit ?? 'Desconocido',
-			// 	'vehicleModel' => $vehiculo->descript ?? 'Desconocido',
-			// ];
-			// // Enviamos el evento a AVLController
-			// // Si el evento no se envía, se captura la excepción y se maneja
-			// Log::info('[*][' . date('H:i:s') . "] Pulsasion enviada a AVLCONTROLLER: " . json_encode($eventoAVL));
-			// $idJob = $avlController->enviarEvento($eventoAVL);
-			// Log::info('[*][' . date('H:i:s') . "] IDJOB Obtenido: " . json_encode($idJob));
 		} else {
 			if ($gps) {
 				$datos['gps_devices_id'] = $gps->id;
@@ -283,6 +251,111 @@ class ApiController  extends Controller
 		return response()->json([
 			'status' => 200,
 			'message' => 'data_received'
+		]);
+	}
+
+	/**
+	 * Obtiene coordenadas GPS en tiempo real de cualquier tipo de paquete
+	 * @param Request $request
+	 * @return \Illuminate\Http\JsonResponse
+	 */
+	public function getRealTimeCoordinates(Request $request)
+	{
+		$paqueteHex = $request->input('packet');
+		
+		if (empty($paqueteHex)) {
+			return response()->json([
+				'status' => 400,
+				'message' => 'Packet vacío o no recibido.'
+			], 400);
+		}
+
+		try {
+			$parser = new PacketParserService(json_encode($paqueteHex));
+			$coords = $parser->getRealTimeCoordinates();
+
+			if (isset($coords['error'])) {
+				return response()->json([
+					'status' => 400,
+					'message' => $coords['error']
+				], 400);
+			}
+
+			// Log para debugging
+			Log::info('[*][' . date('H:i:s') . "] Coordenadas en tiempo real: " . json_encode($coords));
+
+			return response()->json([
+				'status' => 'success',
+				'data' => $coords,
+				'message' => 'Coordenadas obtenidas exitosamente'
+			], 200);
+
+		} catch (\Exception $e) {
+			Log::error('Error procesando coordenadas: ' . $e->getMessage());
+			return response()->json([
+				'status' => 500,
+				'message' => 'Error procesando el paquete: ' . $e->getMessage()
+			], 500);
+		}
+	}
+
+	/**
+	 * Obtiene coordenadas como string simple (lat,lon)
+	 * @param Request $request
+	 * @return \Illuminate\Http\JsonResponse
+	 */
+	public function getCoordinatesString(Request $request)
+	{
+		$paqueteHex = $request->input('packet');
+		
+		if (empty($paqueteHex)) {
+			return response()->json([
+				'status' => 400,
+				'message' => 'Packet vacío o no recibido.'
+			], 400);
+		}
+
+		try {
+			$parser = new PacketParserService(json_encode($paqueteHex));
+			$coordsString = $parser->getCoordinatesString();
+
+			if ($coordsString === 'error') {
+				return response()->json([
+					'status' => 400,
+					'message' => 'No se pudieron extraer coordenadas del paquete'
+				], 400);
+			}
+
+			return response()->json([
+				'status' => 'success',
+				'coordinates' => $coordsString,
+				'message' => 'Coordenadas obtenidas'
+			], 200);
+
+		} catch (\Exception $e) {
+			Log::error('Error procesando coordenadas: ' . $e->getMessage());
+			return response()->json([
+				'status' => 500,
+				'message' => 'Error procesando el paquete: ' . $e->getMessage()
+			], 500);
+		}
+	}
+
+	public function DecodePacket()
+	{
+		$hexPacket = '1d00030e8047abc5ba1201030404000518c406040000001e0104576530351b2d';
+    
+		
+		$parser = new PacketParserService(json_encode($hexPacket));
+		 
+
+		$binaryPacket = $parser->hexToBinaryString($hexPacket);
+		$decoded = $parser->parseRuptelaRecordHeader($hexPacket);
+		
+		return response()->json([
+			'status' => 200,
+			'message' => 'data_received',
+			'data' => $decoded,
 		]);
 	}
 
