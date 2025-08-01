@@ -188,7 +188,7 @@ class ApiController  extends Controller
 		if (empty($paqueteHex)) {
 			return response()->json([
 				'status' => 400,
-				'message' => 'Packet vacío o no recibido.'
+				'message' => 'Packet vacio o no recibido.'
 			], 400);
 		}
 
