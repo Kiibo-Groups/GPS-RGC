@@ -186,8 +186,6 @@ class ApiController  extends Controller
 
 		$paqueteHex = $request->input('packet');
 	
-		Log::info('[*][' . date('H:i:s') . "] Paquete Hex: " . json_encode($paqueteHex));
-
 		if (empty($paqueteHex)) {
 			return response()->json([
 				'status' => 400,
@@ -346,7 +344,7 @@ class ApiController  extends Controller
 
 	public function DecodePacket()
 	{
-		$hexPacket = '1d00030e8047abc5ba1201030404000518c406040000001e0104576530351b2d';
+		$hexPacket = '03d300030fc72db776e5440108685c4203000000c43eb53b0f3f6a8b176f7a1c0e003b0700081001990100823b0086000087';
     
 		
 		$parser = new PacketParserService(json_encode($hexPacket));
