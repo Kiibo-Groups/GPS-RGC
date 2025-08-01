@@ -185,6 +185,9 @@ class ApiController  extends Controller
 		 */
 
 		$paqueteHex = $request->input('packet');
+	
+		Log::info('[*][' . date('H:i:s') . "] Paquete Hex: " . json_encode($paqueteHex));
+
 		if (empty($paqueteHex)) {
 			return response()->json([
 				'status' => 400,
