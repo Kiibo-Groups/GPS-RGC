@@ -341,10 +341,10 @@
                                             '<span class="badge bg-warning">HDOP: ' + origins.hdop + ' MPH</span><br />' +
                                             '</div>';
 
-                                        if (element.infowindow) {
-                                            element.infowindow.setContent(newContent);
-                                        }
+                                        element.infowindow.setContent(newContent);
                                         console.log("Marker updated: ", element);
+
+
                                         // element.setMap(null);
                                         // markers.splice(i, 1);
                                         // var location = new google.maps.LatLng(origins.latitude, origins.longitude);
