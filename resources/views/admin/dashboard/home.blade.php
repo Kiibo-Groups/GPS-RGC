@@ -272,8 +272,6 @@
                                     id_gps: origins.id
                                 });
 
-                                markers.push(marker);
-
                                 var content =
                                     '<div id="content" style="width: auto; height: auto;">' +
                                     '<h3>Dispositivo GPS <span class="badge bg-info">' + origins.get_g_p_s.uuid_device +
@@ -291,9 +289,13 @@
                                     '<span class="badge bg-warning">HDOP: ' + origins.hdop + ' MPH</span><br />' +
                                     '</div>';
 
-                                marker.infowindow = new google.maps.InfoWindow({
+                                var infowindow = new google.maps.InfoWindow({
                                     content: content
                                 });
+
+                                marker.infowindow = infowindow;
+
+                                markers.push(marker);
 
                                 google.maps.event.addListener(marker, 'click', function(marker, content,
                                 infowindow) {
@@ -341,9 +343,10 @@
                                             '<span class="badge bg-warning">HDOP: ' + origins.hdop + ' MPH</span><br />' +
                                             '</div>';
 
-                                        element.infowindow.setContent(newContent);
+                                        if (element.infowindow) {
+                                            element.infowindow.setContent(newContent);
+                                        }
 
-                                       
                                         console.log("Marker updated: ", element);
 
 
