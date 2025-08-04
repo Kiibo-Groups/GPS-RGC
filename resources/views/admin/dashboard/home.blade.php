@@ -228,6 +228,7 @@
         });
         var channel = pusher.subscribe('ruptela-server');
         channel.bind('coords-gps', function(data) {
+            console.log("Date: "+ new Date() +" Data received from Pusher: ", data);
             getDevices(function(req) {
                 ShowMaps(req);
             });
