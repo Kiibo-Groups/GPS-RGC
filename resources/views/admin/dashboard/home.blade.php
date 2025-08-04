@@ -291,7 +291,7 @@
                                     '<span class="badge bg-warning">HDOP: ' + origins.hdop + ' MPH</span><br />' +
                                     '</div>';
 
-                                var infowindow = new google.maps.InfoWindow({
+                                marker.infowindow = new google.maps.InfoWindow({
                                     content: content
                                 });
 
@@ -341,19 +341,9 @@
                                             '<span class="badge bg-warning">HDOP: ' + origins.hdop + ' MPH</span><br />' +
                                             '</div>';
 
-                                        var infowindow = new google.maps.InfoWindow({
-                                            content: newContent
-                                        });
-                                        
-                                        google.maps.event.addListener(element, 'click', function(element, newContent,
-                                            infowindow) {
-                                            return function() {
-                                                infowindow.setContent(
-                                                newContent); //asignar el contenido al globo
-                                                infowindow.open(map, element); //mostrarlo
-                                            };
-                                        }(element, newContent, infowindow));
+                                        element.infowindow.setContent(newContent);
 
+                                       
                                         console.log("Marker updated: ", element);
 
 
