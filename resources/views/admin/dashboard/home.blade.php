@@ -211,7 +211,6 @@
                     getDevices(function(data) {
                         ShowMaps(data);
                     });
-
                 },
                 () => {
                     handleLocationError(true, infoWindow, map.getCenter());
@@ -319,54 +318,57 @@
 
 
                                     if (init_pos != end_pos) { // El repa cambio de posicion
+                                        var newLocation = new google.maps.LatLng(origins.latitude, origins.longitude);
+                                        element.setPosition(newLocation);
+                                        element.lat = origins.latitude;
+                                        element.lng = origins.longitude;
+                                        // element.setMap(null);
+                                        // markers.splice(i, 1);
+                                        // var location = new google.maps.LatLng(origins.latitude, origins.longitude);
 
-                                        element.setMap(null);
-                                        markers.splice(i, 1);
-                                        var location = new google.maps.LatLng(origins.latitude, origins.longitude);
+                                        // const marker = new google.maps.Marker({
+                                        //     position: location,
+                                        //     map: map,
+                                        //     title: origins.get_vehicle.name_unit,
+                                        //     icon: "{{ asset('assets/images/marker.png') }}",
+                                        //     lat: origins.latitude,
+                                        //     lng: origins.longitude,
+                                        //     id_gps: origins.id
+                                        // });
 
-                                        const marker = new google.maps.Marker({
-                                            position: location,
-                                            map: map,
-                                            title: origins.get_vehicle.name_unit,
-                                            icon: "{{ asset('assets/images/marker.png') }}",
-                                            lat: origins.latitude,
-                                            lng: origins.longitude,
-                                            id_gps: origins.id
-                                        });
+                                        // markers.push(marker);
 
-                                        markers.push(marker);
+                                        // //contenido de la infowindow
+                                        // var content =
+                                        //     '<div id="content" style="width: auto; height: auto;">' +
+                                        //     '<h3>Dispositivo GPS <span class="badge bg-info">' + origins.get_g_p_s.uuid_device +
+                                        //     '</span> </h3>' +
+                                        //     '<span>GPS Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                                        //         origins.get_g_p_s.name_device + '</b></span>' +
+                                        //     '<span>Vehiculo Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                                        //         origins.get_vehicle.name_unit + '</b></span><br />' +
+                                        //     '<span>Ultima actualización: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                                        //         origins.date_update + '</b></span><br />' +
+                                        //     '<span>Coordenadas: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                                        //        '<a href="https://www.google.com/maps?q='+origins.latitude + ',' + origins.longitude+'" target="_blank">'+ origins.latitude + ',' + origins.longitude + '</a></b></span><br />' +
+                                        //     '<span class="badge bg-success">Velocidad: ' + origins.speed +
+                                        //     ' MPH</span>&nbsp;&nbsp;' +
+                                        //     '<span class="badge bg-warning">HDOP: ' + origins.hdop + ' MPH</span><br />' +
+                                        //     '</div>';
 
-                                        //contenido de la infowindow
-                                        var content =
-                                            '<div id="content" style="width: auto; height: auto;">' +
-                                            '<h3>Dispositivo GPS <span class="badge bg-info">' + origins.get_g_p_s.uuid_device +
-                                            '</span> </h3>' +
-                                            '<span>GPS Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                                                origins.get_g_p_s.name_device + '</b></span>' +
-                                            '<span>Vehiculo Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                                                origins.get_vehicle.name_unit + '</b></span><br />' +
-                                            '<span>Ultima actualización: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                                                origins.date_update + '</b></span><br />' +
-                                            '<span>Coordenadas: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                                               '<a href="https://www.google.com/maps?q='+origins.latitude + ',' + origins.longitude+'" target="_blank">'+ origins.latitude + ',' + origins.longitude + '</a></b></span><br />' +
-                                            '<span class="badge bg-success">Velocidad: ' + origins.speed +
-                                            ' MPH</span>&nbsp;&nbsp;' +
-                                            '<span class="badge bg-warning">HDOP: ' + origins.hdop + ' MPH</span><br />' +
-                                            '</div>';
-
-                                        var infowindow = new google.maps.InfoWindow({
-                                            content: content
-                                        });
+                                        // var infowindow = new google.maps.InfoWindow({
+                                        //     content: content
+                                        // });
 
                                         
-                                        google.maps.event.addListener(marker, 'click', function(marker, content,
-                                            infowindow) {
-                                            return function() {
-                                                infowindow.setContent(
-                                                content); //asignar el contenido al globo
-                                                infowindow.open(map, marker); //mostrarlo
-                                            };
-                                        }(marker, content, infowindow));
+                                        // google.maps.event.addListener(marker, 'click', function(marker, content,
+                                        //     infowindow) {
+                                        //     return function() {
+                                        //         infowindow.setContent(
+                                        //         content); //asignar el contenido al globo
+                                        //         infowindow.open(map, marker); //mostrarlo
+                                        //     };
+                                        // }(marker, content, infowindow));
                                     }
                                 }
                             }

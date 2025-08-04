@@ -249,6 +249,14 @@ class ApiController  extends Controller
 			Getgsminfo::create($datos);
 		}
 
+		// Push to Event
+		$pusher = new pusher("8442d369ae2137d24bf4", "ff80680a66895a936bd1", "1934866", array('cluster' => 'us3'));
+
+		$channels = $pusher->trigger(
+			'ruptela-server',
+			'coords-gps',
+			'update_coords'
+		);
 		return response()->json([
 			'status' => 200,
 			'message' => 'data_received'
