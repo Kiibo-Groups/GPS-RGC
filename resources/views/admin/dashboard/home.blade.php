@@ -341,7 +341,19 @@
                                             '<span class="badge bg-warning">HDOP: ' + origins.hdop + ' MPH</span><br />' +
                                             '</div>';
 
-                                        element.infowindow.setContent(newContent);
+                                        var infowindow = new google.maps.InfoWindow({
+                                            content: newContent
+                                        });
+                                        
+                                        google.maps.event.addListener(element, 'click', function(element, newContent,
+                                            infowindow) {
+                                            return function() {
+                                                infowindow.setContent(
+                                                newContent); //asignar el contenido al globo
+                                                infowindow.open(map, element); //mostrarlo
+                                            };
+                                        }(element, newContent, infowindow));
+
                                         console.log("Marker updated: ", element);
 
 
@@ -379,19 +391,7 @@
                                         //     '<span class="badge bg-warning">HDOP: ' + origins.hdop + ' MPH</span><br />' +
                                         //     '</div>';
 
-                                        // var infowindow = new google.maps.InfoWindow({
-                                        //     content: content
-                                        // });
-
                                         
-                                        // google.maps.event.addListener(marker, 'click', function(marker, content,
-                                        //     infowindow) {
-                                        //     return function() {
-                                        //         infowindow.setContent(
-                                        //         content); //asignar el contenido al globo
-                                        //         infowindow.open(map, marker); //mostrarlo
-                                        //     };
-                                        // }(marker, content, infowindow));
                                     }
                                 }
                             }
