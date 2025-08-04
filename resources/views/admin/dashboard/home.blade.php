@@ -323,6 +323,28 @@
                                         element.setPosition(newLocation);
                                         element.lat = origins.latitude;
                                         element.lng = origins.longitude;
+                                        // Actualiza el contenido del InfoWindow
+                                        var newContent =
+                                            '<div id="content" style="width: auto; height: auto;">' +
+                                            '<h3>Dispositivo GPS <span class="badge bg-info">' + origins.get_g_p_s.uuid_device +
+                                            '</span> </h3>' +
+                                            '<span>GPS Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                                                origins.get_g_p_s.name_device + '</b></span>' +
+                                            '<span>Vehiculo Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                                                origins.get_vehicle.name_unit + '</b></span><br />' +
+                                            '<span>Ultima actualización: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                                                origins.date_update + '</b></span><br />' +
+                                            '<span>Coordenadas: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                                                '<a href="https://www.google.com/maps?q='+origins.latitude + ',' + origins.longitude+'" target="_blank">'+ origins.latitude + ',' + origins.longitude + '</a></b></span><br />' +
+                                            '<span class="badge bg-success">Velocidad: ' + origins.speed +
+                                            ' MPH</span>&nbsp;&nbsp;' +
+                                            '<span class="badge bg-warning">HDOP: ' + origins.hdop + ' MPH</span><br />' +
+                                            '</div>';
+
+                                        if (element.infowindow) {
+                                            element.infowindow.setContent(newContent);
+                                        }
+                                        console.log("Marker updated: ", element);
                                         // element.setMap(null);
                                         // markers.splice(i, 1);
                                         // var location = new google.maps.LatLng(origins.latitude, origins.longitude);
