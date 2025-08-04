@@ -407,7 +407,7 @@
                             id_gps: element.id
                         });
 
-                        markers.push(marker);
+                       
 
                         //contenido de la infowindow
                         var content =
@@ -430,6 +430,9 @@
                         var infowindow = new google.maps.InfoWindow({
                             content: content
                         });
+
+                        marker.infowindow = infowindow;
+                        markers.push(marker);
 
                         google.maps.event.addListener(marker, 'click', function(marker, content, infowindow) {
                             return function() {
