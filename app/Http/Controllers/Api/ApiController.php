@@ -405,7 +405,7 @@ class ApiController  extends Controller
 	public function getAllDispositives()
 	{
 
-		$getAll = Getgsminfo::with('getGPS', 'getVehicle')->get([
+		$getAll = Getgsminfo::where('gps_devices_id','!=', null)->with('getGPS', 'getVehicle')->get([
 			'id',
 			'longitude',
 			'latitude',
