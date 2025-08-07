@@ -186,19 +186,20 @@ class ApiController  extends Controller
 		// Push to Event
 		$pusher = new pusher("8442d369ae2137d24bf4", "ff80680a66895a936bd1", "1934866", array('cluster' => 'us3'));
 
-		$paqueteHex = $request->input('packet');
+		// $paqueteHex = $request->input('packet');
 	
-		if (empty($paqueteHex)) {
-			return response()->json([
-				'status' => 400,
-				'message' => 'Packet vacio o no recibido.'
-			], 400);
-		}
+		// if (empty($paqueteHex)) {
+		// 	return response()->json([
+		// 		'status' => 400,
+		// 		'message' => 'Packet vacio o no recibido.'
+		// 	], 400);
+		// }
 
-		$parser = new PacketParserService(json_encode($paqueteHex));
-		$datos = $parser->parse();
+		// $parser = new PacketParserService(json_encode($paqueteHex));
+		// $datos = $parser->parse();
 
-		Log::info('[*][' . date('H:i:s') . "] Data Decifrada: " . json_encode($datos));
+		$datos = $request->all();
+		// Log::info('[*][' . date('H:i:s') . "] Data Decifrada: " . json_encode($datos));
 
 		// Verificar que tenga IMEI
 		if (empty($datos['imei'])) {
@@ -208,8 +209,8 @@ class ApiController  extends Controller
 			], 400);
 		}
 
-		$imei = $datos['imei'];
-		$datos['packet'] = $paqueteHex;
+		$imei = $datos['imei'] ?? $datos['imei'] ?? null;
+		$datos['packet'] = $data['packet'] ?? null; // Asegurarse de que 'packet' esté presente
 		$data['status_code'] = 200; // Default to 200 if not present
 		$datos['date_update'] = now();
 
@@ -264,7 +265,7 @@ class ApiController  extends Controller
 		return response()->json([
 			'status' => 200,
 			'message' => 'data_received'
-		]);
+		], 200);
 	}
 
 	/**

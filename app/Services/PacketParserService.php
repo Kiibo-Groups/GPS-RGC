@@ -2,7 +2,10 @@
 
 namespace App\Services;
 
+use App\Helper;
+use Illuminate\Support\Facades\Log;
 use DateTime;
+
 
 class PacketParserService
 {
@@ -15,46 +18,96 @@ class PacketParserService
         $this->packet = $packet;
     }
 
-    public function parse(): array
+    public function parse()
     {
-        $input = json_decode($this->packet);
-        $input = str_replace(' ', '', $input);
-        $input = strtoupper($input);
+        $data = $this->packet;
+        $offset = 0;
+        $length = unpack("n", substr($data, $offset, 2))[1];
+        $offset += 2;
 
-        if (($validation = $this->validateInput($input)) !== 1) {
-            return ['error' => $validation];
+        $imei = bin2hex(substr($data, $offset, 8));
+        $offset += 8;
+
+        $commandId = ord($data[$offset]);
+        $offset += 1;
+
+        $recordsLeft = ord($data[$offset]);
+        $offset += 1;
+
+        $recordCount = ord($data[$offset]);
+        $offset += 1;
+
+        $records = [];
+
+        for ($i = 0; $i < $recordCount; $i++) {
+            $record = [];
+
+            $timestamp = unpack('N', substr($data, $offset, 4))[1];
+            $offset += 4;
+
+            $timestampExtension = ord($data[$offset]); // timestamp extension byte
+            $offset += 1;
+
+            $record['timestamp'] = $timestamp;
+            $record['timestamp_extension'] = $timestampExtension;
+
+            $record['priority'] = ord($data[$offset]);
+            $offset += 1;
+
+            $record['longitude'] = unpack('l', substr($data, $offset, 4))[1] / 10000000;
+            $offset += 4;
+
+            $record['latitude'] = unpack('l', substr($data, $offset, 4))[1] / 10000000;
+            $offset += 4;
+
+            $record['altitude'] = unpack('n', substr($data, $offset, 2))[1];
+            $offset += 2;
+
+            $record['angle'] = unpack('n', substr($data, $offset, 2))[1];
+            $offset += 2;
+
+            $record['satellites'] = ord($data[$offset]);
+            $offset += 1;
+
+            $record['speed'] = unpack('n', substr($data, $offset, 2))[1] / 10;
+            $offset += 2;
+
+            $record['hdop'] = ord($data[$offset]);
+            $offset += 1;
+
+            $record['event_id'] = ord($data[$offset]);
+            $offset += 1;
+
+            // IO Elements
+            $record['io_elements'] = [];
+
+            foreach ([1, 2, 4, 8] as $ioSize) {
+                $ioCount = ord($data[$offset]);
+                $offset += 1;
+
+                for ($j = 0; $j < $ioCount; $j++) {
+                    $id = ord($data[$offset]);
+                    $offset += 1;
+                    $value = substr($data, $offset, $ioSize);
+                    $offset += $ioSize;
+
+                    $record['io_elements'][$id] = bin2hex($value); // opcional: puedes hacer unpack si conoces tipos
+                }
+            }
+
+            $records[] = $record;
         }
 
-        $length = intval(substr($input, $this->index, 4), 16);
-        $this->index += 4;
-        $expectedLength = strlen($input) / 2 - 4;
+        $crc = unpack('n', substr($data, $offset, 2))[1];
 
-        if ($expectedLength === $length) {
-            $this->request_data['length'] = $length;
-        } else {
-            $this->request_data['error'] = "Longitud incorrecta: Esperada $length, Recibida $expectedLength";
-        }
-
-        $crc = substr($input, $length * 2 + 4, 4);
-        $calculatedCRC = $this->getCrc16(substr($input, 4, $length * 2), $length);
-        $this->request_data['crc'] = $crc;
-        $this->request_data['crc_status'] = intval($crc, 16) === $calculatedCRC ? 'CRC check passed' : 'CRC check failed';
-
-        $this->request_data['imei'] = intval(substr($input, $this->index, 16), 16);
-        $this->index += 16;
-
-        $commandID = intval(substr($input, $this->index, 2), 16);
-        $this->index += 2;
-        $this->request_data['command_id'] = $commandID;
-
-        // Detectar automáticamente el tipo de paquete y procesar
-        if (in_array($commandID, [1, 68])) {
-            $this->parseRecords($commandID, $input);
-        } else {
-            $this->request_data['error'] = "Parsing no implementado para Command ID $commandID";
-        }
-
-        return $this->request_data;
+        return [
+            'imei' => $imei,
+            'command_id' => $commandId,
+            'records_left' => $recordsLeft,
+            'record_count' => $recordCount,
+            'records' => $records,
+            'crc' => $crc,
+        ];
     }
 
     /**
