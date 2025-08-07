@@ -199,7 +199,7 @@ class ApiController  extends Controller
 		// $datos = $parser->parse();
 
 		$datos = $request->all();
-		// Log::info('[*][' . date('H:i:s') . "] Data Decifrada: " . json_encode($datos));
+		Log::info('[*][' . date('H:i:s') . "] Data Decifrada: " . json_encode($datos));
 
 		// Verificar que tenga IMEI
 		if (empty($datos['imei'])) {
