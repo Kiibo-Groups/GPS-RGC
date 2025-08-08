@@ -10,11 +10,6 @@
 @section('subpage_active')
     Home
 @endsection
-
-
-@section('css')
-@endsection
-
 @section('content')
     <div class="container-fluid" style="padding: 0 !important;">
 
@@ -82,8 +77,10 @@
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/relativeTime.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/locale/es.js"></script>
     <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
         ! function($) {
             'use strict';
@@ -93,50 +90,51 @@
         }(jQuery);
 
 
-        let lat = 31.326015;
-        let lng = 75.576180;
+        let lat;
+        let lng;
+        var latlng;
         var map;
 
-        function initMap() {
-            var marker;
-            let h3index;
+        var marker;
 
-            var geocoder = new google.maps.Geocoder;
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    lat = position.coords.latitude;
-                    lng = position.coords.longitude;
-                    map = L.map('map', {
-                        center: [lat, lng],
-                        zoom: 12
-                    });
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                lat = position.coords.latitude;
+                lng = position.coords.longitude;
+                latlng = L.latLng(lat, lng);
 
-                    // map = new google.maps.Map(
-                    //     document.getElementById('map'), {
-                    //         center: {
-                    //             lat: lat,
-                    //             lng: lng
-                    //         },
-                    //         zoom: 12,
-                    //         disableDefaultUI: true,
+                map = L.map('map').setView(latlng, 13);
 
-                    //     }
-                    // );
+                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
 
-                    // initZoomControl(map);
-                    // initMapTypeControl(map);
-                    // initFullscreenControl(map);
+                // map = new google.maps.Map(
+                //     document.getElementById('map'), {
+                //         center: {
+                //             lat: lat,
+                //             lng: lng
+                //         },
+                //         zoom: 12,
+                //         disableDefaultUI: true,
 
-                    // Get all devices Init
-                    getDevices(function(data) {
-                        ShowMaps(data);
-                    });
-                },
-                () => {
-                    handleLocationError(true, infoWindow, map.getCenter());
-                }
-            );
-        }
+                //     }
+                // );
+
+                // initZoomControl(map);
+                // initMapTypeControl(map);
+                // initFullscreenControl(map);
+
+                // Get all devices Init
+                getDevices(function(data) {
+                    ShowMaps(data);
+                });
+            },
+            () => {
+                handleLocationError(true, infoWindow, map.getCenter());
+            }
+        );
+
 
         function ViewPositionDevice(latitude, longitude, id) {
             // Elimina la clase de todos los elementos
@@ -146,14 +144,15 @@
 
             const li = document.getElementById(`device-${id}`);
             li.classList.add('active-card-maps');
-            
+
             lat = latitude;
             lng = longitude;
-            map.setCenter({
+            map.panTo({
                 lat: lat,
                 lng: lng
             });
-            map.setZoom(16);
+            map.setZoom(20);
+
         }
 
         /**
@@ -165,7 +164,6 @@
         });
         var channel = pusher.subscribe('ruptela-server');
         channel.bind('coords-gps', function(data) {
-            console.log("Date: " + new Date() + " Data received from Pusher: ", JSON.parse(data));
             // Actualizamos la tarjeta del dispositivo
             updateDeviceCard(JSON.parse(data));
 
@@ -183,10 +181,8 @@
         let markers = [];
         var ready = false; // Carga de markers
         function ShowMaps(data) {
-            
-            $.map(data, function(el) {
-                console.log(el)
 
+            $.map(data, function(el) {
                 if (ready == true) { // ya se cargaron los markes por primera vez
                     if (markers.length != el.length) {
                         markers = [];
@@ -200,145 +196,191 @@
                     if (markers.length == 0) {
                         for (let x = 0; x < el.length; x++) {
                             const origins = el[x];
-                            var location = new google.maps.LatLng(origins.latitude, origins.longitude);
+                            // var location = new google.maps.LatLng(origins.latitude, origins.longitude);
+                            var location = L.latLng(origins.latitude, origins.longitude);
 
                             if (origins.latitude != '' && origins.longitude != '') {
-                                const marker = new google.maps.Marker({
-                                    position: location,
-                                    map: map,
+                                const marker = L.marker(location, {
                                     title: origins.get_vehicle.name_unit,
-                                    icon: "{{ asset('assets/images/marker.png') }}",
-                                    lat: origins.latitude,
-                                    lng: origins.longitude,
-                                    id_gps: origins.id
-                                });
-
-                                var content =
-                                    '<div id="content" style="width: auto; height: auto;">' +
-                                    '<h3>Dispositivo GPS <span class="badge bg-info">' + origins.get_g_p_s
-                                    .uuid_device +
-                                    '</span> </h3>' +
-                                    '<span>GPS Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                                    origins.get_g_p_s.name_device + '</b></span>' +
-                                    '<span>Vehiculo Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                                    origins.get_vehicle.name_unit + '</b></span><br />' +
-                                    '<span>Ultima actualización: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                                    origins.date_update + '</b></span><br />' +
-                                    '<span>Coordenadas: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                                    '<a href="https://www.google.com/maps?q=' + origins.latitude + ',' + origins
-                                    .longitude + '" target="_blank">' + origins.latitude + ',' + origins.longitude +
-                                    '</a></b></span><br />' +
-                                    '<span class="badge bg-success">Velocidad: ' + origins.speed +
-                                    ' MPH</span>&nbsp;&nbsp;' +
-                                    '<span class="badge bg-warning">HDOP: ' + origins.hdop + ' MPH</span><br />' +
-                                    '</div>';
-
-                                var infowindow = new google.maps.InfoWindow({
-                                    content: content
-                                });
-
-                                marker.infowindow = infowindow;
-
+                                    icon: L.icon({
+                                        iconUrl: "{{ asset('assets/images/marker.png') }}",
+                                        iconSize: [50, 50],
+                                        iconAnchor: [16, 32],
+                                        popupAnchor: [0, -32]
+                                    })
+                                }).addTo(map).bindPopup(
+                                    `<h3>Dispositivo GPS <span class="badge bg-info">${origins.get_g_p_s.uuid_device}</span></h3>
+                                    <span>GPS Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">${origins.get_g_p_s.name_device}</b></span>
+                                    <span>Vehiculo Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">${origins.get_vehicle.name_unit}</b></span><br />
+                                    <span>Ultima actualización: <b style="display:block;font-size: 14px;font-weight: 600;">${origins.date_update}</b></span><br />
+                                    <span>Coordenadas: <b style="display:block;font-size: 14px;font-weight: 600;">
+                                    <a href="https://www.google.com/maps?q=${origins.latitude},${origins.longitude}" target="_blank">${origins.latitude}, ${origins.longitude}</a></b></span><br />
+                                    <span class="badge bg-success">Velocidad: ${origins.speed} MPH</span>`
+                                );
+                                marker.id_gps = origins.id;
                                 markers.push(marker);
+                                // const marker = new google.maps.Marker({
+                                //     position: location,
+                                //     map: map,
+                                //     title: origins.get_vehicle.name_unit,
+                                //     icon: "{{ asset('assets/images/marker.png') }}",
+                                //     lat: origins.latitude,
+                                //     lng: origins.longitude,
+                                //     id_gps: origins.id
+                                // });
 
-                                google.maps.event.addListener(marker, 'click', function(marker, content,
-                                    infowindow) {
-                                    return function() {
-                                        infowindow.setContent(content); //asignar el contenido al globo
-                                        infowindow.open(map, marker); //mostrarlo
-                                    };
-                                }(marker, content, infowindow));
+                                // var content =
+                                //     '<div id="content" style="width: auto; height: auto;">' +
+                                //     '<h3>Dispositivo GPS <span class="badge bg-info">' + origins.get_g_p_s
+                                //     .uuid_device +
+                                //     '</span> </h3>' +
+                                //     '<span>GPS Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                                //     origins.get_g_p_s.name_device + '</b></span>' +
+                                //     '<span>Vehiculo Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                                //     origins.get_vehicle.name_unit + '</b></span><br />' +
+                                //     '<span>Ultima actualización: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                                //     origins.date_update + '</b></span><br />' +
+                                //     '<span>Coordenadas: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                                //     '<a href="https://www.google.com/maps?q=' + origins.latitude + ',' + origins
+                                //     .longitude + '" target="_blank">' + origins.latitude + ',' + origins.longitude +
+                                //     '</a></b></span><br />' +
+                                //     '<span class="badge bg-success">Velocidad: ' + origins.speed +
+                                //     ' MPH</span>&nbsp;&nbsp;' +
+                                //     '<span class="badge bg-warning">HDOP: ' + origins.hdop + ' MPH</span><br />' +
+                                //     '</div>';
 
-                                const dateUpdate = dayjs(element.date_update).fromNow();
+                                // var infowindow = new google.maps.InfoWindow({
+                                //     content: content
+                                // });
 
+                                // marker.infowindow = infowindow;
+
+                                // markers.push(marker);
+
+                                // google.maps.event.addListener(marker, 'click', function(marker, content,
+                                //     infowindow) {
+                                //     return function() {
+                                //         infowindow.setContent(content); //asignar el contenido al globo
+                                //         infowindow.open(map, marker); //mostrarlo
+                                //     };
+                                // }(marker, content, infowindow));
                             }
                         }
                     } else {
-                        for (var i = 0; i < markers.length; i++) {
-                            let element = markers[i];
+                        for (let x = 0; x < el.length; x++) {
+                            const origins = el[x];
+                           
+                            let marker = markers.find(m => m.id_gps === origins.id);
+                            if (marker.id_gps == origins.id) {
 
-                            for (let x = 0; x < el.length; x++) {
-                                const origins = el[x];
+                                let currentPos = marker.getLatLng();
+                                let newLocation = L.latLng(origins.latitude, origins.longitude);
+                                
+                                if (currentPos.lat !== origins.latitude || currentPos.lng !== origins.longitude) {
+                                    const lat = parseFloat(origins.latitude);
+                                    const lng = parseFloat(origins.longitude);
+                                    // Mover marker
+                                    marker.setLatLng([lat, lng]); 
+                                    console.log("¡Marker movido!"); 
 
+                                    // Panear el mapa si el movimiento fue considerable
+                                    let distance = map.distance(currentPos, newLocation);
+                                    map.panTo(newLocation);
 
-                                if (element.id_gps == origins.id) {
+                                    var newContent =
+                                        '<div id="content" style="width: auto; height: auto;">' +
+                                        '<h3>Dispositivo GPS <span class="badge bg-info">' + origins.get_g_p_s
+                                        .uuid_device + '</span> </h3>' +
+                                        '<span>GPS Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                                        origins.get_g_p_s.name_device + '</b></span>' +
+                                        '<span>Vehículo Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                                        origins.get_vehicle.name_unit + '</b></span><br />' +
+                                        '<span>Última actualización: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                                        origins.date_update + '</b></span><br />' +
+                                        '<span>Coordenadas: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                                        '<a href="https://www.google.com/maps?q=' + origins.latitude + ',' + origins
+                                        .longitude + '" target="_blank">' +
+                                        origins.latitude + ',' + origins.longitude + '</a></b></span><br />' +
+                                        '<span class="badge bg-success">Velocidad: ' + origins.speed +
+                                        ' MPH</span>&nbsp;&nbsp;' +
+                                        '<span class="badge bg-warning">HDOP: ' + origins.hdop + '</span><br />' +
+                                        '</div>';
 
-                                    let init_pos = Math.abs(element.latitude) + Math.abs(element.longitude);
-                                    let end_pos = Math.abs(origins.latitude) + Math.abs(origins.longitude);
-
-
-                                    if (init_pos != end_pos) { // El repa cambio de posicion
-                                        var newLocation = new google.maps.LatLng(origins.latitude, origins
-                                            .longitude);
-                                        element.setPosition(newLocation);
-                                        element.lat = origins.latitude;
-                                        element.lng = origins.longitude;
-                                        // Actualiza el contenido del InfoWindow
-                                        var newContent =
-                                            '<div id="content" style="width: auto; height: auto;">' +
-                                            '<h3>Dispositivo GPS <span class="badge bg-info">' + origins.get_g_p_s
-                                            .uuid_device +
-                                            '</span> </h3>' +
-                                            '<span>GPS Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                                            origins.get_g_p_s.name_device + '</b></span>' +
-                                            '<span>Vehiculo Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                                            origins.get_vehicle.name_unit + '</b></span><br />' +
-                                            '<span>Ultima actualización: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                                            origins.date_update + '</b></span><br />' +
-                                            '<span>Coordenadas: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                                            '<a href="https://www.google.com/maps?q=' + origins.latitude + ',' +
-                                            origins.longitude + '" target="_blank">' + origins.latitude + ',' +
-                                            origins.longitude + '</a></b></span><br />' +
-                                            '<span class="badge bg-success">Velocidad: ' + origins.speed +
-                                            ' MPH</span>&nbsp;&nbsp;' +
-                                            '<span class="badge bg-warning">HDOP: ' + origins.hdop +
-                                            ' MPH</span><br />' +
-                                            '</div>';
-
-                                        if (element.infowindow) {
-                                            element.infowindow.setContent(newContent);
-                                        }
-
-                                        console.log("Marker updated: ", element);
-
-
-                                        // element.setMap(null);
-                                        // markers.splice(i, 1);
-                                        // var location = new google.maps.LatLng(origins.latitude, origins.longitude);
-
-                                        // const marker = new google.maps.Marker({
-                                        //     position: location,
-                                        //     map: map,
-                                        //     title: origins.get_vehicle.name_unit,
-                                        //     icon: "{{ asset('assets/images/marker.png') }}",
-                                        //     lat: origins.latitude,
-                                        //     lng: origins.longitude,
-                                        //     id_gps: origins.id
-                                        // });
-
-                                        // markers.push(marker);
-
-                                        // //contenido de la infowindow
-                                        // var content =
-                                        //     '<div id="content" style="width: auto; height: auto;">' +
-                                        //     '<h3>Dispositivo GPS <span class="badge bg-info">' + origins.get_g_p_s.uuid_device +
-                                        //     '</span> </h3>' +
-                                        //     '<span>GPS Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                                        //         origins.get_g_p_s.name_device + '</b></span>' +
-                                        //     '<span>Vehiculo Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                                        //         origins.get_vehicle.name_unit + '</b></span><br />' +
-                                        //     '<span>Ultima actualización: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                                        //         origins.date_update + '</b></span><br />' +
-                                        //     '<span>Coordenadas: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                                        //        '<a href="https://www.google.com/maps?q='+origins.latitude + ',' + origins.longitude+'" target="_blank">'+ origins.latitude + ',' + origins.longitude + '</a></b></span><br />' +
-                                        //     '<span class="badge bg-success">Velocidad: ' + origins.speed +
-                                        //     ' MPH</span>&nbsp;&nbsp;' +
-                                        //     '<span class="badge bg-warning">HDOP: ' + origins.hdop + ' MPH</span><br />' +
-                                        //     '</div>';
-
-
+                                    if (marker.getPopup()) {
+                                        marker.setPopupContent(newContent);
+                                    } else {
+                                        marker.bindPopup(newContent);
                                     }
                                 }
+                                // let init_pos = Math.abs(element.latitude) + Math.abs(element.longitude);
+                                // let end_pos = Math.abs(origins.latitude) + Math.abs(origins.longitude);
+
+                                // if (init_pos != end_pos) { // El repa cambio de posicion
+
+                                // var newLocation = new google.maps.LatLng(origins.latitude, origins.longitude);
+                                // element.setPosition(newLocation);
+                                // element.lat = origins.latitude;
+                                // element.lng = origins.longitude;
+                                // // Actualiza el contenido del InfoWindow
+                                // var newContent =
+                                //     '<div id="content" style="width: auto; height: auto;">' +
+                                //     '<h3>Dispositivo GPS <span class="badge bg-info">' + origins.get_g_p_s
+                                //     .uuid_device +
+                                //     '</span> </h3>' +
+                                //     '<span>GPS Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                                //     origins.get_g_p_s.name_device + '</b></span>' +
+                                //     '<span>Vehiculo Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                                //     origins.get_vehicle.name_unit + '</b></span><br />' +
+                                //     '<span>Ultima actualización: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                                //     origins.date_update + '</b></span><br />' +
+                                //     '<span>Coordenadas: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                                //     '<a href="https://www.google.com/maps?q=' + origins.latitude + ',' +
+                                //     origins.longitude + '" target="_blank">' + origins.latitude + ',' +
+                                //     origins.longitude + '</a></b></span><br />' +
+                                //     '<span class="badge bg-success">Velocidad: ' + origins.speed +
+                                //     ' MPH</span>&nbsp;&nbsp;' +
+                                //     '<span class="badge bg-warning">HDOP: ' + origins.hdop +
+                                //     ' MPH</span><br />' +
+                                //     '</div>';
+
+                                // if (element.infowindow) {
+                                //     element.infowindow.setContent(newContent);
+                                // }
+
+                                // element.setMap(null);
+                                // markers.splice(i, 1);
+                                // var location = new google.maps.LatLng(origins.latitude, origins.longitude);
+
+                                // const marker = new google.maps.Marker({
+                                //     position: location,
+                                //     map: map,
+                                //     title: origins.get_vehicle.name_unit,
+                                //     icon: "{{ asset('assets/images/marker.png') }}",
+                                //     lat: origins.latitude,
+                                //     lng: origins.longitude,
+                                //     id_gps: origins.id
+                                // });
+
+                                // markers.push(marker);
+
+                                // //contenido de la infowindow
+                                // var content =
+                                //     '<div id="content" style="width: auto; height: auto;">' +
+                                //     '<h3>Dispositivo GPS <span class="badge bg-info">' + origins.get_g_p_s.uuid_device +
+                                //     '</span> </h3>' +
+                                //     '<span>GPS Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                                //         origins.get_g_p_s.name_device + '</b></span>' +
+                                //     '<span>Vehiculo Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                                //         origins.get_vehicle.name_unit + '</b></span><br />' +
+                                //     '<span>Ultima actualización: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                                //         origins.date_update + '</b></span><br />' +
+                                //     '<span>Coordenadas: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                                //        '<a href="https://www.google.com/maps?q='+origins.latitude + ',' + origins.longitude+'" target="_blank">'+ origins.latitude + ',' + origins.longitude + '</a></b></span><br />' +
+                                //     '<span class="badge bg-success">Velocidad: ' + origins.speed +
+                                //     ' MPH</span>&nbsp;&nbsp;' +
+                                //     '<span class="badge bg-warning">HDOP: ' + origins.hdop + ' MPH</span><br />' +
+                                //     '</div>';
+                                // }
                             }
                         }
                     }
@@ -358,32 +400,28 @@
                         //     id_gps: element.id
                         // });
 
-                        //contenido de la infowindow
-                        var content =
-                            '<div id="content" style="width: auto; height: auto;">' +
-                            '<h3>Dispositivo GPS <span class="badge bg-info">' + element.get_g_p_s.uuid_device +
-                            '</span> </h3>' +
-                            '<span>GPS Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                            element.get_g_p_s.name_device + '</b></span>' +
-                            '<span>Vehiculo Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                            element.get_vehicle.name_unit + '</b></span><br />' +
-                            '<span>Ultima actualización: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                            element.date_update + '</b></span><br />' +
-                            '<span>Coordenadas: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                            '<a href="https://www.google.com/maps?q=' + element.latitude + ',' + element.longitude +
-                            '" target="_blank">' + element.latitude + ',' + element.longitude +
-                            '</a></b></span><br />' +
-                            '<span class="badge bg-success">Velocidad: ' + element.speed +
-                            ' MPH</span>&nbsp;&nbsp;' +
-                            '<span class="badge bg-warning">HDOP: ' + element.hdop + ' MPH</span><br />' +
-                            '</div>';
 
-                        var infowindow = new google.maps.InfoWindow({
-                            content: content
-                        });
-
+                        var location = L.latLng(element.latitude, element.longitude);
+                        const marker = L.marker(location, {
+                            title: element.get_vehicle.name_unit,
+                            icon: L.icon({
+                                iconUrl: "{{ asset('assets/images/marker.png') }}",
+                                iconSize: [50, 50],
+                                iconAnchor: [16, 32],
+                                popupAnchor: [0, -32]
+                            })
+                        }).addTo(map).bindPopup(
+                            `<h3>Dispositivo GPS <span class="badge bg-info">${element.get_g_p_s.uuid_device}</span></h3>
+                             <span>GPS Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">${element.get_g_p_s.name_device}</b></span>
+                             <span>Vehiculo Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">${element.get_vehicle.name_unit}</b></span><br />
+                             <span>Ultima actualización: <b style="display:block;font-size: 14px;font-weight: 600;">${element.date_update}</b></span><br />
+                             <span>Coordenadas: <b style="display:block;font-size: 14px;font-weight: 600;">
+                             <a href="https://www.google.com/maps?q=${element.latitude},${element.longitude}" target="_blank">${element.latitude}, ${element.longitude}</a></b></span><br />
+                             <span class="badge bg-success">Velocidad: ${element.speed} MPH</span>`
+                        );
+                        marker.id_gps = element.id;
                         // marker.infowindow = infowindow;
-                        // markers.push(marker);
+                        markers.push(marker);
 
                         // google.maps.event.addListener(marker, 'click', function(marker, content, infowindow) {
                         //     return function() {
@@ -449,7 +487,6 @@
          * Actualizamos la tarjeta del dispositivo en el sidebar
          */
         function updateDeviceCard(element) {
-            console.log("Updating device card for: ", element);
             const li = document.getElementById(`device-${element.id}`);
             if (li) {
                 // Actualiza fecha
@@ -564,10 +601,6 @@
             }
         }
 
-        window.initMap = initMap;
+        // window.initMap = initMap;
     </script>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-    <script
-        src="https://maps.googleapis.com/maps/api/js?key={{ $ApiKey_google }}&libraries=places&callback=initMap&v=weekly"
-        defer></script>
 @endsection
