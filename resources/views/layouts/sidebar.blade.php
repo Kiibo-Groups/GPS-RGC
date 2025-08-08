@@ -24,6 +24,18 @@
                     </a>
                 </li> 
 
+                
+                <li>
+                    <hr style="margin:0 !important" />                    
+                </li>
+
+                <li>
+                    <a href="{{ url('/trackings') }}">
+                        <i class="mdi mdi-crosshairs-gps"></i>
+                        <span>&nbsp;Seguimientos</span>
+                    </a>
+                </li>
+
                 <li class="menu-title mt-2">Navegación</li>
                 
                 <li>
@@ -94,7 +106,7 @@
 
         <div class="clearfix"></div>
 
-        <a href="{{ url('./') }}" class="@if (Route::is('dash')) tag_top shadow-drop-2-center @else tag_top @endif">
+        <a href="{{ url('./') }}" class="tag_top shadow-drop-2-center" @if(Route::is('trackings')) style="left: -125px;" @endif>
             <span class="logo-sm">
                 <img src="{{ asset('assets/images/users/'.Auth::user()->logo_top_sm) }}" alt="" height="60">
             </span> 

@@ -55,10 +55,10 @@
         <!-- ============================================================== -->
 
         <div class="@if(!Route::is('login'))content-page @else account-pages my-5 @endif" 
-                    @if(Route::is('rutas')) style="padding: 0 !important;min-height: 100vh;margin-top: 0;" @endif>
+                    @if(Route::is('rutas') || Route::is('trackings')) style="padding: 0 !important;min-height: 100vh;margin-top: 0;" @endif>
             <div class="@if (!Route::is('login')) content @else container @endif">
                 
-                <main class="py-4" @if (Route::is('rutas')) style="padding-top: 0 !important;height: 100vh;" @endif>
+                <main @if (Route::is('rutas') || Route::is('trackings')) style="padding-top: 0 !important;height: 100vh;" @else class="py-4"  @endif>
                     
                         @if(Session::has('error'))
                         <div class="row justify-content-center">
@@ -95,7 +95,7 @@
                         </div>
                         @endif      
                     
-                    @if (!Route::is('login') && !Route::is('rutas') && !Route::is('chats_inbox'))
+                    @if (!Route::is('login') && !Route::is('rutas') && !Route::is('trackings') && !Route::is('chats_inbox'))
                     <div class="container-fluid">
                         <div class="row">
                             <h4 class="header-title mt-3 mt-sm-0">Te encuentras en:</h4>
@@ -117,7 +117,7 @@
                 </main>
             </div>
 
-            @if (!Route::is('login') && !Route::is('rutas'))
+            @if (!Route::is('login') && !Route::is('rutas') && !Route::is('trackings'))
             <!-- Footer Start -->
             <footer class="footer">
                 <div class="container-fluid">

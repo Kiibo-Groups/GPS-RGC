@@ -34,6 +34,13 @@ Route::prefix(env('user'))->namespace('User')->group(static function() {
         
         /*
         |-----------------------------------------
+        |Seguimiento de GPS
+        |-----------------------------------------
+        */
+        Route::get('trackings',[App\Http\Controllers\Admin\AdminController::class, 'trackings'])->name('trackings');
+
+        /*
+        |-----------------------------------------
         |Gestor de SubCuentas de administracion
         |-----------------------------------------
         */ 

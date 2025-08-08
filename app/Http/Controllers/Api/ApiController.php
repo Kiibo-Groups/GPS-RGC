@@ -235,6 +235,7 @@ class ApiController  extends Controller
 
 		if ($registro) {
 			$cambios = [
+				'id' 		=> $registro->id,
 				'packet'    => $datos['packet'],
 				'longitude' => $datos['longitude'] ?? null,
 				'latitude'  => $datos['latitude'] ?? null,
@@ -268,11 +269,6 @@ class ApiController  extends Controller
 			}
 
 			Getgsminfo::create($datos);
-			$channels = $pusher->trigger(
-				'ruptela-server',
-				'coords-gps',
-				json_encode($datos)
-			);
 		}
 
 		return response()->json([
@@ -418,7 +414,8 @@ class ApiController  extends Controller
 			'vehicle_units_id',
 			'date_update'
 		]);
-		$devices = collect($getAll);
+
+		$devices = collect($getAll)->sortByDesc('date_update')->values();
 
 		return response()->json([
 			'devices' => $devices

@@ -6,15 +6,18 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\{BlacsolController, SamsaraController};
 use App\Http\Requests;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 
-
-use App\Models\User;
-use App\Models\Settings;
-
-use Auth;
 use DB;
 use Validator;
-use Redirect;
+
+use App\Models\{
+	User, 
+	Settings, 
+	Getgsminfo
+};
+
 class AdminController extends Controller
 {
 	public $folder = "admin.";
@@ -51,12 +54,7 @@ class AdminController extends Controller
 	public function account()
 	{
 		$data = User::find(User::find(Auth::user()->id))->first();  
-        
-		// return response()->json([
-		// 	'data' => $data,
-		// 	'Auth::user()->id' => Auth::user()->id
-		// ]);
-
+    
         return view($this->folder.'dashboard.account', [ 
             'data' => $data,
             'form_url'	=> Asset('/update_account'),
@@ -184,6 +182,36 @@ class AdminController extends Controller
 		return View($this->folder.'dashboard.home');
 	}
 
+	
+	/*
+	|------------------------------------------------------------------
+	|Seguimiento de GPS
+	|------------------------------------------------------------------
+	*/
+	public function trackings()
+	{
+		$getAll = Getgsminfo::where('gps_devices_id','!=', null)
+			->with('getGPS', 'getVehicle')
+			->get([
+				'id',
+				'longitude',
+				'latitude',
+				'altitude',
+				'angle',
+				'speed',
+				'hdop',
+				'event_io',
+				'gps_devices_id',
+				'vehicle_units_id',
+				'date_update'
+			]);
+
+		$devices = collect($getAll)->sortByDesc('date_update')->values();
+		$ApiKey_google = Settings::find(1)->ApiKey_google;
+
+
+		return view($this->folder.'dashboard.trackings', compact('devices', 'ApiKey_google'));
+	}
 
 	/*
 	|------------------------------------------------------------------
