@@ -82,6 +82,8 @@
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/relativeTime.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/locale/es.js"></script>
     <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
         ! function($) {
             'use strict';
@@ -104,21 +106,26 @@
                 (position) => {
                     lat = position.coords.latitude;
                     lng = position.coords.longitude;
-                    map = new google.maps.Map(
-                        document.getElementById('map'), {
-                            center: {
-                                lat: lat,
-                                lng: lng
-                            },
-                            zoom: 12,
-                            disableDefaultUI: true,
+                    map = L.map('map', {
+                        center: [lat, lng],
+                        zoom: 12
+                    });
 
-                        }
-                    );
+                    // map = new google.maps.Map(
+                    //     document.getElementById('map'), {
+                    //         center: {
+                    //             lat: lat,
+                    //             lng: lng
+                    //         },
+                    //         zoom: 12,
+                    //         disableDefaultUI: true,
 
-                    initZoomControl(map);
-                    initMapTypeControl(map);
-                    initFullscreenControl(map);
+                    //     }
+                    // );
+
+                    // initZoomControl(map);
+                    // initMapTypeControl(map);
+                    // initFullscreenControl(map);
 
                     // Get all devices Init
                     getDevices(function(data) {
@@ -339,17 +346,17 @@
                 } else {
                     for (let x = 0; x < el.length; x++) {
                         const element = el[x];
-                        var location = new google.maps.LatLng(element.latitude, element.longitude);
+                        // var location = new google.maps.LatLng(element.latitude, element.longitude);
 
-                        const marker = new google.maps.Marker({
-                            position: location,
-                            map: map,
-                            title: element.get_vehicle.name_unit,
-                            icon: "{{ asset('assets/images/marker.png') }}",
-                            lat: element.latitude,
-                            lng: element.longitude,
-                            id_gps: element.id
-                        });
+                        // const marker = new google.maps.Marker({
+                        //     position: location,
+                        //     map: map,
+                        //     title: element.get_vehicle.name_unit,
+                        //     icon: "{{ asset('assets/images/marker.png') }}",
+                        //     lat: element.latitude,
+                        //     lng: element.longitude,
+                        //     id_gps: element.id
+                        // });
 
                         //contenido de la infowindow
                         var content =
@@ -375,15 +382,15 @@
                             content: content
                         });
 
-                        marker.infowindow = infowindow;
-                        markers.push(marker);
+                        // marker.infowindow = infowindow;
+                        // markers.push(marker);
 
-                        google.maps.event.addListener(marker, 'click', function(marker, content, infowindow) {
-                            return function() {
-                                infowindow.setContent(content); //asignar el contenido al globo
-                                infowindow.open(map, marker); //mostrarlo
-                            };
-                        }(marker, content, infowindow));
+                        // google.maps.event.addListener(marker, 'click', function(marker, content, infowindow) {
+                        //     return function() {
+                        //         infowindow.setContent(content); //asignar el contenido al globo
+                        //         infowindow.open(map, marker); //mostrarlo
+                        //     };
+                        // }(marker, content, infowindow));
 
                         const dateUpdate = dayjs(element.date_update).fromNow();
 
