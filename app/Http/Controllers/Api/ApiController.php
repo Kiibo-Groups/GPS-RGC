@@ -360,7 +360,7 @@ class ApiController  extends Controller
 			$channels = $pusher->trigger(
 				'ruptela-server',
 				'coords-gps',
-				json_encode($registro)
+				json_encode($registro->with('getGPS', 'getVehicle'))
 			);
 		} else {
 			if ($gps) {
