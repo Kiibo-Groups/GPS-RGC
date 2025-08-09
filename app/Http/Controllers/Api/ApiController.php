@@ -320,7 +320,7 @@ class ApiController  extends Controller
 		$datos['status_code'] = 200; // Default to 200 if not present
 		$datos['date_update'] = now();
 
-		$registro = Getgsminfo::where('imei', $imei)->with('getGPS', 'getVehicle')->first();
+		$registro = Getgsminfo::where('imei', $imei)->with('getGPS', 'getVehicle', 'getTrackings')->first();
 
 		// Buscar GPS y vehículo actuales
 		$gps = GpsDevices::where('uuid_device', $imei)->first();
