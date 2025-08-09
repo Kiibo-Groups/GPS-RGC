@@ -278,10 +278,9 @@ function updateDeviceCard(IdElement) {
                     // Verificamos si las coordenadas no estan vacias
                     let init_pos = Math.abs(marker.lat) + Math.abs(marker.lng);
                     let end_pos = Math.abs(element.latitude) + Math.abs(element.longitude);
-
-                    if (init_pos != end_pos) { // El repa cambio de posicion
-
-                        var newLocation = new google.maps.LatLng(element.latitude, element.longitude);
+                    var newLocation = new google.maps.LatLng(element.latitude, element.longitude);
+                    // if (detectChange(element.get_trackings)) {           
+                    // if (init_pos != end_pos) { // El repa cambio de posicion
                         marker.setPosition(newLocation);
                         map.panTo(newLocation);
                         // Actualiza el contenido del InfoWindow
@@ -313,16 +312,17 @@ function updateDeviceCard(IdElement) {
                         // Animar el marcador
                         animateMarker(marker, element.get_trackings, 1800, function (coord, index, coordinates) {
                             // Callback para detectar cambios
-                            if (detectChange(coordinates)) {
-                                console.log("Coordenadas cambiaron", coord);
-                                marker.setPosition(new google.maps.LatLng(coord.Latitude, coord.Longitude));
-                            }
+                            console.log("Coordenadas cambiaron", coord, index);
+                            var UpdateLoc = new google.maps.LatLng(element.latitude, element.longitude); 
+                            console.log("Actualizando posicion a", UpdateLoc);
+                            marker.setPosition(UpdateLoc);
+                            map.panTo(UpdateLoc);
                         });
-                    }else {
-                        console.log("No hay cambio de posicion", element);
-                        console.log("Posicion actual", marker.getPosition());
-                        console.log("Posicion nueva", newLocation);
-                    }
+                    // }else {
+                    //     console.log("No hay cambio de posicion", element);
+                    //     console.log("Posicion actual", init_pos);
+                    //     console.log("Posicion nueva", end_pos);
+                    // }
                 }
             }
         });
@@ -333,7 +333,7 @@ function animateMarker(marker, coordinates, interval = 500, onUpdate) {
     let index = 0;
     function move() {
         if (index < coordinates.length) {
-            const coord = coordinates[index];
+            const coord = JSON.parse(coordinates[index].positions);
             const latLng = new google.maps.LatLng(coord.Latitude, coord.Longitude);
             marker.setPosition(latLng);
 

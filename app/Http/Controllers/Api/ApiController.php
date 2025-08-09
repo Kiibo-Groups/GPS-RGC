@@ -18,6 +18,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use DB;
 use Redirect;
+use Carbon\Carbon;
 use App\Models\{User, GpsDevices, vehicle_units, Getgsminfo, Rutas, Trackings};
 
 
@@ -527,14 +528,20 @@ class ApiController  extends Controller
 
 	public function getDispositive($id)
 	{
-		$getDispositive = Getgsminfo::where('id', $id)->with('getGPS', 'getVehicle', 'getTrackings')->first();
-
+		$getDispositive = Getgsminfo::where('id', $id)->with('getGPS', 'getVehicle')->first();
+		
 		if (!$getDispositive) {
 			return response()->json([
 				'status' => 404,
 				'message' => 'Dispositivo no encontrado'
 			], 404);
 		}
+
+		// Trackings del día de hoy para un dispositivo específico
+		$trackingsHoy = Trackings::where('device_id', $id)
+			->whereDate('date_update', Carbon::today())
+			->get();
+		$getDispositive->get_trackings = $trackingsHoy;
 
 		return response()->json([
 			'status' => 200,
