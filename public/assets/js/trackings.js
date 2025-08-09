@@ -160,8 +160,8 @@ function ShowMaps(data) {
                                                 <span class="device-date">${dateUpdate}</span><br />
                                                 <span class="device-speed">
                                                     ${parseInt(element.speed, 10) > 0
-                                                    ? `<span class="badge bg-success">Velocidad ${element.speed} MPH</span>`
-                                                    : `<span class="badge bg-warning">Detenido</span>`}
+                    ? `<span class="badge bg-success">Velocidad ${element.speed} MPH</span>`
+                    : `<span class="badge bg-warning">Detenido</span>`}
                                                 </span>
                                             </span> 
                                         </div>
@@ -252,7 +252,7 @@ function updateDeviceCard(element) {
             speedSpan.innerHTML = `<span class="badge bg-warning">Detenido</span>`;
         }
 
-      
+
         let marker = markers.find(m => m.id_gps === element.id);
         if (marker.id_gps == element.id) {
             // Verificamos si las coordenadas no estan vacias
@@ -265,52 +265,73 @@ function updateDeviceCard(element) {
                 marker.setPosition(newLocation);
                 map.panTo(newLocation);
                 // Actualiza el contenido del InfoWindow
-                // var newContent =
-                //     '<div id="content" style="width: auto; height: auto;">' +
-                //     '<h3>Dispositivo GPS <span class="badge bg-info">' + origins.get_g_p_s
-                //         .uuid_device +
-                //     '</span> </h3>' +
-                //     '<span>GPS Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                //     origins.get_g_p_s.name_device + '</b></span>' +
-                //     '<span>Vehiculo Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                //     origins.get_vehicle.name_unit + '</b></span><br />' +
-                //     '<span>Ultima actualización: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                //     origins.date_update + '</b></span><br />' +
-                //     '<span>Coordenadas: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                //     '<a href="https://www.google.com/maps?q=' + origins.latitude + ',' +
-                //     origins.longitude + '" target="_blank">' + origins.latitude + ',' +
-                //     origins.longitude + '</a></b></span><br />' +
-                //     '<span class="badge bg-success">Velocidad: ' + origins.speed +
-                //     ' MPH</span>&nbsp;&nbsp;' +
-                //     '<span class="badge bg-warning">HDOP: ' + origins.hdop +
-                //     ' MPH</span><br />' +
-                //     '</div>';
+                var newContent =
+                    '<div id="content" style="width: auto; height: auto;">' +
+                    '<h3>Dispositivo GPS <span class="badge bg-info">' + element.get_g_p_s
+                        .uuid_device +
+                    '</span> </h3>' +
+                    '<span>GPS Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                    element.get_g_p_s.name_device + '</b></span>' +
+                    '<span>Vehiculo Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                    element.get_vehicle.name_unit + '</b></span><br />' +
+                    '<span>Ultima actualización: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                    element.date_update + '</b></span><br />' +
+                    '<span>Coordenadas: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                    '<a href="https://www.google.com/maps?q=' + element.latitude + ',' +
+                    element.longitude + '" target="_blank">' + element.latitude + ',' +
+                    element.longitude + '</a></b></span><br />' +
+                    '<span class="badge bg-success">Velocidad: ' + element.speed +
+                    ' MPH</span>&nbsp;&nbsp;' +
+                    '<span class="badge bg-warning">HDOP: ' + element.hdop +
+                    ' MPH</span><br />' +
+                    '</div>';
 
-                // if (marker.infowindow) {
-                //     marker.infowindow.setContent(newContent);
-                // }
+                if (marker.infowindow) {
+                    marker.infowindow.setContent(newContent);
+                }
 
-                // marker.setMap(null);
-                // markers.splice(i, 1);
-                // var location = new google.maps.LatLng(origins.latitude, origins.longitude);
-
-                // const marker = new google.maps.Marker({
-                //     position: location,
-                //     map: map,
-                //     title: origins.get_vehicle.name_unit,
-                //     icon: markerIcon,
-                //     lat: origins.latitude,
-                //     lng: origins.longitude,
-                //     id_gps: origins.id
-                // });
-
-                // markers.push(marker);
-            } else {
-                console.log("No hubo cambio de posicion", init_pos, end_pos);
+                // Animar el marcador
+                animateMarker(marker, element.get_trackings, 1800, function (coord, index, coordinates) {
+                    // Callback para detectar cambios
+                    if (detectChange(coordinates)) {
+                        console.log("Coordenadas cambiaron", coord);
+                        marker.setPosition(new google.maps.LatLng(coord.Latitude, coord.Longitude));
+                    }
+                });
             }
         }
 
     }
+}
+
+function animateMarker(marker, coordinates, interval = 500, onUpdate) {
+    let index = 0;
+    function move() {
+        if (index < coordinates.length) {
+            const coord = coordinates[index];
+            const latLng = new google.maps.LatLng(coord.Latitude, coord.Longitude);
+            marker.setPosition(latLng);
+
+            // Callback para detectar cambios
+            if (typeof onUpdate === 'function') {
+                onUpdate(coord, index, coordinates);
+            }
+
+            index++;
+            setTimeout(move, interval);
+        }
+    }
+    move();
+}
+
+function detectChange(coordinates) {
+    if (coordinates.length < 2) return false;
+    const last = coordinates[coordinates.length - 1];
+    const prev = coordinates[coordinates.length - 2];
+    // Compara propiedades relevantes
+    return last.Latitude !== prev.Latitude ||
+           last.Longitude !== prev.Longitude ||
+           last.Speed !== prev.Speed;
 }
 
 /**

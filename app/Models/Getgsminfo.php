@@ -43,4 +43,9 @@ class Getgsminfo extends Model
         return $this->belongsTo('App\Models\vehicle_units', 'vehicle_units_id');
     }
 
+    public function getTrackings()
+    {
+        return $this->hasMany('App\Models\Trackings', 'device_id');
+    }
+
 }
