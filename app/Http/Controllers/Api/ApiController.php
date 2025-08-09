@@ -320,7 +320,7 @@ class ApiController  extends Controller
 		$datos['status_code'] = 200; // Default to 200 if not present
 		$datos['date_update'] = now();
 
-		$registro = Getgsminfo::where('imei', $imei)->first();
+		$registro = Getgsminfo::where('imei', $imei)->with('getGPS', 'getVehicle')->first();
 
 		// Buscar GPS y vehículo actuales
 		$gps = GpsDevices::where('uuid_device', $imei)->first();
@@ -360,7 +360,7 @@ class ApiController  extends Controller
 			$channels = $pusher->trigger(
 				'ruptela-server',
 				'coords-gps',
-				json_encode($registro->with('getGPS', 'getVehicle'))
+				json_encode($registro)
 			);
 		} else {
 			if ($gps) {
