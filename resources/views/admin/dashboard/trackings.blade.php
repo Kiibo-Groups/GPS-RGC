@@ -81,6 +81,13 @@
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/relativeTime.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/locale/es.js"></script>
     <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+    <script>
+        var pusher = new Pusher('8442d369ae2137d24bf4', {
+            cluster: 'us3'
+        });
+        var channel = pusher.subscribe('ruptela-server');
+        
+    </script>
     <script src="{{ asset('assets/js/trackings.js?v='.time()) }}"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key={{ $ApiKey_google }}&libraries=places&callback=initMap"></script>
 @endsection
