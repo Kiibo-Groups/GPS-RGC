@@ -100,10 +100,10 @@
         </a>
         <a href="{{ url('./') }}" class="logo logo-dark text-center">
             <span class="logo-sm">
-                <img src="{{ asset('assets/images/users/'.Auth::guard()->user()->logo_top_sm) }}" alt="" height="22">
+                <img src="{{ asset('assets/images/users/'.Auth::guard()->user()->logo_top_sm) }}" alt="" height="60" style="width: 70%;padding-top: 20px;">
             </span>
             <span class="logo-lg">
-                <img src="{{ asset('assets/images/users/'.Auth::guard()->user()->logo_top) }}" alt="" height="16">
+                <img src="{{ asset('assets/images/users/'.Auth::guard()->user()->logo_top) }}" alt="" style="width: 70%;padding-top: 20px;">
             </span>
         </a>
     </div>

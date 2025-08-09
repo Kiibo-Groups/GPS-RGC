@@ -25,10 +25,13 @@
     <link href="{{ asset('assets/css/main.css') }}" rel="stylesheet" type="text/css" />
     <!-- CSS Extras -->
     @yield('css')
+    <script>
+        var URL_BASE = "{{ url('/') }}";
+    </script>
 </head>
 <body class="loading" data-layout='{
         "mode": "light", "width": "fluid", "menuPosition": "fixed",
-        "sidebar": { "color": "dark", "size": "fluid", "showuser": true}, 
+        "sidebar": { "color": "light", "size": "fluid", "showuser": true}, 
         "topbar": { "color": "light" }, 
         "showRightSidebarOnPageLoad": true}'
         data-topbar-color="light"
