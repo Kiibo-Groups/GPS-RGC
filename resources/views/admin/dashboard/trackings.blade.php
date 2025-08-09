@@ -202,6 +202,8 @@
                             if (origins.latitude != '' && origins.longitude != '') {
                                 const marker = L.marker(location, {
                                     title: origins.get_vehicle.name_unit,
+                                    autoPanOnFocus: true,
+                                    autoPan: true,
                                     icon: L.icon({
                                         iconUrl: "{{ asset('assets/images/marker.png') }}",
                                         iconSize: [50, 50],
@@ -285,7 +287,17 @@
 
                                     // Panear el mapa si el movimiento fue considerable
                                     let distance = map.distance(currentPos, newLocation);
-                                    map.panTo(newLocation);
+                                    // map.panTo(newLocation);
+                                    // var pos = map.latLngToLayerPoint(currentPos);
+                                    // pos.y -= 25;
+                                    // var fx = new L.PosAnimation();
+                                    // fx.once('end',function() {
+                                    //     pos.y += 25;
+                                    //     fx.run(marker._icon, pos, 0.8);
+                                    // });
+
+                                    // fx.run(marker._icon, pos, 0.3);
+
 
                                     var newContent =
                                         '<div id="content" style="width: auto; height: auto;">' +
@@ -404,6 +416,8 @@
                         var location = L.latLng(element.latitude, element.longitude);
                         const marker = L.marker(location, {
                             title: element.get_vehicle.name_unit,
+                            autoPanOnFocus: true,
+                            autoPan: true,
                             icon: L.icon({
                                 iconUrl: "{{ asset('assets/images/marker.png') }}",
                                 iconSize: [50, 50],

@@ -25,7 +25,7 @@
                 </li> 
 
                 
-                {{-- <li>
+                <li>
                     <hr style="margin:0 !important" />                    
                 </li>
 
@@ -34,7 +34,7 @@
                         <i class="mdi mdi-crosshairs-gps"></i>
                         <span>&nbsp;Seguimientos</span>
                     </a>
-                </li> --}}
+                </li> 
 
                 <li class="menu-title mt-2">Navegación</li>
                 
