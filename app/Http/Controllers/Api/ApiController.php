@@ -46,6 +46,7 @@ class ApiController  extends Controller
 			'DesconBat',
 			'ReconBat',
 			'getGSMInfo',
+			'getDispositive',
 			'getAllDispositives',
 			'webhook_rgc_csv',
 			'SetPulseAVL',
@@ -320,7 +321,7 @@ class ApiController  extends Controller
 		$datos['status_code'] = 200; // Default to 200 if not present
 		$datos['date_update'] = now();
 
-		$registro = Getgsminfo::where('imei', $imei)->with('getGPS', 'getVehicle', 'getTrackings')->first();
+		$registro = Getgsminfo::where('imei', $imei)->with('getGPS', 'getVehicle')->first();
 
 		// Buscar GPS y vehículo actuales
 		$gps = GpsDevices::where('uuid_device', $imei)->first();
@@ -360,7 +361,7 @@ class ApiController  extends Controller
 			$channels = $pusher->trigger(
 				'ruptela-server',
 				'coords-gps',
-				json_encode($registro)
+				$registro->id
 			);
 		} else {
 			if ($gps) {
@@ -503,7 +504,7 @@ class ApiController  extends Controller
 	public function getAllDispositives()
 	{
 
-		$getAll = Getgsminfo::where('gps_devices_id','!=', null)->with('getGPS', 'getVehicle')->get([
+		$getAll = Getgsminfo::where('gps_devices_id','!=', null)->with('getGPS', 'getVehicle', 'getTrackings')->get([
 			'id',
 			'longitude',
 			'latitude',
@@ -521,6 +522,23 @@ class ApiController  extends Controller
 
 		return response()->json([
 			'devices' => $devices
+		]);
+	}
+
+	public function getDispositive($id)
+	{
+		$getDispositive = Getgsminfo::where('id', $id)->with('getGPS', 'getVehicle', 'getTrackings')->first();
+
+		if (!$getDispositive) {
+			return response()->json([
+				'status' => 404,
+				'message' => 'Dispositivo no encontrado'
+			], 404);
+		}
+
+		return response()->json([
+			'status' => 200,
+			'data' => $getDispositive
 		]);
 	}
 

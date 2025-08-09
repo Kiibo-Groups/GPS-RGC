@@ -82,7 +82,7 @@ function ViewPositionDevice(latitude, longitude, id) {
  */
 channel.bind('coords-gps', function (data) {
     // Actualizamos la tarjeta del dispositivo
-    updateDeviceCard(JSON.parse(data));
+    updateDeviceCard(data);
 });
 
 
@@ -96,6 +96,7 @@ var ready = false; // Carga de markers
 function ShowMaps(data) {
 
     $.map(data, function (el) {
+        console.log("Cargando dispositivo GPS", el);
         for (let x = 0; x < el.length; x++) {
             const element = el[x];
             var location = new google.maps.LatLng(element.latitude, element.longitude);
@@ -233,74 +234,98 @@ function getDevices(callback) {
     });
 }
 
+function getDispositive(id, callback) {
+    // let url = "{{ route('getDispositive', ':id') }}".replace(':id', id);
+    let url = URL_BASE + "/api/getDispositive/" + id;
+    $.ajax({
+        url: url,
+        type: "GET",
+        success: callback,
+        jsonp: "json",
+        dataType: "json"
+    });
+
+}
+
 /**
  * 
  * Actualizamos la tarjeta del dispositivo en el sidebar
  */
-function updateDeviceCard(element) {
-    console.log("Actualizando tarjeta y ubicacion unicamente del dispositivo", element);
-    const li = document.getElementById(`device-${element.id}`);
+function updateDeviceCard(IdElement) {
+    console.log("Actualizando tarjeta y ubicacion unicamente del dispositivo", IdElement);
+    const li = document.getElementById(`device-${IdElement}`);
     if (li) {
-        // Actualiza fecha
-        li.querySelector('.device-date').textContent = dayjs(element.date_update).fromNow();
 
-        // Actualiza velocidad/estado
-        const speedSpan = li.querySelector('.device-speed');
-        if (parseInt(element.speed, 10) > 0) {
-            speedSpan.innerHTML = `<span class="badge bg-success">Velocidad ${element.speed} MPH</span>`;
-        } else {
-            speedSpan.innerHTML = `<span class="badge bg-warning">Detenido</span>`;
-        }
+        // Actualiza nombre del dispositivo
+        getDispositive(IdElement, function (data) {
 
+            if (data.status === 200) {
+                const element = data.data;
+                // Actualiza fecha
+                li.querySelector('.device-date').textContent = dayjs(element.date_update).fromNow();
 
-        let marker = markers.find(m => m.id_gps === element.id);
-        if (marker.id_gps == element.id) {
-            // Verificamos si las coordenadas no estan vacias
-            let init_pos = Math.abs(marker.lat) + Math.abs(marker.lng);
-            let end_pos = Math.abs(element.latitude) + Math.abs(element.longitude);
-
-            if (init_pos != end_pos) { // El repa cambio de posicion
-
-                var newLocation = new google.maps.LatLng(element.latitude, element.longitude);
-                marker.setPosition(newLocation);
-                map.panTo(newLocation);
-                // Actualiza el contenido del InfoWindow
-                var newContent =
-                    '<div id="content" style="width: auto; height: auto;">' +
-                    '<h3>Dispositivo GPS <span class="badge bg-info">' + element.get_g_p_s
-                        .uuid_device +
-                    '</span> </h3>' +
-                    '<span>GPS Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                    element.get_g_p_s.name_device + '</b></span>' +
-                    '<span>Vehiculo Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                    element.get_vehicle.name_unit + '</b></span><br />' +
-                    '<span>Ultima actualización: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                    element.date_update + '</b></span><br />' +
-                    '<span>Coordenadas: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                    '<a href="https://www.google.com/maps?q=' + element.latitude + ',' +
-                    element.longitude + '" target="_blank">' + element.latitude + ',' +
-                    element.longitude + '</a></b></span><br />' +
-                    '<span class="badge bg-success">Velocidad: ' + element.speed +
-                    ' MPH</span>&nbsp;&nbsp;' +
-                    '<span class="badge bg-warning">HDOP: ' + element.hdop +
-                    ' MPH</span><br />' +
-                    '</div>';
-
-                if (marker.infowindow) {
-                    marker.infowindow.setContent(newContent);
+                // Actualiza velocidad/estado
+                const speedSpan = li.querySelector('.device-speed');
+                if (parseInt(element.speed, 10) > 0) {
+                    speedSpan.innerHTML = `<span class="badge bg-success">Velocidad ${element.speed} MPH</span>`;
+                } else {
+                    speedSpan.innerHTML = `<span class="badge bg-warning">Detenido</span>`;
                 }
 
-                // Animar el marcador
-                animateMarker(marker, element.get_trackings, 1800, function (coord, index, coordinates) {
-                    // Callback para detectar cambios
-                    if (detectChange(coordinates)) {
-                        console.log("Coordenadas cambiaron", coord);
-                        marker.setPosition(new google.maps.LatLng(coord.Latitude, coord.Longitude));
-                    }
-                });
-            }
-        }
 
+                let marker = markers.find(m => m.id_gps === element.id);
+                if (marker.id_gps == element.id) {
+                    // Verificamos si las coordenadas no estan vacias
+                    let init_pos = Math.abs(marker.lat) + Math.abs(marker.lng);
+                    let end_pos = Math.abs(element.latitude) + Math.abs(element.longitude);
+
+                    if (init_pos != end_pos) { // El repa cambio de posicion
+
+                        var newLocation = new google.maps.LatLng(element.latitude, element.longitude);
+                        marker.setPosition(newLocation);
+                        map.panTo(newLocation);
+                        // Actualiza el contenido del InfoWindow
+                        var newContent =
+                            '<div id="content" style="width: auto; height: auto;">' +
+                            '<h3>Dispositivo GPS <span class="badge bg-info">' + element.get_g_p_s
+                                .uuid_device +
+                            '</span> </h3>' +
+                            '<span>GPS Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                            element.get_g_p_s.name_device + '</b></span>' +
+                            '<span>Vehiculo Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                            element.get_vehicle.name_unit + '</b></span><br />' +
+                            '<span>Ultima actualización: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                            element.date_update + '</b></span><br />' +
+                            '<span>Coordenadas: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                            '<a href="https://www.google.com/maps?q=' + element.latitude + ',' +
+                            element.longitude + '" target="_blank">' + element.latitude + ',' +
+                            element.longitude + '</a></b></span><br />' +
+                            '<span class="badge bg-success">Velocidad: ' + element.speed +
+                            ' MPH</span>&nbsp;&nbsp;' +
+                            '<span class="badge bg-warning">HDOP: ' + element.hdop +
+                            ' MPH</span><br />' +
+                            '</div>';
+
+                        if (marker.infowindow) {
+                            marker.infowindow.setContent(newContent);
+                        }
+
+                        // Animar el marcador
+                        animateMarker(marker, element.get_trackings, 1800, function (coord, index, coordinates) {
+                            // Callback para detectar cambios
+                            if (detectChange(coordinates)) {
+                                console.log("Coordenadas cambiaron", coord);
+                                marker.setPosition(new google.maps.LatLng(coord.Latitude, coord.Longitude));
+                            }
+                        });
+                    }else {
+                        console.log("No hay cambio de posicion", element);
+                        console.log("Posicion actual", marker.getPosition());
+                        console.log("Posicion nueva", newLocation);
+                    }
+                }
+            }
+        });
     }
 }
 
