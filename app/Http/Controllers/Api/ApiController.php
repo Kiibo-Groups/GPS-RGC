@@ -505,7 +505,7 @@ class ApiController  extends Controller
 	public function getAllDispositives()
 	{
 
-		$getAll = Getgsminfo::where('gps_devices_id','!=', null)->with('getGPS', 'getVehicle', 'getTrackings')->get([
+		$getAll = Getgsminfo::where('gps_devices_id','!=', null)->with('getGPS', 'getVehicle')->get([
 			'id',
 			'longitude',
 			'latitude',
@@ -539,8 +539,9 @@ class ApiController  extends Controller
 
 		// Trackings del día de hoy para un dispositivo específico
 		$trackingsHoy = Trackings::where('device_id', $id)
-			->whereDate('date_update', Carbon::today())
-			->get();
+			->OrderBy('id','desc')
+			->whereDate('date_updated', Carbon::today())
+			->take(5)->get();
 		$getDispositive->get_trackings = $trackingsHoy;
 
 		return response()->json([

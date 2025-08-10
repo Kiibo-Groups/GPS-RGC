@@ -11,6 +11,7 @@ let lat,
     latlng,
     map,
     marker,
+    markerFollowId = null,
     body = document.querySelector('body'),
     navbarCustom = document.querySelector('.navbar-custom'),
     listGroup = document.getElementById('list-group'),
@@ -161,8 +162,8 @@ function ShowMaps(data) {
                                                 <span class="device-date">${dateUpdate}</span><br />
                                                 <span class="device-speed">
                                                     ${parseInt(element.speed, 10) > 0
-                    ? `<span class="badge bg-success">Velocidad ${element.speed} MPH</span>`
-                    : `<span class="badge bg-warning">Detenido</span>`}
+                                                    ? `<span class="badge bg-success">Velocidad ${element.speed} MPH</span>`
+                                                    : `<span class="badge bg-warning">Detenido</span>`}
                                                 </span>
                                             </span> 
                                         </div>
@@ -171,6 +172,15 @@ function ShowMaps(data) {
 
             listGroup.innerHTML += CardInnerMaps;
         }
+
+         // Cuando se hace click en un marker del mapa
+        // markers.forEach(marker => {
+        //     google.maps.event.addListener(marker, 'click', function () {
+        //         markerFollowId = marker.id_gps; // Seguir este marker
+        //     });
+        // });
+
+
 
         trackingMapsCard.classList.remove('d-none');
         // Applicamos Condensed al Sidebar
@@ -183,7 +193,7 @@ function ShowMaps(data) {
 }
 
 
-// Agrega este bloque después de crear los checkboxes (por ejemplo, después de renderizar el listado)
+// Event listener de los checkboxes
 document.addEventListener('change', function (e) {
     if (e.target.classList.contains('device-check')) {
         // Obtén todos los checkboxes marcados
@@ -195,6 +205,7 @@ document.addEventListener('change', function (e) {
         });
 
         if (checkedBoxes.length > 0) {
+            markerFollowId = checkedBoxes[0].id.replace('check-', '');
             // Mostrar solo los markers seleccionados
             const ids = Array.from(checkedBoxes).map(cb => cb.id.replace('check-', ''));
             markers.forEach(marker => {
@@ -205,17 +216,34 @@ document.addEventListener('change', function (e) {
                     var newLocation = new google.maps.LatLng(marker.lat, marker.lng);
                     map.panTo(newLocation);
                     map.setZoom(20);
+                    
                 } else {
                     marker.setMap(null);
                 }
             });
         } else {
+            markerFollowId = null; // No seguir a nadie
             // Si ninguno está marcado, muestra todos los markers
             markers.forEach(marker => {
                 marker.setMap(map);
             });
         }
     }
+});
+
+// Buscador de dispositivos
+document.getElementById('searchDevice').addEventListener('input', function(e) {
+    const search = e.target.value.toLowerCase();
+    document.querySelectorAll('#list-group li').forEach(li => {
+        // Puedes buscar por nombre de dispositivo, descripción, etc.
+        const name = li.querySelector('.name') ? li.querySelector('.name').textContent.toLowerCase() : '';
+        const desc = li.querySelector('.desc') ? li.querySelector('.desc').textContent.toLowerCase() : '';
+        if (name.includes(search) || desc.includes(search)) {
+            li.style.display = '';
+        } else {
+            li.style.display = 'none';
+        }
+    });
 });
 
 /**
@@ -252,7 +280,6 @@ function getDispositive(id, callback) {
  * Actualizamos la tarjeta del dispositivo en el sidebar
  */
 function updateDeviceCard(IdElement) {
-    console.log("Actualizando tarjeta y ubicacion unicamente del dispositivo", IdElement);
     const li = document.getElementById(`device-${IdElement}`);
     if (li) {
 
@@ -261,6 +288,8 @@ function updateDeviceCard(IdElement) {
 
             if (data.status === 200) {
                 const element = data.data;
+                console.log("Actualizando tarjeta y ubicacion unicamente del dispositivo", element);
+                console.log("Marker a seguir", markerFollowId);
                 // Actualiza fecha
                 li.querySelector('.device-date').textContent = dayjs(element.date_update).fromNow();
 
@@ -281,43 +310,35 @@ function updateDeviceCard(IdElement) {
                     var newLocation = new google.maps.LatLng(element.latitude, element.longitude);
                     // if (detectChange(element.get_trackings)) {           
                     // if (init_pos != end_pos) { // El repa cambio de posicion
-                        marker.setPosition(newLocation);
-                        map.panTo(newLocation);
-                        // Actualiza el contenido del InfoWindow
-                        var newContent =
-                            '<div id="content" style="width: auto; height: auto;">' +
-                            '<h3>Dispositivo GPS <span class="badge bg-info">' + element.get_g_p_s
-                                .uuid_device +
-                            '</span> </h3>' +
-                            '<span>GPS Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                            element.get_g_p_s.name_device + '</b></span>' +
-                            '<span>Vehiculo Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                            element.get_vehicle.name_unit + '</b></span><br />' +
-                            '<span>Ultima actualización: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                            element.date_update + '</b></span><br />' +
-                            '<span>Coordenadas: <b style="display:block;font-size: 14px;font-weight: 600;">' +
-                            '<a href="https://www.google.com/maps?q=' + element.latitude + ',' +
-                            element.longitude + '" target="_blank">' + element.latitude + ',' +
-                            element.longitude + '</a></b></span><br />' +
-                            '<span class="badge bg-success">Velocidad: ' + element.speed +
-                            ' MPH</span>&nbsp;&nbsp;' +
-                            '<span class="badge bg-warning">HDOP: ' + element.hdop +
-                            ' MPH</span><br />' +
-                            '</div>';
-
-                        if (marker.infowindow) {
-                            marker.infowindow.setContent(newContent);
-                        }
-
-                        // Animar el marcador
-                        animateMarker(marker, element.get_trackings, 1800, function (coord, index, coordinates) {
-                            // Callback para detectar cambios
-                            console.log("Coordenadas cambiaron", coord, index);
-                            var UpdateLoc = new google.maps.LatLng(element.latitude, element.longitude); 
-                            console.log("Actualizando posicion a", UpdateLoc);
-                            marker.setPosition(UpdateLoc);
-                            map.panTo(UpdateLoc);
-                        });
+                    // marker.setPosition(newLocation);
+                    // map.panTo(newLocation);
+                    // Actualiza el contenido del InfoWindow
+                    var newContent =
+                        '<div id="content" style="width: auto; height: auto;">' +
+                        '<h3>Dispositivo GPS <span class="badge bg-info">' + element.get_g_p_s
+                            .uuid_device +
+                        '</span> </h3>' +
+                        '<span>GPS Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                        element.get_g_p_s.name_device + '</b></span>' +
+                        '<span>Vehiculo Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                        element.get_vehicle.name_unit + '</b></span><br />' +
+                        '<span>Ultima actualización: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                        element.date_update + '</b></span><br />' +
+                        '<span>Coordenadas: <b style="display:block;font-size: 14px;font-weight: 600;">' +
+                        '<a href="https://www.google.com/maps?q=' + element.latitude + ',' +
+                        element.longitude + '" target="_blank">' + element.latitude + ',' +
+                        element.longitude + '</a></b></span><br />' +
+                        '<span class="badge bg-success">Velocidad: ' + element.speed +
+                        ' MPH</span>&nbsp;&nbsp;' +
+                        '<span class="badge bg-warning">HDOP: ' + element.hdop +
+                        ' MPH</span><br />' +
+                        '</div>';
+ 
+                    // Animar el marcador
+                    animateMarker(marker, element.get_trackings, 1000, async function (coord, index, coordinates) {
+                        // Callback para detectar cambios
+                        await moveMarker(marker,element,newContent, coord, 0);
+                    });
                     // }else {
                     //     console.log("No hay cambio de posicion", element);
                     //     console.log("Posicion actual", init_pos);
@@ -331,22 +352,65 @@ function updateDeviceCard(IdElement) {
 
 function animateMarker(marker, coordinates, interval = 500, onUpdate) {
     let index = 0;
+    let currentIndex = 0;
     function move() {
-        if (index < coordinates.length) {
+        if (index < 1) {
             const coord = JSON.parse(coordinates[index].positions);
-            const latLng = new google.maps.LatLng(coord.Latitude, coord.Longitude);
-            marker.setPosition(latLng);
-
+            
             // Callback para detectar cambios
             if (typeof onUpdate === 'function') {
                 onUpdate(coord, index, coordinates);
             }
-
+            console.log("Aumento de index", index);
             index++;
             setTimeout(move, interval);
         }
     }
     move();
+}
+
+function moveMarker(marker, element,newContent, coordinates, currentIndex = 0) { 
+    
+    if (!coordinates || !coordinates.length) return; // Seguridad 
+    if (currentIndex < coordinates.length) {
+        marker.setPosition(new google.maps.LatLng(coordinates[currentIndex].Latitude, coordinates[currentIndex].Longitude));
+        marker.lat = coordinates[currentIndex].Latitude;
+        marker.lng = coordinates[currentIndex].Longitude;
+        
+        // Solo sigue si este marker es el seleccionado
+        if (markerFollowId && marker.id_gps == markerFollowId) {
+            map.panTo(new google.maps.LatLng(coordinates[currentIndex].Latitude, coordinates[currentIndex].Longitude));
+        }
+        currentIndex++;
+        setTimeout(function() {
+            moveMarker(marker, element, newContent, coordinates, currentIndex);
+        }, 800); // Cambia la posición cada 2 segundos
+    }else {
+        let lxs = markers.findIndex(m => m.id_gps === marker.id);
+        if (lxs !== -1) {
+            markers[lxs].setMap(null); // Quita el marker viejo del mapa
+            markers.splice(lxs, 1);    // Elimina del array
+
+
+            const newMarker = new google.maps.Marker({
+                position: newLocation,
+                map: map,
+                title: element.get_vehicle.name_unit,
+                icon: markerIcon,
+                lat: element.latitude,
+                lng: element.longitude,
+                id_gps: element.id
+            });
+
+            var infowindow = new google.maps.InfoWindow({
+                content: newContent
+            });
+
+            newMarker.infowindow = infowindow;
+
+            markers.push(newMarker);
+        }
+    }
 }
 
 function detectChange(coordinates) {
@@ -355,8 +419,8 @@ function detectChange(coordinates) {
     const prev = coordinates[coordinates.length - 2];
     // Compara propiedades relevantes
     return last.Latitude !== prev.Latitude ||
-           last.Longitude !== prev.Longitude ||
-           last.Speed !== prev.Speed;
+        last.Longitude !== prev.Longitude ||
+        last.Speed !== prev.Speed;
 }
 
 /**

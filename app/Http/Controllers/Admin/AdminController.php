@@ -191,7 +191,7 @@ class AdminController extends Controller
 	public function trackings()
 	{
 		$getAll = Getgsminfo::where('gps_devices_id','!=', null)
-			->with('getGPS', 'getVehicle','getTrackings')
+			->with('getGPS', 'getVehicle')
 			->get([
 				'id',
 				'longitude',

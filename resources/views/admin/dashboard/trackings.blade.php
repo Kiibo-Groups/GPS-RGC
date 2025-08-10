@@ -21,7 +21,16 @@
 
             <div class="tracking-maps-card d-none">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-header d-flex align-items-center justify-content-between">
+                        <input type="search" class="form-control" id="searchDevice" placeholder="Buscar dispositivo...">
+                         <button class="btn btn-primary waves-effect waves-light" 
+                            data-bs-toggle="collapse" 
+                            data-bs-target="#collapseExample"
+                            aria-controls="collapseExample">
+                            <i class="mdi mdi-chevron-down accordion-arrow"></i>
+                        </button>
+                    </div>
+                    <div class="card-body collapse show" id="collapseExample">
                         <ul class="nav nav-tabs nav-bordered">
                             <li class="nav-item">
                                 <a href="#control_rutas" data-bs-toggle="tab" aria-expanded="false" class="nav-link active">
