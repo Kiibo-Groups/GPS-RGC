@@ -541,7 +541,7 @@ class ApiController  extends Controller
 		$trackingsHoy = Trackings::where('device_id', $id)
 			->OrderBy('id','desc')
 			->whereDate('date_updated', Carbon::today())
-			->take(5)->get();
+			->first();
 		$getDispositive->get_trackings = $trackingsHoy;
 
 		return response()->json([

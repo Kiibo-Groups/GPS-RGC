@@ -16,7 +16,8 @@ let lat,
     navbarCustom = document.querySelector('.navbar-custom'),
     listGroup = document.getElementById('list-group'),
     trackingMapsCard = document.querySelector('.tracking-maps-card');
-
+var directionsService;
+var directionsRenderer;
 function initMap() {
     console.log("Inicializamos el mapa...");
     // Verificamos si el navegador soporta Geolocation
@@ -38,8 +39,12 @@ function initMap() {
                 },
                 zoom: 12,
                 disableDefaultUI: true,
-            }
-            );
+            });
+
+            directionsService = new google.maps.DirectionsService();
+            directionsRenderer = new google.maps.DirectionsRenderer({
+                map: map
+            });
 
             initZoomControl(map);
             initMapTypeControl(map);
@@ -74,7 +79,6 @@ function ViewPositionDevice(latitude, longitude, id) {
         lng: lng
     });
     map.setZoom(20);
-
 }
 
 /**
@@ -139,8 +143,8 @@ function ShowMaps(data) {
 
             google.maps.event.addListener(marker, 'click', function (marker, content, infowindow) {
                 return function () {
-                    infowindow.setContent(content); //asignar el contenido al globo
-                    infowindow.open(map, marker); //mostrarlo
+                    infowindow.setContent(content);
+                    infowindow.open(map, marker);
                 };
             }(marker, content, infowindow));
 
@@ -162,8 +166,8 @@ function ShowMaps(data) {
                                                 <span class="device-date">${dateUpdate}</span><br />
                                                 <span class="device-speed">
                                                     ${parseInt(element.speed, 10) > 0
-                                                    ? `<span class="badge bg-success">Velocidad ${element.speed} MPH</span>`
-                                                    : `<span class="badge bg-warning">Detenido</span>`}
+                    ? `<span class="badge bg-success">Velocidad ${element.speed} MPH</span>`
+                    : `<span class="badge bg-warning">Detenido</span>`}
                                                 </span>
                                             </span> 
                                         </div>
@@ -173,7 +177,7 @@ function ShowMaps(data) {
             listGroup.innerHTML += CardInnerMaps;
         }
 
-         // Cuando se hace click en un marker del mapa
+        // Cuando se hace click en un marker del mapa
         // markers.forEach(marker => {
         //     google.maps.event.addListener(marker, 'click', function () {
         //         markerFollowId = marker.id_gps; // Seguir este marker
@@ -216,7 +220,7 @@ document.addEventListener('change', function (e) {
                     var newLocation = new google.maps.LatLng(marker.lat, marker.lng);
                     map.panTo(newLocation);
                     map.setZoom(20);
-                    
+                    updateDeviceCard(marker.id_gps);
                 } else {
                     marker.setMap(null);
                 }
@@ -232,7 +236,7 @@ document.addEventListener('change', function (e) {
 });
 
 // Buscador de dispositivos
-document.getElementById('searchDevice').addEventListener('input', function(e) {
+document.getElementById('searchDevice').addEventListener('input', function (e) {
     const search = e.target.value.toLowerCase();
     document.querySelectorAll('#list-group li').forEach(li => {
         // Puedes buscar por nombre de dispositivo, descripción, etc.
@@ -288,8 +292,7 @@ function updateDeviceCard(IdElement) {
 
             if (data.status === 200) {
                 const element = data.data;
-                console.log("Actualizando tarjeta y ubicacion unicamente del dispositivo", element);
-                console.log("Marker a seguir", markerFollowId);
+
                 // Actualiza fecha
                 li.querySelector('.device-date').textContent = dayjs(element.date_update).fromNow();
 
@@ -310,8 +313,10 @@ function updateDeviceCard(IdElement) {
                     var newLocation = new google.maps.LatLng(element.latitude, element.longitude);
                     // if (detectChange(element.get_trackings)) {           
                     // if (init_pos != end_pos) { // El repa cambio de posicion
-                    // marker.setPosition(newLocation);
-                    // map.panTo(newLocation);
+                    marker.setPosition(newLocation);
+                    map.panTo(newLocation);
+                    google.maps.event.trigger(marker, 'click');
+                    
                     // Actualiza el contenido del InfoWindow
                     var newContent =
                         '<div id="content" style="width: auto; height: auto;">' +
@@ -333,12 +338,18 @@ function updateDeviceCard(IdElement) {
                         '<span class="badge bg-warning">HDOP: ' + element.hdop +
                         ' MPH</span><br />' +
                         '</div>';
- 
+
                     // Animar el marcador
-                    animateMarker(marker, element.get_trackings, 1000, async function (coord, index, coordinates) {
-                        // Callback para detectar cambios
-                        await moveMarker(marker,element,newContent, coord, 0);
-                    });
+                    // En updateDeviceCard, reemplaza la llamada actual por:
+                    let Coordinates = JSON.parse(element.get_trackings.positions);
+                    console.log("Coordenadas del dispositivo", Coordinates);
+                    if (Coordinates && Coordinates.length > 0) {
+                        calculateAndDisplayRoute(Coordinates, marker);
+                    }
+                    // animateMarker(marker, element.get_trackings, 1000, async function (coord, index, coordinates) {
+                    //     // Callback para detectar cambios
+                    //     await moveMarker(marker,element,newContent, coord, 0);
+                    // });
                     // }else {
                     //     console.log("No hay cambio de posicion", element);
                     //     console.log("Posicion actual", init_pos);
@@ -350,68 +361,122 @@ function updateDeviceCard(IdElement) {
     }
 }
 
-function animateMarker(marker, coordinates, interval = 500, onUpdate) {
+function drawRoute(coordinates, marker) {
+    // Crear el array de LatLng para la polyline
+    const path = coordinates.map(point => {
+        return new google.maps.LatLng(point.Latitude, point.Longitude);
+    });
+
+    // Animar el marker a lo largo de la polyline
+    animateMarkerAlongPath(path, marker);
+}
+
+function animateMarkerAlongPath(path, marker, duration = 3500) {
     let index = 0;
-    let currentIndex = 0;
-    function move() {
-        if (index < 1) {
-            const coord = JSON.parse(coordinates[index].positions);
-            
-            // Callback para detectar cambios
-            if (typeof onUpdate === 'function') {
-                onUpdate(coord, index, coordinates);
+    map.panTo(path[1]);
+    function animateSegment(startTime, from, to) {
+        function step(timestamp) {
+            if (!startTime) startTime = timestamp;
+            const progress = Math.min((timestamp - startTime) / duration, 1);
+
+            // Interpolación lineal entre puntos
+            const lat = from.lat() + (to.lat() - from.lat()) * progress;
+            const lng = from.lng() + (to.lng() - from.lng()) * progress;
+            marker.setPosition({ lat, lng });
+            if (progress < 1) {
+                requestAnimationFrame(step);
+            } else {
+                index++;
+                if (index < path.length - 1) {
+                    requestAnimationFrame((t) =>
+                        animateSegment(t, path[index], path[index + 1])
+                    );
+                }
             }
-            console.log("Aumento de index", index);
-            index++;
-            setTimeout(move, interval);
         }
+        requestAnimationFrame(step);
     }
-    move();
-}
 
-function moveMarker(marker, element,newContent, coordinates, currentIndex = 0) { 
-    
-    if (!coordinates || !coordinates.length) return; // Seguridad 
-    if (currentIndex < coordinates.length) {
-        marker.setPosition(new google.maps.LatLng(coordinates[currentIndex].Latitude, coordinates[currentIndex].Longitude));
-        marker.lat = coordinates[currentIndex].Latitude;
-        marker.lng = coordinates[currentIndex].Longitude;
-        
-        // Solo sigue si este marker es el seleccionado
-        if (markerFollowId && marker.id_gps == markerFollowId) {
-            map.panTo(new google.maps.LatLng(coordinates[currentIndex].Latitude, coordinates[currentIndex].Longitude));
-        }
-        currentIndex++;
-        setTimeout(function() {
-            moveMarker(marker, element, newContent, coordinates, currentIndex);
-        }, 800); // Cambia la posición cada 2 segundos
-    }else {
-        let lxs = markers.findIndex(m => m.id_gps === marker.id);
-        if (lxs !== -1) {
-            markers[lxs].setMap(null); // Quita el marker viejo del mapa
-            markers.splice(lxs, 1);    // Elimina del array
-
-
-            const newMarker = new google.maps.Marker({
-                position: newLocation,
-                map: map,
-                title: element.get_vehicle.name_unit,
-                icon: markerIcon,
-                lat: element.latitude,
-                lng: element.longitude,
-                id_gps: element.id
-            });
-
-            var infowindow = new google.maps.InfoWindow({
-                content: newContent
-            });
-
-            newMarker.infowindow = infowindow;
-
-            markers.push(newMarker);
-        }
+    if (path.length > 1) {
+        animateSegment(null, path[0], path[1]);
     }
 }
+
+
+// Reemplazar la función calculateAndDisplayRoute por:
+function calculateAndDisplayRoute(coordinates, marker) {
+    if (!coordinates || !coordinates.length) return;
+
+    // Limpiar rutas anteriores si existen
+    if (directionsRenderer) {
+        directionsRenderer.setMap(null);
+    }
+
+    drawRoute(coordinates, marker);
+}
+
+// function animateMarker(marker, coordinates, interval = 500, onUpdate) {
+//     let index = 0;
+//     let currentIndex = 0;
+//     function move() {
+//         if (index < 1) {
+//             const coord = JSON.parse(coordinates[index].positions);
+
+//             // Callback para detectar cambios
+//             if (typeof onUpdate === 'function') {
+//                 onUpdate(coord, index, coordinates);
+//             }
+//             console.log("Aumento de index", index);
+//             index++;
+//             setTimeout(move, interval);
+//         }
+//     }
+//     move();
+// }
+
+// function moveMarker(marker, element, newContent, coordinates, currentIndex = 0) {
+
+//     if (!coordinates || !coordinates.length) return; // Seguridad 
+//     if (currentIndex < coordinates.length) {
+//         marker.setPosition(new google.maps.LatLng(coordinates[currentIndex].Latitude, coordinates[currentIndex].Longitude));
+//         marker.lat = coordinates[currentIndex].Latitude;
+//         marker.lng = coordinates[currentIndex].Longitude;
+
+//         // Solo sigue si este marker es el seleccionado
+//         if (markerFollowId && marker.id_gps == markerFollowId) {
+//             map.panTo(new google.maps.LatLng(coordinates[currentIndex].Latitude, coordinates[currentIndex].Longitude));
+//         }
+//         currentIndex++;
+//         setTimeout(function () {
+//             moveMarker(marker, element, newContent, coordinates, currentIndex);
+//         }, 800); // Cambia la posición cada 2 segundos
+//     } else {
+//         let lxs = markers.findIndex(m => m.id_gps === marker.id);
+//         if (lxs !== -1) {
+//             markers[lxs].setMap(null); // Quita el marker viejo del mapa
+//             markers.splice(lxs, 1);    // Elimina del array
+
+
+//             const newMarker = new google.maps.Marker({
+//                 position: newLocation,
+//                 map: map,
+//                 title: element.get_vehicle.name_unit,
+//                 icon: markerIcon,
+//                 lat: element.latitude,
+//                 lng: element.longitude,
+//                 id_gps: element.id
+//             });
+
+//             var infowindow = new google.maps.InfoWindow({
+//                 content: newContent
+//             });
+
+//             newMarker.infowindow = infowindow;
+
+//             markers.push(newMarker);
+//         }
+//     }
+// }
 
 function detectChange(coordinates) {
     if (coordinates.length < 2) return false;

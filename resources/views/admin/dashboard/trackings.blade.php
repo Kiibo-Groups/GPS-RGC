@@ -12,7 +12,7 @@
 @endsection
 @section('css')
 <script>
-    let markerIcon = "{{ asset('assets/images/marker.png') }}";
+    let markerIcon = "{{ asset('assets/images/marker2.png') }}";
 </script>
 @endsection
 @section('content')
