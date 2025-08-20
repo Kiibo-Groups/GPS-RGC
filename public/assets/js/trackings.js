@@ -346,9 +346,15 @@ function updateDeviceCard(IdElement) {
 
                     console.log("Comparando coordenadas actuales vs anteriores");
                     if (compareCoordinates(Coordinates, trackingslast)) {
-                        console.log("Se detectaron cambios en las coordenadas, animando...");
-                        if (Coordinates && Coordinates.length > 0) {
-                            calculateAndDisplayRoute(Coordinates, marker);
+                        console.log("Se detectaron cambios en las coordenadas...");
+                        console.log("Obteniendo solo las coordenadas nuevas...");
+                        // Obtener solo las coordenadas nuevas
+                        const newCoordinates = getNewCoordinates(Coordinates, trackingslast);
+                        if (newCoordinates.length > 0) {
+                            console.log("Animando nuevas coordenadas...");
+                            calculateAndDisplayRoute(newCoordinates, marker);
+                        } else {
+                            console.log("No hay nuevas coordenadas para animar");
                         }
                     } else {
                         console.log("No hay cambios en las coordenadas, no se requiere animación");
@@ -384,6 +390,26 @@ function compareCoordinates(current, last) {
            currentLast.Speed !== previousLast.Speed;
 }
 
+function getNewCoordinates(current, last) {
+    if (!last || !last.length) return current;
+    
+    // Encuentra el índice donde empiezan las nuevas coordenadas
+    let startIndex = 0;
+    for (let i = 0; i < current.length; i++) {
+        if (i >= last.length) {
+            startIndex = i;
+            break;
+        }
+        if (current[i].Latitude !== last[i].Latitude || 
+            current[i].Longitude !== last[i].Longitude) {
+            startIndex = i;
+            break;
+        }
+    }
+    
+    // Retorna solo las coordenadas nuevas
+    return current.slice(startIndex);
+}
 
 function drawRoute(coordinates, marker) {
     // Crear el array de LatLng para la polyline
