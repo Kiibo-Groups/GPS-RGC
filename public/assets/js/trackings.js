@@ -342,9 +342,16 @@ function updateDeviceCard(IdElement) {
                     // Animar el marcador
                     // En updateDeviceCard, reemplaza la llamada actual por:
                     let Coordinates = JSON.parse(element.get_trackings.positions);
-                    console.log("Coordenadas del dispositivo", Coordinates);
-                    if (Coordinates && Coordinates.length > 0) {
-                        calculateAndDisplayRoute(Coordinates, marker);
+                    let trackingslast = JSON.parse(element.trackingslast.positions);
+
+                    console.log("Comparando coordenadas actuales vs anteriores");
+                    if (compareCoordinates(Coordinates, trackingslast)) {
+                        console.log("Se detectaron cambios en las coordenadas, animando...");
+                        if (Coordinates && Coordinates.length > 0) {
+                            calculateAndDisplayRoute(Coordinates, marker);
+                        }
+                    } else {
+                        console.log("No hay cambios en las coordenadas, no se requiere animación");
                     }
                     // animateMarker(marker, element.get_trackings, 1000, async function (coord, index, coordinates) {
                     //     // Callback para detectar cambios
@@ -360,6 +367,23 @@ function updateDeviceCard(IdElement) {
         });
     }
 }
+
+function compareCoordinates(current, last) {
+    // Si no hay coordenadas anteriores, considerarlo como cambio
+    if (!last || !last.length) return true;
+    
+    // Si tienen diferente cantidad de coordenadas, hay cambio
+    if (current.length !== last.length) return true;
+    
+    // Comparar la última coordenada de cada array
+    const currentLast = current[current.length - 1];
+    const previousLast = last[last.length - 1];
+    
+    return currentLast.Latitude !== previousLast.Latitude || 
+           currentLast.Longitude !== previousLast.Longitude ||
+           currentLast.Speed !== previousLast.Speed;
+}
+
 
 function drawRoute(coordinates, marker) {
     // Crear el array de LatLng para la polyline

@@ -538,11 +538,15 @@ class ApiController  extends Controller
 		}
 
 		// Trackings del día de hoy para un dispositivo específico
-		$trackingsHoy = Trackings::where('device_id', $id)
-			->OrderBy('id','desc')
+		$trackings = Trackings::where('device_id', $id)
 			->whereDate('date_updated', Carbon::today())
-			->first();
-		$getDispositive->get_trackings = $trackingsHoy;
+			->orderBy('id', 'desc')
+			->take(2)
+			->get();
+
+
+		$getDispositive->get_trackings = $trackings->first();  
+		$getDispositive->trackingslast = $trackings->last();
 
 		return response()->json([
 			'status' => 200,
