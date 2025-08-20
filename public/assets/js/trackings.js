@@ -220,7 +220,7 @@ document.addEventListener('change', function (e) {
                     var newLocation = new google.maps.LatLng(marker.lat, marker.lng);
                     map.panTo(newLocation);
                     map.setZoom(20);
-                    updateDeviceCard(marker.id_gps);
+                    // updateDeviceCard(marker.id_gps);
                 } else {
                     marker.setMap(null);
                 }
