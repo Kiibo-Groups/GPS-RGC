@@ -16,8 +16,9 @@ let lat,
     navbarCustom = document.querySelector('.navbar-custom'),
     listGroup = document.getElementById('list-group'),
     trackingMapsCard = document.querySelector('.tracking-maps-card');
-var directionsService;
-var directionsRenderer;
+    var directionsService;
+    var directionsRenderer;
+    let trailPath = null;
 function initMap() {
     console.log("Inicializamos el mapa...");
     // Verificamos si el navegador soporta Geolocation
@@ -110,11 +111,20 @@ function ShowMaps(data) {
                 position: location,
                 map: map,
                 title: element.get_vehicle.name_unit,
-                icon: markerIcon,
+                icon: {
+                    path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                    scale: 5,
+                    rotation: 0, // después lo actualizamos
+                    strokeColor: "#000",
+                    fillColor: "#00F",
+                    fillOpacity: 1
+                },
                 lat: element.latitude,
                 lng: element.longitude,
                 id_gps: element.id
             });
+
+
 
             //contenido de la infowindow
             var content =
@@ -220,7 +230,7 @@ document.addEventListener('change', function (e) {
                     var newLocation = new google.maps.LatLng(marker.lat, marker.lng);
                     map.panTo(newLocation);
                     map.setZoom(20);
-                    // updateDeviceCard(marker.id_gps);
+                    updateDeviceCard(marker.id_gps);
                 } else {
                     marker.setMap(null);
                 }
@@ -316,7 +326,15 @@ function updateDeviceCard(IdElement) {
                     marker.setPosition(newLocation);
                     map.panTo(newLocation);
                     google.maps.event.trigger(marker, 'click');
-                    
+
+                    // Crear polyline para la estela
+                    trailPath = new google.maps.Polyline({
+                        map,
+                        path: [newLocation],
+                        strokeColor: "#00F",
+                        strokeOpacity: 0.7,
+                        strokeWeight: 2
+                    });
                     // Actualiza el contenido del InfoWindow
                     var newContent =
                         '<div id="content" style="width: auto; height: auto;">' +
@@ -341,33 +359,31 @@ function updateDeviceCard(IdElement) {
 
                     // Animar el marcador
                     // En updateDeviceCard, reemplaza la llamada actual por:
-                    let Coordinates = JSON.parse(element.get_trackings.positions);
-                    let trackingslast = JSON.parse(element.trackingslast.positions);
+                    if(element.get_trackings.positions || element.trackingslast.positions) {
 
-                    console.log("Comparando coordenadas actuales vs anteriores");
-                    if (compareCoordinates(Coordinates, trackingslast)) {
-                        console.log("Se detectaron cambios en las coordenadas...");
-                        console.log("Obteniendo solo las coordenadas nuevas...");
-                        // Obtener solo las coordenadas nuevas
-                        const newCoordinates = getNewCoordinates(Coordinates, trackingslast);
-                        if (newCoordinates.length > 0) {
-                            console.log("Animando nuevas coordenadas...");
-                            calculateAndDisplayRoute(newCoordinates, marker);
+                        let Coordinates = JSON.parse(element.get_trackings.positions);
+                        let trackingslast = JSON.parse(element.trackingslast.positions);
+
+                        console.log("Comparando coordenadas actuales vs anteriores");
+                        console.log(Coordinates, trackingslast)
+                        if (compareCoordinates(Coordinates, trackingslast)) {
+                            console.log("Se detectaron cambios en las coordenadas...");
+                            console.log("Obteniendo solo las coordenadas nuevas...");
+                            // Obtener solo las coordenadas nuevas
+                            const newCoordinates = getNewCoordinates(Coordinates, trackingslast);
+                            if (newCoordinates.length > 0) {
+                                console.log("Animando nuevas coordenadas...");
+                                calculateAndDisplayRoute(newCoordinates, marker);
+                            } else {
+                                console.log("No hay nuevas coordenadas para animar");
+                            }
                         } else {
-                            console.log("No hay nuevas coordenadas para animar");
+                            console.log("No hay cambios en las coordenadas, no se requiere animación");
                         }
                     } else {
-                        console.log("No hay cambios en las coordenadas, no se requiere animación");
-                    }
-                    // animateMarker(marker, element.get_trackings, 1000, async function (coord, index, coordinates) {
-                    //     // Callback para detectar cambios
-                    //     await moveMarker(marker,element,newContent, coord, 0);
-                    // });
-                    // }else {
-                    //     console.log("No hay cambio de posicion", element);
-                    //     console.log("Posicion actual", init_pos);
-                    //     console.log("Posicion nueva", end_pos);
-                    // }
+                        console.log("No hay datos de trackings disponibles para animar");
+                    }   
+                   
                 }
             }
         });
@@ -377,22 +393,22 @@ function updateDeviceCard(IdElement) {
 function compareCoordinates(current, last) {
     // Si no hay coordenadas anteriores, considerarlo como cambio
     if (!last || !last.length) return true;
-    
+
     // Si tienen diferente cantidad de coordenadas, hay cambio
     if (current.length !== last.length) return true;
-    
+
     // Comparar la última coordenada de cada array
     const currentLast = current[current.length - 1];
     const previousLast = last[last.length - 1];
-    
-    return currentLast.Latitude !== previousLast.Latitude || 
-           currentLast.Longitude !== previousLast.Longitude ||
-           currentLast.Speed !== previousLast.Speed;
+
+    return currentLast.Latitude !== previousLast.Latitude ||
+        currentLast.Longitude !== previousLast.Longitude ||
+        currentLast.Speed !== previousLast.Speed;
 }
 
 function getNewCoordinates(current, last) {
     if (!last || !last.length) return current;
-    
+
     // Encuentra el índice donde empiezan las nuevas coordenadas
     let startIndex = 0;
     for (let i = 0; i < current.length; i++) {
@@ -400,39 +416,64 @@ function getNewCoordinates(current, last) {
             startIndex = i;
             break;
         }
-        if (current[i].Latitude !== last[i].Latitude || 
+        if (current[i].Latitude !== last[i].Latitude ||
             current[i].Longitude !== last[i].Longitude) {
             startIndex = i;
             break;
         }
     }
-    
+
     // Retorna solo las coordenadas nuevas
     return current.slice(startIndex);
+}
+
+// Función para actualizar posición y orientación
+function updateMarker(lat, lng, angle, marker) {
+    // Actualizar marker
+    marker.setPosition({ lat, lng });
+    const icon = marker.getIcon();
+    icon.rotation = angle;
+    marker.setIcon(icon);
+
+    const path = trailPath.getPath();
+    path.push(new google.maps.LatLng(lat, lng));
+
+    // Mantener estela corta (ej: últimos 10 puntos)
+    if (path.getLength() > 10) {
+        path.removeAt(0);
+    }
 }
 
 function drawRoute(coordinates, marker) {
     // Crear el array de LatLng para la polyline
     const path = coordinates.map(point => {
-        return new google.maps.LatLng(point.Latitude, point.Longitude);
+        return {
+            angle: point.Angle,
+            speed: point.Speed,
+            coords: new google.maps.LatLng(point.Latitude, point.Longitude)
+        };
     });
 
+    console.log("Dibujando ruta con las siguientes coordenadas:", path);
     // Animar el marker a lo largo de la polyline
     animateMarkerAlongPath(path, marker);
 }
 
 function animateMarkerAlongPath(path, marker, duration = 3500) {
     let index = 0;
-    map.panTo(path[1]);
+    map.panTo(path[1].coords);
     function animateSegment(startTime, from, to) {
         function step(timestamp) {
             if (!startTime) startTime = timestamp;
             const progress = Math.min((timestamp - startTime) / duration, 1);
 
             // Interpolación lineal entre puntos
-            const lat = from.lat() + (to.lat() - from.lat()) * progress;
-            const lng = from.lng() + (to.lng() - from.lng()) * progress;
+            const lat = from.coords.lat() + (to.coords.lat() - from.coords.lat()) * progress;
+            const lng = from.coords.lng() + (to.coords.lng() - from.coords.lng()) * progress;
+            const angle = from.angle;
+
             marker.setPosition({ lat, lng });
+            updateMarker(lat, lng, angle, marker)
             if (progress < 1) {
                 requestAnimationFrame(step);
             } else {
@@ -451,7 +492,6 @@ function animateMarkerAlongPath(path, marker, duration = 3500) {
         animateSegment(null, path[0], path[1]);
     }
 }
-
 
 // Reemplazar la función calculateAndDisplayRoute por:
 function calculateAndDisplayRoute(coordinates, marker) {
