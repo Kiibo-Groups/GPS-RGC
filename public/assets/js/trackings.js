@@ -461,7 +461,9 @@ function drawRoute(coordinates, marker) {
 
 function animateMarkerAlongPath(path, marker, duration = 3500) {
     let index = 0;
-    map.panTo(path[1].coords);
+    if(path.length > 1) {
+         map.panTo(path[1].coords);
+    }
     function animateSegment(startTime, from, to) {
         function step(timestamp) {
             if (!startTime) startTime = timestamp;

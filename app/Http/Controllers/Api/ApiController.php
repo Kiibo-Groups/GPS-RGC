@@ -219,7 +219,7 @@ class ApiController  extends Controller
 		// 	"Angle" => 280.80000000000001136868377216160297393798828125,
 		// 	"Satellites" => 22,
 		// 	"Speed" => 17
-		// ], 
+		// ],
 		
 		$imei = $datos['imei'] ?? $datos['imei'] ?? null;
 		$datos['packet'] = $datos['packet'] ?? null; // Asegurarse de que 'packet' esté presente
