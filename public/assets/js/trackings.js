@@ -139,7 +139,7 @@ function ShowMaps(data) {
                 element.date_update + '</b></span><br />' +
                 '<span class="device-coords">Coordenadas: <b style="display:block;font-size: 14px;font-weight: 600;">' +
                 '<a href="https://www.google.com/maps?q=' + element.latitude + ',' + element.longitude + '" target="_blank">' + element.latitude + ',' + element.longitude + '</a></b></span><br />' +
-                '<span class="badge bg-success">Velocidad: ' + element.speed +
+                '<span class="badge bg-success device-speed">Velocidad: ' + element.speed +
                 ' MPH</span>&nbsp;&nbsp;' +
                 '<span class="badge bg-warning">HDOP: ' + element.hdop + ' MPH</span><br />' +
                 '</div>';
@@ -176,8 +176,8 @@ function ShowMaps(data) {
                                                 <span class="device-date">${dateUpdate}</span><br />
                                                 <span class="device-speed">
                                                     ${parseInt(element.speed, 10) > 0
-                    ? `<span class="badge bg-success">Velocidad ${element.speed} MPH</span>`
-                    : `<span class="badge bg-warning">Detenido</span>`}
+                                                    ? `<span class="badge bg-success">Velocidad ${element.speed} MPH</span>`
+                                                    : `<span class="badge bg-warning">Detenido</span>`}
                                                 </span>
                                             </span> 
                                         </div>
@@ -309,7 +309,7 @@ function updateDeviceCard(IdElement) {
                 // Actualiza velocidad/estado
                 const speedSpan = li.querySelector('.device-speed');
                 if (parseInt(element.speed, 10) > 0) {
-                    speedSpan.innerHTML = `<span class="badge bg-success">Velocidad ${element.speed} MPH</span>`;
+                    speedSpan.innerHTML = `<span class="badge bg-success">Velocidad ${element.speed} Km/h</span>`;
                 } else {
                     speedSpan.innerHTML = `<span class="badge bg-warning">Detenido</span>`;
                 }
@@ -324,9 +324,11 @@ function updateDeviceCard(IdElement) {
                     // if (detectChange(element.get_trackings)) {           
                     // if (init_pos != end_pos) { // El repa cambio de posicion
                     marker.setPosition(newLocation);
-                    map.panTo(newLocation);
-                    google.maps.event.trigger(marker, 'click');
-
+                    // Solo sigue si este marker es el seleccionado
+                    if (markerFollowId && marker.id_gps == markerFollowId) {
+                        map.panTo(newLocation);
+                        google.maps.event.trigger(marker, 'click');
+                    }
                     // Crear polyline para la estela
                     trailPath = new google.maps.Polyline({
                         map,
