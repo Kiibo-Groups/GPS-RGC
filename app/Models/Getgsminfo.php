@@ -42,6 +42,17 @@ class Getgsminfo extends Model
     {
         return $this->belongsTo('App\Models\vehicle_units', 'vehicle_units_id');
     }
+    
+    public function getBox()
+    {
+        return $this->belongsTo('App\Models\TruckBoxes', 'truck_boxes_id');
+    }
+
+    public function getBoxGPS()
+    {
+        return $this->getBox ? $this->getBox->getBox : null;
+    }
+
 
     public function getTrackings()
     {

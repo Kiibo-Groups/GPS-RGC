@@ -19,7 +19,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 use DB;
 use Redirect;
 use Carbon\Carbon;
-use App\Models\{User, GpsDevices, vehicle_units, Getgsminfo, Rutas, Trackings};
+use App\Models\{User, GpsDevices, vehicle_units, Getgsminfo, Rutas, Trackings, TruckBoxes};
 
 
 // Pusher to Ruptela Services
@@ -48,6 +48,9 @@ class ApiController  extends Controller
 			'ReconBat',
 			'getGSMInfo',
 			'getDispositive',
+			'getAllTrucks',
+			'getAllBoxes',
+			'getDispositiveTracks',
 			'getAllDispositives',
 			'webhook_rgc_csv',
 			'SetPulseAVL',
@@ -230,7 +233,7 @@ class ApiController  extends Controller
 
 		// Buscar GPS y vehículo actuales
 		$gps = GpsDevices::where('uuid_device', $imei)->first();
-		$vehiculo = $gps ? vehicle_units::where('gps_devices_id', $gps->id)->first() : null;
+		$vehiculo = $gps ? vehicle_units::where('gps_devices_id', $gps->id)->first() : null; 
 
 		if ($registro) {
 			$cambios = [
@@ -253,6 +256,7 @@ class ApiController  extends Controller
 				$cambios['vehicle_units_id'] = $vehiculo->id;
 			}
 
+		 
 			$registro->fill($cambios)->save();
 
 			$tracks = [
@@ -409,7 +413,9 @@ class ApiController  extends Controller
 	public function getAllDispositives()
 	{
 
-		$getAll = Getgsminfo::where('gps_devices_id','!=', null)->with('getGPS', 'getVehicle')->get([
+		$getAll = Getgsminfo::where('gps_devices_id','!=', null)->with(['getVehicle','getVehicle.getBox','getVehicle.getGPS'])
+		->where('vehicle_units_id','!=', null)
+		->get([
 			'id',
 			'longitude',
 			'latitude',
@@ -418,8 +424,7 @@ class ApiController  extends Controller
 			'speed',
 			'hdop',
 			'event_io',
-			'gps_devices_id',
-			'vehicle_units_id',
+			'vehicle_units_id', 
 			'date_update'
 		]);
 
@@ -429,10 +434,82 @@ class ApiController  extends Controller
 			'devices' => $devices
 		]);
 	}
+	
+	public function getAllTrucks()
+	{
+		// Obtenemos todos los GPS que tengan info de localización
+		$getAll = Getgsminfo::where('gps_devices_id','!=', null)->with(['getVehicle','getVehicle.getBox','getVehicle.getGPS'])
+			->where('vehicle_units_id','!=', null)
+			->get([
+				'id',
+				'longitude',
+				'latitude',
+				'altitude',
+				'angle',
+				'speed',
+				'hdop',
+				'event_io',
+				'gps_devices_id',
+				'vehicle_units_id',
+				'date_update'
+			]);
+
+		// Obtenemos todos los vehiculos que tengan GPS asignado
+		$getAllVehicle = [];
+		foreach ($getAll as $key => $value) {
+			if (isset($value->getVehicle->id) && !isset($value->getVehicle->getBox->id)) {
+				$getAllVehicle[] = $value;
+			}
+		}
+
+		$getAllVehicle = collect($getAllVehicle)->sortByDesc('date_update')->values();
+
+		return response()->json([
+			'devices' => $getAllVehicle
+		]);
+	}
+
+	public function getAllBoxes()
+	{
+		// Obtenemos todos los GPS que tengan info de localización
+		$getAll = Getgsminfo::where('gps_devices_id','!=', null)->with(['getVehicle','getVehicle.getBox','getVehicle.getGPS'])
+			->where('vehicle_units_id','!=', null)
+			->get([
+				'id',
+				'longitude',
+				'latitude',
+				'altitude',
+				'angle',
+				'speed',
+				'hdop',
+				'event_io',
+				'gps_devices_id',
+				'vehicle_units_id',
+				'date_update'
+			]);
+ 
+		// Obtenemos todos los dispositivos que tengan cajas asignadas
+		$getAllTruckBoxes = [];
+		foreach ($getAll as $key => $value) {
+			if (isset($value->getVehicle->getBox->id)) {
+				$getAllTruckBoxes[] = $value;
+			}
+		}
+		
+		$getAllTruckBoxes = collect($getAllTruckBoxes)->sortByDesc('date_update')->values();
+
+		return response()->json([
+			'devices' => $getAllTruckBoxes
+		]);
+	}
 
 	public function getDispositive($id)
 	{
-		$getDispositive = Getgsminfo::where('id', $id)->with('getGPS', 'getVehicle')->first();
+		$getDispositive = Getgsminfo::where('id', $id)->with(['getVehicle','getVehicle.getBox','getVehicle.getGPS'])->select([
+			'id',
+			'vehicle_units_id', 
+			'date_update'
+		])->first();
 		
 		if (!$getDispositive) {
 			return response()->json([
@@ -451,6 +528,51 @@ class ApiController  extends Controller
 
 		$getDispositive->get_trackings = $trackings->first();  
 		$getDispositive->trackingslast = $trackings->last();
+
+		return response()->json([
+			'status' => 200,
+			'data' => $getDispositive
+		]);
+	}
+
+	public function getDispositiveTracks($id)
+	{
+		$getDispositive = Getgsminfo::where('id', $id)->with(['getVehicle','getVehicle.getBox','getVehicle.getGPS'])->select([
+			'id',
+			'vehicle_units_id',
+			'date_update'
+		])->first();
+		
+		if (!$getDispositive) {
+			return response()->json([
+				'status' => 404,
+				'message' => 'Dispositivo no encontrado'
+			], 404);
+		}
+
+		// Obtenemos todos los trackings y los agrupamos por día
+		$trackings = Trackings::where('device_id', $id)
+			->orderBy('date_updated', 'desc')
+			->get()
+			->groupBy(function($tracking) {
+				return Carbon::parse($tracking->date_updated)->format('Y-m-d');
+			})
+			->map(function($dayTrackings) {
+				return [
+					'date' => $dayTrackings->first()->date_updated,
+					'tracks' => $dayTrackings->map(function($track) {
+						return [
+							'id' => $track->id,
+							'positions' => json_decode($track->positions),
+							'date_updated' => $track->date_updated,
+							'created_at' => $track->created_at,
+						];
+					})->values()
+				];
+			})
+			->values();
+
+		$getDispositive->tracking_history = $trackings;
 
 		return response()->json([
 			'status' => 200,

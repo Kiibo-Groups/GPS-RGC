@@ -28,20 +28,33 @@ class VehicleUnitsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    { 
-        // $data = vehicle_units::whereHas('getGPS', function($q) {
-        //     $q->where('uuid_device', '860369051174330');
-        // })->with('getGPS')->first();
-        
-        // return response()->json([
-        //     'data' 	=>  $data
-        // ]);
+    {         
+        // Obtenemos todos los GPS que no esten asignados
+        $chkAssign = GpsDevices::where('status',0)->get();
+        foreach ($chkAssign as $key => $value) {
+            $chkBox = TruckBoxes::where('gps_devices_id',$value->id)->first();
+            $chkVehicle = vehicle_units::where('gps_devices_id',$value->id)->first();
+            if($chkBox || $chkVehicle)
+            {
+                unset($chkAssign[$key]);
+            }
+        }
+
+        // Obtenemos todas las cajas que no esten asignadas
+        $chkBoxAssign = TruckBoxes::where('status',0)->get();
+        foreach ($chkBoxAssign as $key => $value) {
+            $chkVehicle = vehicle_units::where('truck_boxes_id',$value->id)->first();
+            if($chkVehicle)
+            {
+                unset($chkBoxAssign[$key]);
+            }
+        }
 
         return View($this->folder.'index',[
-			'data' 	=> vehicle_units::with('getGPS','getBox')->get(),
+			'data' 	=> vehicle_units::with(['getGPS', 'getBox.GpsDevice'])->get(),
 			'link' 	=> '/vehicle_units/',
-            'boxes' => TruckBoxes::where('status',0)->get(),
-            'gps' => GpsDevices::where('status',0)->get(),
+            'boxes' => $chkBoxAssign,
+            'gps' => $chkAssign,
             'Models' => new vehicle_units,
             'form_url_box'	=> '/vehicle_units/assign_box',
             'form_url_gps'	=> '/vehicle_units/assign_gps',
@@ -74,9 +87,26 @@ class VehicleUnitsController extends Controller
             $input = $request->all();
             $lims_vehicles_data = new vehicle_units;
             $lims_vehicles_data->create($input);
+            
+            if($request->ajax() || $request->wantsJson())
+            {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Nueva Unidad Agregada...',
+                    'reload' => true
+                ]);
+            }
 
             return redirect(env('admin').'/vehicle_units')->with('message', 'Nueva Unidad Agregada...');
         } catch (\Exception $th) {
+            if(request()->ajax())
+            {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Error: '.$th->getMessage()
+                ]);
+            }
+            
             return redirect(env('admin').'/vehicle_units')->with('error', $th->getMessage());
         }
     }
@@ -149,6 +179,20 @@ class VehicleUnitsController extends Controller
         // ]);
 
         try {
+            // Verificamos que el GPS no este asignado a otro vehiculo
+            $chkAssign = TruckBoxes::where('gps_devices_id',$request->gps_devices_id)->first();
+            if($chkAssign)
+            {
+                return redirect(env('admin').'/truck_boxes')->with('error','El dispositivo GPS ya esta asignado a otra caja.');
+            }
+
+            // Verificamos que el GPS no este asignado a otro vehiculo
+            $chkAssignVehicle = vehicle_units::where('gps_devices_id',$request->gps_devices_id)->first();
+            if($chkAssignVehicle)
+            {
+                return redirect(env('admin').'/truck_boxes')->with('error','El dispositivo GPS ya esta asignado a un vehículo.');
+            }
+
             $data = $request->all();
             
             // Validamos la existencia
@@ -164,13 +208,48 @@ class VehicleUnitsController extends Controller
 
     public function assign_gps(Request $request)
     { 
-
         try {
+            // Verificamos que el GPS no este asignado a otro vehiculo
+            $chkAssign = TruckBoxes::where('gps_devices_id',$request->gps_devices_id)->first();
+            if($chkAssign)
+            {
+                return redirect(env('admin').'/truck_boxes')->with('error','El dispositivo GPS ya esta asignado a otra caja.');
+            }
+
+            // Verificamos que el GPS no este asignado a otro vehiculo
+            $chkAssignVehicle = vehicle_units::where('gps_devices_id',$request->gps_devices_id)->first();
+            if($chkAssignVehicle)
+            {
+                return redirect(env('admin').'/truck_boxes')->with('error','El dispositivo GPS ya esta asignado a un vehículo.');
+            }
+
             $data = $request->all();
             $chkVehicle = vehicle_units::find($data['vehicle_units_id']);
             $chkVehicle->gps_devices_id = $data['gps_devices_id'];
             $chkVehicle->save();
             return redirect(env('admin').'/vehicle_units')->with('message', 'GPS Asignado con éxito...');
+        } catch (\Exception $th) {
+            return redirect(env('admin').'/vehicle_units')->with('error', $th->getMessage());
+        }
+    }
+
+    public function delAssign($id, $type)
+    {
+        try {
+            
+            if($type == 'caja')
+            {
+                $chkVehicle = vehicle_units::find($id);
+                $chkVehicle->truck_boxes_id = null;
+                $chkVehicle->save();
+                return redirect(env('admin').'/vehicle_units')->with('message', 'Asignación eliminada con éxito...');
+            }
+            
+            // Eliminamos la asignacion del GPS
+            $chkVehicle = vehicle_units::find($id);
+            $chkVehicle->gps_devices_id = null;
+            $chkVehicle->save();
+            return redirect(env('admin').'/vehicle_units')->with('message', 'Asignación eliminada con éxito...');
         } catch (\Exception $th) {
             return redirect(env('admin').'/vehicle_units')->with('error', $th->getMessage());
         }

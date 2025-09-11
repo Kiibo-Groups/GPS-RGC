@@ -49,7 +49,10 @@ Route::group(array('namespace' => 'App\Http\Controllers\Api'), function () {
      * Obtenemos todos los dispositivos en la BD
      */
     Route::get('getAllDispositives',[ApiController::class, 'getAllDispositives'])->name('getAllDispositives');
+    Route::get('getAllTrucks',[ApiController::class, 'getAllTrucks'])->name('getAllTrucks');
+    Route::get('getAllBoxes',[ApiController::class, 'getAllBoxes'])->name('getAllBoxes');
     Route::get('getDispositive/{id}',[ApiController::class, 'getDispositive'])->name('getDispositive');
+    Route::get('getDispositiveTracks/{id}',[ApiController::class, 'getDispositiveTracks'])->name('getDispositiveTracks');
 
     /**
      * 

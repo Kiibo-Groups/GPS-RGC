@@ -24,11 +24,9 @@
                     </a>
                 </li> 
 
-                
-                <li>
-                    <hr style="margin:0 !important" />                    
-                </li>
-
+                <li class="menu-title mt-2">Gestor de unidades</li>
+              
+                {{-- Gestor de Seguimientos --}}
                 <li>
                     <a href="{{ url('/trackings') }}">
                         <i class="mdi mdi-crosshairs-gps"></i>
@@ -36,30 +34,16 @@
                     </a>
                 </li> 
 
-                <li class="menu-title mt-2">Navegación</li>
-                
+                {{-- Gestor de Dispositivos GPS --}}
                 <li>
-                    <a href="{{ url('/subaccounts') }}">
-                        <i class="mdi mdi-card-account-details"></i>
-                        <span>&nbsp;SubCuentas</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="{{ url('/mirror_beads') }}">
-                        <i class="mdi mdi-mirror"></i>
-                        <span>&nbsp;Cuentas de Espejo </span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="{{ url('/rutas') }}">
-                        <i class="mdi mdi-ticket"></i>
-                        <span>&nbsp;Gestor de Rutas </span>
+                    <a href="{{ url('/dispositivos') }}">
+                        <i class="mdi mdi-crosshairs-gps"></i>
+                        <span>&nbsp;Dispositivos</span>
                         <span class="menu-arrow"></span>
                     </a>
                 </li>
-
+                
+                {{-- Gestor de Tractos --}}
                 <li>
                     <a href="{{ url('/vehicle_units') }}">
                         <i class="mdi mdi-truck-fast-outline"></i>
@@ -68,6 +52,7 @@
                     </a>
                 </li>
 
+                {{-- Gestor de Cajas --}}
                 <li>
                     <a href="{{ url('/truck_boxes') }}">
                         <i class="mdi mdi-truck-trailer"></i>
@@ -76,13 +61,33 @@
                     </a>
                 </li>
 
+                {{-- Rutas --}}
                 <li>
-                    <a href="{{ url('/dispositivos') }}">
-                        <i class="mdi mdi-crosshairs-gps"></i>
-                        <span>&nbsp;Gesto de dispositivos </span>
+                    <a href="{{ url('/rutas') }}">
+                        <i class="mdi mdi-ticket"></i>
+                        <span>&nbsp;Gestor de Rutas </span>
                         <span class="menu-arrow"></span>
                     </a>
                 </li>
+                
+                <li class="menu-title mt-2">Administración</li>
+                {{-- SubCuentas --}}
+                <li>
+                    <a href="{{ url('/subaccounts') }}">
+                        <i class="mdi mdi-card-account-details"></i>
+                        <span>&nbsp;SubCuentas</span>
+                    </a>
+                </li>
+
+                {{-- Cuentas Espejo --}}
+                <li>
+                    <a href="{{ url('/mirror_beads') }}">
+                        <i class="mdi mdi-mirror"></i>
+                        <span>&nbsp;Cuentas de Espejo </span>
+                    </a>
+                </li>
+
+                
 
                 <li class="menu-title mt-2">Extras</li>
 

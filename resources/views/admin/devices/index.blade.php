@@ -3,7 +3,14 @@
 @section('title') Listado de Dispositivos @endsection
 @section('page_active') Dispositivos @endsection 
 @section('subpage_active') Listado @endsection 
-
+@section('css')
+    <!-- DataTables -->
+    <link href="{{ Asset('assets/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ Asset('assets/libs/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css') }}" rel="stylesheet" type="text/css" />
+    <!-- Responsive datatable examples -->
+    <link href="{{ Asset('assets/libs/datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ Asset('assets/libs/datatables.net-select-bs5/css//select.bootstrap5.min.css') }}" rel="stylesheet" type="text/css" />
+@endsection
 @section('content') 
 <div class="container-fluid">
 
@@ -17,33 +24,38 @@
                         </a>
                     </p>
 
-                    <table id="responsive-datatable" class="table dt-responsive nowrap">
+                    <table id="responsive-datatable" class="table dt-responsive nowrap table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>Nombre del Dispositivo</th> 
-                                <th>UUID</th>
+                                <th>UUID/IMEI</th>
+                                <th>Número para comandos</th>
                                 <th>Descripcion</th>
-                                <th>Status</th>
+                                <th class="text-center">Status</th>
                                 <th style="text-align: right">Opciones</th>
                             </tr> 
                         </thead>
                         <tbody>
-
                             @foreach ($data as $row)
                                 <tr>
                                     <td>
                                         {{ $row->name_device }}    
                                     </td>
                                     <td>
-                                        {{ $row->uuid_device }}
+                                       <span class="badge bg-success" style="font-size: 12px"> {{ $row->uuid_device }}</span>
+                                    </td>
+                                    <td>
+                                        @if($row->phone)
+                                        <span class="badge bg-success" style="font-size: 12px"> +52{{ $row->phone }}</span>
+                                        @else 
+                                        <span class="badge bg-danger" style="font-size: 12px">Sin Asignar</span>
+                                        @endif
                                     </td>
                                     <td>
                                        {{ $row->descript_device }}
                                     </td>
-                                    <td>
-                                       0
-                                    </td>
-                                    <td>
+                                    
+                                    <td class="text-center">
                                         @if ($row->status == 0)
                                             <button type="button"
                                                 class="btn btn-success width-xs waves-effect waves-light"
@@ -81,4 +93,24 @@
         </div>
     </div>
 </div> 
+@endsection
+@section('js')
+    <!-- Required datatable js -->
+    <script src="{{ Asset('assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ Asset('assets/libs/datatables.net-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
+    <!-- Responsive examples -->
+    <script src="{{ Asset('assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
+    <script src="{{ Asset('assets/libs/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js') }}"></script>
+    <script src="{{ Asset('assets/libs/libs/datatables.net-keytable/js/dataTables.keyTable.min.js') }}"></script> 
+    <script>
+        $(document).ready(function() {
+            $('#responsive-datatable').DataTable({
+                keys: false,
+                searching: true,
+                placeholder: "Buscar...",
+            });
+            $('#responsive-datatable').DataTable();
+            $('.dataTables_length select').addClass('form-select form-select-sm');
+        });
+    </script>
 @endsection

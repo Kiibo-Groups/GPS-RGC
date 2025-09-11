@@ -33,15 +33,9 @@ class vehicle_units extends Model
         return $this->belongsTo('App\Models\TruckBoxes', 'truck_boxes_id');
     }
 
-    public function GetNameTruckBox($id)
+    public function getBoxGPS()
     {
-        $req = TruckBoxes::find($id);
-
-        if (isset($req->id)) {
-            return $req->name_truck_box;
-        }else {
-            return 'Sin Asignar';
-        }
+        return $this->getBox ? $this->getBox->GpsDevice : null;
     }
 
     public function GetNameGPS($id)
@@ -49,7 +43,7 @@ class vehicle_units extends Model
         $req = GpsDevices::find($id);
 
         if (isset($req->id)) {
-            return $req->name_device;
+            return $req->uuid_device;
         }else {
             return 'Sin Asignar';
         }

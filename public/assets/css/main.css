@@ -4,7 +4,7 @@
 body[data-sidebar-color="dark"] .left-side-menu {
     /* background-color: rgb(245, 245, 245); */
     background-color: rgb(42, 48, 66);
-      /* #313844; */
+    /* #313844; */
     box-shadow: none;
 }
 
@@ -195,7 +195,6 @@ body[data-sidebar-color="dark"] .logo-box {
     border-width: 2px 0 0 2px;
 }
 
-
 /**
 *
 * Tracking Maps 
@@ -204,12 +203,14 @@ body[data-sidebar-color="dark"] .logo-box {
 
 .tracking-maps-card {
     position: absolute;
-    width: 350px; 
+    width: 420px;
     padding: 0 !important;
     margin: 0 !important;
-    left: 5%;
-    top: 155px;
-    z-index: 2003;
+    left: 1%;
+    top: 5%;
+    border-radius: 25px;
+    background: #007bff;
+    z-index: 99;
 }
 
 .tracking-maps-card .card-body {
@@ -217,7 +218,7 @@ body[data-sidebar-color="dark"] .logo-box {
     height: 500px;
     overflow: scroll;
 }
-    
+
 .active-card-maps {
     background-color: #f1fff3;
     border-left: 5px solid #007bff;
@@ -231,4 +232,83 @@ body[data-sidebar-color="dark"] .logo-box {
         left: 5%;
         top: 155px;
     }
+}
+
+
+/**
+*
+* Tracking History
+*
+*/
+
+.timeline-history {
+    position: relative;
+    margin: 2rem auto;
+    padding-left: 40px;
+    border-bottom: 1px solid #e1e1e1;
+    padding-bottom: 15px;
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.timeline-history::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 20px;
+    width: 2px;
+    height: 100%;
+    background: #ddd;
+}
+
+.timeline-history-item {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.timeline-history-icon {
+    position: absolute;
+    left: -31px;
+    top: 0px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #fff;
+    font-size: 0.9rem;
+}
+
+.timeline-history-card {
+    margin-left: 15px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 15px 20px;
+}
+
+.timeline-history-time {
+    font-size: 0.85rem;
+    color: #555;
+    font-weight: 600;
+}
+
+.timeline-history-title {
+    font-weight: 600;
+    margin-left: 6px;
+}
+
+.timeline-history-meta {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 2px;
+}
+
+.timeline-history-detail {
+    margin-top: 6px;
+    font-size: 0.9rem;
+    color: #333;
 }

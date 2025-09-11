@@ -38,6 +38,7 @@ Route::prefix(env('user'))->namespace('User')->group(static function() {
         |-----------------------------------------
         */
         Route::get('trackings',[App\Http\Controllers\Admin\AdminController::class, 'trackings'])->name('trackings');
+        Route::post('sendCommand',[App\Http\Controllers\Admin\AdminController::class, 'sendCommand'])->name('sendCommand');
 
         /*
         |-----------------------------------------
@@ -81,6 +82,7 @@ Route::prefix(env('user'))->namespace('User')->group(static function() {
         Route::get('vehicle_units/status/{id}',[App\Http\Controllers\Admin\VehicleUnitsController::class, 'status']); 
         Route::post('vehicle_units/assign_box',[App\Http\Controllers\Admin\VehicleUnitsController::class, 'assign_box']);
         Route::post('vehicle_units/assign_gps',[App\Http\Controllers\Admin\VehicleUnitsController::class, 'assign_gps']);
+        Route::get('vehicle_units/{id}/{type}/del-assign',[App\Http\Controllers\Admin\VehicleUnitsController::class, 'delAssign']);
         /*
         |-----------------------------------------
         |Gestor de Cajas
@@ -91,7 +93,7 @@ Route::prefix(env('user'))->namespace('User')->group(static function() {
         Route::get('truck_boxes/delete/{id}',[App\Http\Controllers\Admin\TruckBoxesController::class, 'delete']);
         Route::get('truck_boxes/status/{id}',[App\Http\Controllers\Admin\TruckBoxesController::class, 'status']); 
         Route::post('truck_boxes/assign_gps',[App\Http\Controllers\Admin\TruckBoxesController::class, 'assign_gps']);
-
+        Route::get('truck_boxes/{id}/del-assign',[App\Http\Controllers\Admin\TruckBoxesController::class, 'delAssign']);
         
         /*
         |-----------------------------------------

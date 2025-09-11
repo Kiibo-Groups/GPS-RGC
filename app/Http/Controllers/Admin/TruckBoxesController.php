@@ -28,10 +28,30 @@ class TruckBoxesController extends Controller
      */
     public function index()
     {
+
+        // Obtenemos todos los GPS que no esten asignados
+        $chkAssign = GpsDevices::where('status',0)->get();
+        foreach ($chkAssign as $key => $value) {
+            $chkBox = TruckBoxes::where('gps_devices_id',$value->id)->first();
+            $chkVehicle = vehicle_units::where('gps_devices_id',$value->id)->first();
+            if($chkBox || $chkVehicle)
+            {
+                unset($chkAssign[$key]);
+            }
+        }
+
+        // return response()->json([
+        //     'data' 	=> TruckBoxes::with('GpsDevice')->OrderBy('created_at','DESC')->get(),
+		// 	'link' 	=> '/truck_boxes/',
+        //     'gps' => $chkAssign,
+        //     'Models' => new TruckBoxes,
+        //     'form_url_gps'	=> '/truck_boxes/assign_gps',
+        // ]);
+
         return View($this->folder.'index',[
-			'data' 	=> TruckBoxes::get(),
+			'data' 	=> TruckBoxes::with('GpsDevice')->OrderBy('created_at','DESC')->get(),
 			'link' 	=> '/truck_boxes/',
-            'gps' => GpsDevices::where('status',0)->get(),
+            'gps' => $chkAssign,
             'Models' => new TruckBoxes,
             'form_url_gps'	=> '/truck_boxes/assign_gps',
 		]);
@@ -63,9 +83,25 @@ class TruckBoxesController extends Controller
             $input = $request->all();
             $lims_truckboxes_data = new TruckBoxes;
             $lims_truckboxes_data->create($input);
+            if($request->ajax() || $request->wantsJson())
+            {
+               return response()->json([
+                    'status' => 'success',
+                    'message' => 'Nueva Caja Agregada...',
+                    'reload' => true
+                ]);
+            }
 
             return redirect(env('admin').'/truck_boxes')->with('message', 'Nueva Caja Agregada...');
         } catch (\Exception $th) {
+            if(request()->ajax())
+            {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Error: '.$th->getMessage()
+                ]);
+            }
+
             return redirect(env('admin').'/truck_boxes')->with('error', $th->getMessage());
         }
     }
@@ -141,11 +177,37 @@ class TruckBoxesController extends Controller
     public function assign_gps(Request $request)
     { 
         try {
+            // Verificamos que el GPS no este asignado a otro vehiculo
+            $chkAssign = TruckBoxes::where('gps_devices_id',$request->gps_devices_id)->first();
+            if($chkAssign)
+            {
+                return redirect(env('admin').'/truck_boxes')->with('error','El dispositivo GPS ya esta asignado a otra caja.');
+            }
+
+            // Verificamos que el GPS no este asignado a otro vehiculo
+            $chkAssignVehicle = vehicle_units::where('gps_devices_id',$request->gps_devices_id)->first();
+            if($chkAssignVehicle)
+            {
+                return redirect(env('admin').'/truck_boxes')->with('error','El dispositivo GPS ya esta asignado a un vehículo.');
+            }
+
             $data = $request->all();
             $chkVehicle = TruckBoxes::find($data['truck_box_id']);
-            $chkVehicle->gps = $data['gps_devices_id'];
+            $chkVehicle->gps_devices_id = $data['gps_devices_id'];
             $chkVehicle->save();
             return redirect(env('admin').'/truck_boxes')->with('message', 'GPS Asignado con éxito...');
+        } catch (\Exception $th) {
+            return redirect(env('admin').'/truck_boxes')->with('error', $th->getMessage());
+        }
+    }
+
+    public function delAssign($id)
+    {
+        try {
+            $chkVehicle = TruckBoxes::find($id);
+            $chkVehicle->gps_devices_id = null;
+            $chkVehicle->save();
+            return redirect(env('admin').'/truck_boxes')->with('message', 'Asignación eliminada con éxito...');
         } catch (\Exception $th) {
             return redirect(env('admin').'/truck_boxes')->with('error', $th->getMessage());
         }
