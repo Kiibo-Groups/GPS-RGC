@@ -543,15 +543,16 @@ class ApiController  extends Controller
 			'date_update'
 		])->first();
 		
-		if (!$getDispositive) {
-			return response()->json([
-				'status' => 404,
-				'message' => 'Dispositivo no encontrado'
-			], 404);
-		}
+		// if (!$getDispositive) {
+		// 	return response()->json([
+		// 		'status' => 404,
+		// 		'message' => 'Dispositivo no encontrado'
+		// 	], 404);
+		// }
 
 		// Obtenemos todos los trackings y los agrupamos por día
 		$trackings = Trackings::where('device_id', $id)
+			->where('date_updated', '>=', Carbon::now()->subDays(10)) // últimos 5 días
 			->orderBy('date_updated', 'desc')
 			->get()
 			->groupBy(function($tracking) {

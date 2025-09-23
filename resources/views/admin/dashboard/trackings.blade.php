@@ -36,14 +36,30 @@
         let markerIconBox = "{{ asset('assets/images/marker-caja.png') }}";
     </script>
 </head>
+
 <body>
+
+    {{-- Floating Card Maps --}}
+    <a href="javascript:void(0)" class="nav-link floating-card-maps" onclick="MinimizeCardMaps()">
+        <img src="{{ asset('assets/images/marker.png') }}" alt="marker"
+            style="width: 40px;border: 0.5px solid #0000ff5e;border-radius: 2003px;padding: 5px;">
+            &nbsp;
+            Panel de Dispositivos
+    </a>
+
     <div class="tracking-maps-card d-none">
         <div class="crad">
-            <div class="card-header" style="padding: 5px 10px !important;">
+            <div class="card-header d-flex justify-content-between" style="padding: 5px 10px !important;">
                 <button class="btn btn-sm d-flex align-items-center"
                     onclick="window.location.href='{{ url('dash') }}'">
                     <i class="mdi mdi-arrow-left" style="font-size: 18px;margin: 0 15px 0 0;"></i>
                     Ir a Dashboard
+                </button>
+
+                <button class="btn btn-sm d-flex align-items-end justify-content-end minimize-card-maps" style="display: none;"
+                    onclick="MinimizeCardMaps()">
+                    <i class="mdi mdi-window-minimize" style="font-size: 18px;margin: 0 15px 0 0;"></i>
+                    Minimizar
                 </button>
             </div>
         </div>
@@ -58,8 +74,9 @@
                                 <i class="mdi mdi-menu" style="font-size: 24px;cursor: pointer;"></i>
                                 <div class="dropdown-menu"
                                     style="box-shadow:0 6px 6px -3px rgba(0,0,0,0.2),0 10px 14px 1px rgba(0,0,0,0.14),0 4px 18px 3px rgba(0,0,0,0.12)">
-                                    <a class="dropdown-item change_view_disp active" href="#control_rutas" data-bs-toggle="tab"
-                                        aria-expanded="false" data-view="control_rutas">Ver Dispositivos Generales</a>
+                                    <a class="dropdown-item change_view_disp active" href="#control_rutas"
+                                        data-bs-toggle="tab" aria-expanded="false" data-view="control_rutas">Ver
+                                        Dispositivos Generales</a>
                                     <a class="dropdown-item change_view_disp" href="#gps_tracto" data-bs-toggle="tab"
                                         aria-expanded="false" data-view="gps_tracto">Ver GPS de Tracto</a>
                                     <a class="dropdown-item change_view_disp" href="#gps_cajas" data-bs-toggle="tab"
@@ -85,12 +102,14 @@
                                 style="box-shadow:0 6px 6px -3px rgba(0,0,0,0.2),0 10px 14px 1px rgba(0,0,0,0.14),0 4px 18px 3px rgba(0,0,0,0.12)">
                                 <a class="dropdown-item" href="#" data-bs-toggle="modal"
                                     data-bs-target="#modal-add-unity" style="display: flex;align-items: center;">
-                                    <i class="q-icon text-primary mdi mdi-plus-circle-outline" style="font-size: 20px"></i>&nbsp;&nbsp;
+                                    <i class="q-icon text-primary mdi mdi-plus-circle-outline"
+                                        style="font-size: 20px"></i>&nbsp;&nbsp;
                                     Agregar Nuevo Dispositivo
                                 </a>
                                 <a class="dropdown-item" href="#" data-bs-toggle="modal"
                                     data-bs-target="#modal-add-boxes" style="display: flex;align-items: center;">
-                                    <i class="q-icon text-primary mdi mdi-plus-circle-outline" style="font-size: 20px"></i>&nbsp;
+                                    <i class="q-icon text-primary mdi mdi-plus-circle-outline"
+                                        style="font-size: 20px"></i>&nbsp;
                                     Agregar Nueva Caja
                                 </a>
                             </div>
@@ -138,7 +157,7 @@
                 </div>
 
                 <div class="tab-content" id="view-tracking-device" style="display: none;">
-                    <div class="tab-pane show active" id="history_tracks">
+                    <div class="tab-pane show active history_tracks">
                         <div id="sidebar-menu">
                             <ul id="list-group-history" class="mb-0 user-list">
                                 <div class="col-lg-12 text-center pt-8" id="loading">
@@ -188,7 +207,7 @@
     <div id="modal-commands" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
         aria-hidden="true" style="display: none;">
         <div class="modal-dialog">
-            <div class="modal-content"> 
+            <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">
                         Barra de comandos
@@ -223,8 +242,8 @@
 
                             <div class="col-md-8">
                                 <div class="mb-3">
-                                    <input type="password" class="form-control" id="password_command" name="password_command"
-                                        placeholder="Password (si aplica)">
+                                    <input type="password" class="form-control" id="password_command"
+                                        name="password_command" placeholder="Password (si aplica)">
                                     <div class="form-text text-muted">Ingresa una contraseña si es necesario</div>
                                 </div>
                             </div>
@@ -390,22 +409,25 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="name_truck_box" class="form-label">Nombre de la Caja</label>
-                                <input type="text" name="name_truck_box" id="name_truck_box" class="form-control" required="required">
+                                <input type="text" name="name_truck_box" id="name_truck_box" class="form-control"
+                                    required="required">
                             </div>
 
                             <div class="col-md-6 mb-3">
                                 <label for="id_truck_box" class="form-label">Identificador unico</label>
-                                <input type="text" name="id_truck_box" id="id_truck_box" class="form-control" required="required">
+                                <input type="text" name="id_truck_box" id="id_truck_box" class="form-control"
+                                    required="required">
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="descript_truck_box" class="form-label">Descripción Corta</label>
-                                <input type="tel" name="descript_truck_box" id="descript_truck_box" class="form-control" required="required">
+                                <input type="tel" name="descript_truck_box" id="descript_truck_box"
+                                    class="form-control" required="required">
                             </div>
 
-                             <div class="col-md-6 mb-3">
+                            <div class="col-md-6 mb-3">
                                 <label class="form-label">Status</label>
                                 <select name="status" id="example-select" class="form-select" required="required">
                                     <option value="0">
@@ -432,7 +454,7 @@
                                         </option>
                                     @endforeach
                                 </select>
-                            </div> 
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -445,6 +467,25 @@
         </div>
     </div>
 
+    <!-- Modal Tracks -->
+    <div class="modal fade" id="modal-tracks" tabindex="-1" role="dialog" aria-labelledby="modal-tracks-label"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-tracks-title">Visualización de Ruta</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="modal-map" style="height: 500px; width: 100%;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="{{ asset('assets/js/vendor.min.js') }}"></script>
     <script src="{{ asset('assets/js/app.js') }}"></script>
     <script src="{{ asset('assets/libs/tippy.js/tippy.all.min.js') }}"></script>
@@ -453,7 +494,7 @@
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/relativeTime.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/locale/es.js"></script>
     <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
-    
+
     <script>
         var pusher = new Pusher('8442d369ae2137d24bf4', {
             cluster: 'us3'
@@ -463,6 +504,7 @@
     <script src="{{ asset('assets/js/styleMaps.js?v=' . time()) }}"></script>
     <script src="{{ asset('assets/js/trackings.js?v=' . time()) }}"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key={{ $ApiKey_google }}&libraries=places&callback=initMap">
-    </script> 
+    </script>
 </body>
+
 </html>

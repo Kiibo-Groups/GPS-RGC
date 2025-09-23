@@ -21,10 +21,10 @@ class TwilioService
 
     public function sendMessageSMS($destination, $message)
     {
-        // $client = new \GuzzleHttp\Client();
-        $client = new \GuzzleHttp\Client([
-            'verify' => false // Desactiva la verificación SSL
-        ]);
+        $client = new \GuzzleHttp\Client();
+        // $client = new \GuzzleHttp\Client([
+        //     'verify' => false // Desactiva la verificación SSL
+        // ]);
         $response = $client->request('POST', "https://api.twilio.com/2010-04-01/Accounts/{$this->sid}/Messages.json", [
             'auth' => [$this->sid, $this->token],
             'form_params' => [

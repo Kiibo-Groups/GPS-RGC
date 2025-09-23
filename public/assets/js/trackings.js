@@ -20,9 +20,12 @@ let lat,
     viewTrackingDevice = document.getElementById('view-tracking-device'),
     body = document.querySelector('body'),
     trackingMapsCard = document.querySelector('.tracking-maps-card'),
+    floatingCardMaps = document.querySelector('.floating-card-maps'),
     directionsService,
     directionsRenderer,
     trailPath = null;
+// Al cargar los dispositivos
+window.deviceTracks = {}; // Objeto global
 
 const addUnitForm = document.getElementById('add_new_unit'),
     addBoxForm = document.getElementById('add_new_box'),
@@ -37,7 +40,7 @@ function initMap() {
     }
 
     // Obtenemos la posición actual del usuario
-    
+
     navigator.geolocation.getCurrentPosition(
         (position) => {
             lat = position.coords.latitude;
@@ -52,8 +55,8 @@ function initMap() {
                 disableDefaultUI: true,
                 gestureHandling: 'greedy',
                 zoomControl: false,
-                mapTypeControl: false,
-                streetViewControl: false,
+                mapTypeControl: true,
+                streetViewControl: true,
                 fullscreenControl: false,
                 clickableIcons: false,
                 // MapStyle
@@ -151,10 +154,10 @@ function ViewPositionDevice(latitude, longitude, id) {
  * 
  * Pusher data to receive 
  */
-channel.bind('coords-gps', function (data) {
-    // Actualizamos la tarjeta del dispositivo
-    updateDeviceCard(data);
-});
+// channel.bind('coords-gps', function (data) {
+//     // Actualizamos la tarjeta del dispositivo
+//     updateDeviceCard(data);
+// });
 
 /**
  * 
@@ -203,10 +206,10 @@ function ShowMaps(data) {
                 <span class="mb-2 d-block" >
                     Vehiculo Asignado: <b style="display:block;font-size: 14px;font-weight: 600;">${element.get_vehicle.name_unit}</b>
                 </span>
-                ${(element.get_vehicle.get_box != null) 
-                    ?   `<span class="mb-2 d-block">
+                ${(element.get_vehicle.get_box != null)
+                    ? `<span class="mb-2 d-block">
                             Caja Asignada: <b style="display:block;font-size: 14px;font-weight: 600;">${element.get_vehicle.get_box.name_truck_box}</b>
-                        </span>` 
+                        </span>`
                     : ""
                 }
                 <br />
@@ -276,9 +279,9 @@ function ShowMaps(data) {
                     <div class="d-flex me-2">
                         <img src="${markerIconTruck}" alt="Truck" data-bs-container="#tooltip-container" data-bs-toggle="tooltip" data-bs-placement="top" title="Vehiculo Asingado" style="border: 0.5px solid #08ff00d4;border-radius: 2003px;padding: 5px;width: 35px;height: 35px;margin: 0 5px;cursor: pointer;">
                         ${(element.get_vehicle.get_box != null)
-                            ? `<img src="${markerIconBox}" alt="Caja" data-bs-container="#tooltip-container" data-bs-toggle="tooltip" data-bs-placement="top" title="Caja Asignada" style="border: 0.5px solid #08ff00d4;border-radius: 2003px;padding: 5px;width: 35px;height: 35px;margin: 0 5px;cursor: pointer;">`
-                            : ""
-                        }
+                    ? `<img src="${markerIconBox}" alt="Caja" data-bs-container="#tooltip-container" data-bs-toggle="tooltip" data-bs-placement="top" title="Caja Asignada" style="border: 0.5px solid #08ff00d4;border-radius: 2003px;padding: 5px;width: 35px;height: 35px;margin: 0 5px;cursor: pointer;">`
+                    : ""
+                }
                     </div>
                 </div>
             </li>`;
@@ -549,14 +552,24 @@ function updateMarker(lat, lng, angle, marker) {
     const icon = marker.getIcon();
     icon.rotation = angle;
     marker.setIcon(icon);
+    var newLocation = new google.maps.LatLng(lat, lng);
+    if (!trailPath) {
+        trailPath = new google.maps.Polyline({
+            map,
+            path: [newLocation],
+            strokeColor: "#00F",
+            strokeOpacity: 0.7,
+            strokeWeight: 2
+        });
+    }
 
     const path = trailPath.getPath();
     path.push(new google.maps.LatLng(lat, lng));
 
     // Mantener estela corta (ej: últimos 10 puntos)
-    if (path.getLength() > 10) {
-        path.removeAt(0);
-    }
+    // if (path.getLength() > 10) {
+    //     path.removeAt(0);
+    // }
 }
 
 function drawRoute(coordinates, marker) {
@@ -810,7 +823,7 @@ function ViewTracksHistory(deviceId) {
     lblViewListDevices.innerHTML = 'Historial de Rutas';
     listDevicesGroup.style.display = 'none';
     viewTrackingDevice.style.display = 'block';
-    let firstAddress; 
+    let firstAddress;
     let lastAddress;
     // Obtenemos el tracking del dispositivo
     getDispositiveTracks(deviceId, async function (data) {
@@ -849,17 +862,16 @@ function ViewTracksHistory(deviceId) {
                     <div class="d-flex me-2">
                         <img src="${markerIconTruck}" alt="Truck" data-bs-container="#tooltip-container" data-bs-toggle="tooltip" data-bs-placement="top" title="Vehiculo Asingado" style="border: 0.5px solid #08ff00d4;border-radius: 2003px;padding: 5px;width: 35px;height: 35px;margin: 0 5px;cursor: pointer;">
                         ${(element.get_vehicle.get_box != null)
-                            ? `<img src="${markerIconBox}" alt="Caja" data-bs-container="#tooltip-container" data-bs-toggle="tooltip" data-bs-placement="top" title="Caja Asignada" style="border: 0.5px solid #08ff00d4;border-radius: 2003px;padding: 5px;width: 35px;height: 35px;margin: 0 5px;cursor: pointer;">`
-                            : ""
-                        }
+                    ? `<img src="${markerIconBox}" alt="Caja" data-bs-container="#tooltip-container" data-bs-toggle="tooltip" data-bs-placement="top" title="Caja Asignada" style="border: 0.5px solid #08ff00d4;border-radius: 2003px;padding: 5px;width: 35px;height: 35px;margin: 0 5px;cursor: pointer;">`
+                    : ""
+                }
                     </div>
                 </div>
             </li>`;
 
-            listGroup.innerHTML += CardInnerMaps;   
-            document.getElementById('history_tracks').classList.add('show','active');
-
-            let ListHistory = `<div class="timeline-history" id="loader-history-timeline">
+            listGroup.innerHTML += CardInnerMaps;
+            // document.querySelectorAll('.history_tracks').forEach(el => el.add('show','active'));
+            let ListHistory = `<div class="timeline-history loader-history-timeline">
                         <!-- Sin Historial -->
                         <div class="timeline-history-item">
                             <div class="timeline-history-icon" style="background:green;">S</div>
@@ -870,27 +882,29 @@ function ViewTracksHistory(deviceId) {
                             </div>
                         </div>
                     </div>`;
-            // listGroup.innerHTML += ListHistory;
+            listGroup.innerHTML += ListHistory;
             // Mostramos las rutas en el mapa
             if (element.tracking_history && element.tracking_history.length > 0) {
                 for (let x = 0; x < element.tracking_history.length; x++) {
                     const device = element.tracking_history[x];
+                    // Por cada device:
+                    window.deviceTracks[x] = device.tracks;
                     let CountTrascks = device.tracks.length;
                     let FirstDate = device.tracks[0].date_updated;
-                    let LastDate = device.tracks[CountTrascks-1].date_updated;
+                    let LastDate = device.tracks[CountTrascks - 1].date_updated;
 
                     // Obtenemos la Primer y ultima coordenadas
-                    let CountCoordsf = device.tracks[CountTrascks-1].positions.length;
+                    let CountCoordsf = device.tracks[CountTrascks - 1].positions.length;
                     let FirstCoords = device.tracks[0].positions[0];
-                    let LastCoords = device.tracks[CountTrascks-1].positions[CountCoordsf-1];
- 
+                    let LastCoords = device.tracks[CountTrascks - 1].positions[CountCoordsf - 1];
+
                     // const Coordinates = element[x].tracks;
                     const SalidaFecha = dayjs(FirstDate).isValid() ? dayjs(FirstDate).format('dddd DD [de] MMMM [del] YYYY [a las] HH:MM') : 'Fecha no disponible';
                     const LlegadaFecha = dayjs(LastDate).isValid() ? dayjs(LastDate).format('dddd DD [de] MMMM [del] YYYY [a las] HH:MM') : 'Fecha no disponible';
 
                     // Decodificamos las coordenadas para obtener direccion en texto Geocoder
                     geocoder = new google.maps.Geocoder();
-                    await geocoder.geocode({ location: { lat: FirstCoords.Latitude, lng: FirstCoords.Longitude } }).then((response) => { 
+                    await geocoder.geocode({ location: { lat: FirstCoords.Latitude, lng: FirstCoords.Longitude } }).then((response) => {
                         if (response.results[0]) {
                             firstAddress = response.results[0].formatted_address;
                         } else {
@@ -900,8 +914,8 @@ function ViewTracksHistory(deviceId) {
                         console.error("Geocoder failed due to: " + e);
                         firstAddress = FirstCoords.Latitude + ',' + FirstCoords.Longitude;
                     });
-                     
-                    await geocoder.geocode({ location: { lat: LastCoords.Latitude, lng: LastCoords.Longitude } }).then((response) => { 
+
+                    await geocoder.geocode({ location: { lat: LastCoords.Latitude, lng: LastCoords.Longitude } }).then((response) => {
                         if (response.results[0]) {
                             lastAddress = response.results[0].formatted_address;
                         } else {
@@ -911,7 +925,7 @@ function ViewTracksHistory(deviceId) {
                         console.error("Geocoder failed due to: " + e);
                         lastAddress = LastCoords.Latitude + ',' + LastCoords.Longitude;
                     });
- 
+
                     // let Coordinates = [];
                     // for (let i = 0; i < device.tracks.length; i++) {
                     //     const listCords = device.tracks[i];
@@ -920,8 +934,8 @@ function ViewTracksHistory(deviceId) {
                     // console.log("Coordenadas totales para la ruta:", Coordinates);
 
                     // Agregamos las coordenadas al mapa
-                    
-                    let html = `<div class="timeline-history" style="cursor: pointer;">
+
+                    let html = `<div class="timeline-history" style="cursor: pointer;" id="coords_tracks_${x}" onclick="ViewTracksCoords(${deviceId},${x})">
                         <!-- Trip B -->
                         <div class="timeline-history-item">
                             <div class="timeline-history-icon" style="background:#f97316;">B</div>
@@ -936,7 +950,7 @@ function ViewTracksHistory(deviceId) {
                                     <b>Altitude</b>: ${LastCoords.Altitude} ft <br />
                                     <b>Angle</b>: ${LastCoords.Angle}° <br />
                                     <b>Satellites</b>: ${LastCoords.Satellites} <br />
-                                    <b>Speed</b>: ${ (LastCoords.Speed / 1000).toFixed(2) } km/h
+                                    <b>Speed</b>: ${(LastCoords.Speed / 1000).toFixed(2)} km/h
                                 </div>
                             </div>
                         </div>
@@ -954,20 +968,23 @@ function ViewTracksHistory(deviceId) {
                                     <b>Altitude</b>: ${FirstCoords.Altitude} ft <br />
                                     <b>Angle</b>: ${FirstCoords.Angle}° <br />
                                     <b>Satellites</b>: ${FirstCoords.Satellites} <br />
-                                    <b>Speed</b>: ${ (FirstCoords.Speed / 1000).toFixed(2) } km/h
+                                    <b>Speed</b>: ${(FirstCoords.Speed / 1000).toFixed(2)} km/h
                                 </div>
                             </div>
                         </div>
                     </div>`;
 
-                    (x == 0) ? ListHistory = html : ListHistory += html;
+                    (x == 1) ? document.querySelectorAll('.loader-history-timeline').forEach(el => el.remove()) : '';
+                    ListHistory += html;
 
-                    if(x == 0){
-                        ViewPositionDevice( FirstCoords.Latitude,FirstCoords.Longitude , element.id)
-                    }   
+                    if (x == 0) {
+                        ViewPositionDevice(FirstCoords.Latitude, FirstCoords.Longitude, element.id)
+                    }
                 }
 
+
                 listGroup.innerHTML += ListHistory;
+                document.querySelectorAll('.loader-history-timeline').forEach(el => el.remove());
             } else {
                 console.log("No hay datos de trackings disponibles para mostrar historial");
                 ListHistory += `<div class="timeline-history">
@@ -987,6 +1004,7 @@ function ViewTracksHistory(deviceId) {
                     </div>`;
 
                 listGroup.innerHTML += ListHistory;
+                document.querySelectorAll('.loader-history-timeline').forEach(el => el.remove());
             }
         } else {
             console.error("No se pudieron obtener los datos del dispositivo para el modal.");
@@ -994,8 +1012,200 @@ function ViewTracksHistory(deviceId) {
     });
 }
 
+let modalMap = null;
+let modalMarker = null;
+let modalTrailPath = null;
+let modalAnimFrameId = null;
+// Función para obtener el icono según la velocidad
+function getMarkerIcon(speed, angle = 0) {
+    return {
+        path: speed > 0 ? google.maps.SymbolPath.FORWARD_CLOSED_ARROW : google.maps.SymbolPath.CIRCLE,
+        scale: speed > 0 ? 5 : 8,
+        rotation: angle,
+        strokeColor: "#000",
+        fillColor: speed > 0 ? "#00F" : "#f44336", // Azul en movimiento, Rojo detenido
+        fillOpacity: 1
+    };
+}
+
+function initModalMap(coordinates) {
+    // Limpiar instancias previas si existen
+    if (modalTrailPath) {
+        modalTrailPath.setMap(null);
+        modalTrailPath = null;
+    }
+    if (modalMarker) {
+        modalMarker.setMap(null);
+        modalMarker = null;
+    }
+    
+    // Crear el mapa en el modal
+    modalMap = new google.maps.Map(document.getElementById('modal-map'), {
+        center: { lat: coordinates[0].Latitude, lng: coordinates[0].Longitude },
+        zoom: 10,
+        disableDefaultUI: true,
+        gestureHandling: 'greedy',
+        zoomControl: true,
+        mapTypeControl: true,
+        streetViewControl: false,
+        fullscreenControl: true,
+        styles: MapStyle,
+    });
+    
+    // Calcular bounds para todos los puntos
+    let bounds = new google.maps.LatLngBounds();
+    coordinates.forEach(coord => {
+        bounds.extend(new google.maps.LatLng(coord.Latitude, coord.Longitude));
+    });
+    
+    // Ajustar el mapa para mostrar todos los puntos
+    modalMap.fitBounds(bounds);
+
+    // Crear el marcador
+
+
+    modalMarker = new google.maps.Marker({
+        position: { lat: coordinates[0].Latitude, lng: coordinates[0].Longitude },
+        map: modalMap,
+        icon: getMarkerIcon(coordinates[0].Speed, coordinates[0].Angle)
+    });
+
+    // Crear el path para la estela
+    modalTrailPath = new google.maps.Polyline({
+        map: modalMap,
+        path: [],
+        strokeColor: "#00F",
+        strokeOpacity: 0.7,
+        strokeWeight: 2.5
+    });
+}
+
+function ViewTracksCoords(id_device, deviceId) {
+    const tracks = window.deviceTracks[deviceId];
+    if (!tracks) {
+        Swal.fire({
+            icon: "error",
+            type: 'error',
+            title: 'Error',
+            text: 'No hay datos de ruta para este dispositivo'
+        });
+        return;
+    }
+
+    let Coordinates = [];
+    for (let i = tracks.length - 1; i >= 0; i--) {
+        const device = tracks[i];
+        const reversedPositions = device.positions.slice().reverse();
+        Coordinates = Coordinates.concat(reversedPositions);
+    }
+
+    if (!Coordinates || !Coordinates.length) return;
+
+	// Abrimos el modal
+	const modalElement = document.getElementById('modal-tracks');
+	const modal = new bootstrap.Modal(modalElement);
+	
+	function onShown() {
+		initModalMap(Coordinates);
+		const path = Coordinates.map(point => {
+			return {
+				angle: point.Angle,
+				speed: point.Speed,
+				coords: new google.maps.LatLng(point.Latitude, point.Longitude)
+			};
+		});
+		console.log("Dibujando ruta con las siguientes coordenadas:", path);
+		animateMarkerInModal(path, modalMarker);
+	}
+
+	function onHidden() {
+		// Cancelar cualquier animación en curso
+		if (modalAnimFrameId) {
+			cancelAnimationFrame(modalAnimFrameId);
+			modalAnimFrameId = null;
+		}
+		// Limpiar en orden correcto
+		if (modalTrailPath) {
+			modalTrailPath.setMap(null);
+			modalTrailPath = null;
+		}
+		if (modalMarker) {
+			modalMarker.setMap(null);
+			modalMarker = null;
+		}
+		if (modalMap) {
+			google.maps.event.clearInstanceListeners(modalMap);
+		}
+		modalMap = null;
+	}
+
+	modalElement.addEventListener('shown.bs.modal', onShown, { once: true });
+	modalElement.addEventListener('hidden.bs.modal', onHidden, { once: true });
+	modal.show();
+}
+
+function animateMarkerInModal(path, marker, duration = 500) {
+    let index = 0;
+
+    function animateSegment(startTime, from, to) {
+        function step(timestamp) {
+            if (!startTime) startTime = timestamp;
+            const progress = Math.min((timestamp - startTime) / duration, 1);
+
+            // Interpolación lineal entre puntos
+            const lat = from.coords.lat() + (to.coords.lat() - from.coords.lat()) * progress;
+            const lng = from.coords.lng() + (to.coords.lng() - from.coords.lng()) * progress;
+            const angle = from.angle;
+
+			// Si se cerró el modal, detener animación
+			if (!modalMap || !marker) {
+				return;
+			}
+
+			// Actualizar posición del marcador
+			marker.setPosition({ lat, lng });
+			
+			// Hacer que el mapa siga al marcador si existe
+			if (modalMap) {
+				modalMap.panTo({ lat, lng });
+			}
+
+            updateModalMarker(lat, lng, angle, marker);
+
+            if (progress < 1) {
+				modalAnimFrameId = requestAnimationFrame(step);
+            } else {
+                index++;
+                if (index < path.length - 1) {
+					modalAnimFrameId = requestAnimationFrame((t) =>
+                        animateSegment(t, path[index], path[index + 1])
+                    );
+                }
+            }
+        }
+		modalAnimFrameId = requestAnimationFrame(step);
+    }
+
+    if (path.length > 1) {
+		if (modalMap) {
+			modalMap.panTo(path[0].coords);
+		}
+        animateSegment(null, path[0], path[1]);
+    }
+}
+
+function updateModalMarker(lat, lng, angle, marker, speed) {
+    marker.setPosition({ lat, lng });
+    marker.setIcon(getMarkerIcon(speed, angle));
+
+    if (modalTrailPath) {
+        const path = modalTrailPath.getPath();
+        path.push(new google.maps.LatLng(lat, lng));
+    }
+}
+
 function ViewPositionOnMap(id_device, tracksJSON) {
-    let tracks = JSON.parse(tracksJSON);;
+    let tracks = JSON.parse(tracksJSON);
     if (tracks && tracks.length > 0) {
         console.log("Mostrando ruta en el mapa con las siguientes coordenadas:", tracks);
         let Coordinates = [];
@@ -1003,6 +1213,7 @@ function ViewPositionOnMap(id_device, tracksJSON) {
             const device = tracks[i];
             Coordinates = Coordinates.concat(device.positions);
         }
+
         console.log("Coordenadas totales para la ruta:", Coordinates);
         calculateAndDisplayRoute(Coordinates, markers.find(m => m.id_gps == id_device));
     } else {
@@ -1024,12 +1235,12 @@ function BackToListDevices() {
     listGroup.innerHTML = `<div class="col-lg-12 text-center pt-8" id="loading">
                                 <div class="spinner-border avatar-lg text-primary m-2" role="status"></div>
                             </div>`;
-    listDevicesGroup.style.display='block';
-    viewTrackingDevice.style.display='none';
-    ContentListGroups='list-group-all';
-    lblViewListDevices.innerHTML='Dispositivos Generales';
-    
-    getDevices(function(data){ShowMaps(data);});
+    listDevicesGroup.style.display = 'block';
+    viewTrackingDevice.style.display = 'none';
+    ContentListGroups = 'list-group-all';
+    lblViewListDevices.innerHTML = 'Dispositivos Generales';
+
+    getDevices(function (data) { ShowMaps(data); });
 }
 
 /**
@@ -1109,6 +1320,13 @@ const SendDataForm = async (url, formData) => {
         });
     }
 }
+
+
+function MinimizeCardMaps() {
+    trackingMapsCard.classList.toggle('minimize-card-maps');
+    floatingCardMaps.classList.toggle('active');
+}
+
 
 // Expose functions to the global scope
 window.initMap = initMap;
