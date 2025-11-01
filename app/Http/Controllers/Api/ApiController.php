@@ -206,6 +206,11 @@ class ApiController  extends Controller
 		$datos = $request->all();
 		Log::info('[*][' . date('H:i:s') . "] Data Decifrada: " . json_encode($datos));
 
+		// PacketOrigin, 
+        //         imei,
+        //         positions: 
+
+
 		// Verificar que tenga IMEI
 		if (empty($datos['imei'])) {
 			return response()->json([
@@ -228,7 +233,7 @@ class ApiController  extends Controller
 		$datos['packet'] = $datos['packet'] ?? null; // Asegurarse de que 'packet' esté presente
 		$datos['status_code'] = 200; // Default to 200 if not present
 		$datos['date_update'] = now();
-
+		$lastPosition = $request->last_position; // <- el record actual
 		$registro = Getgsminfo::where('imei', $imei)->with('getGPS', 'getVehicle')->first();
 
 		// Buscar GPS y vehículo actuales
@@ -239,12 +244,13 @@ class ApiController  extends Controller
 			$cambios = [
 				'id' 		=> $registro->id,
 				'packet'    => $datos['packet'],
-				'longitude' => $datos['longitude'] ?? null,
-				'latitude'  => $datos['latitude'] ?? null,
-				'altitude'  => $datos['altitude'] ?? null,
-				'angle'     => $datos['angle'] ?? null,
-				'speed'     => $datos['speed'] ?? null,
 				'date_update' => $datos['date_update'],
+				'timestamp' => $lastPosition['timestamp'],
+                'longitude' => $lastPosition['longitude'],
+                'latitude'  => $lastPosition['latitude'],
+                'speed'     => $lastPosition['speed'],
+                'angle'     => $lastPosition['angle'],
+                'altitude'  => $lastPosition['altitude'],
 			];
 
 			// Actualiza si se detectan nuevos IDs
@@ -552,7 +558,7 @@ class ApiController  extends Controller
 
 		// Obtenemos todos los trackings y los agrupamos por día
 		$trackings = Trackings::where('device_id', $id)
-			->where('date_updated', '>=', Carbon::now()->subDays(10)) // últimos 5 días
+			->where('date_updated', '>=', Carbon::now()->subDays(5)) // últimos 5 días
 			->orderBy('date_updated', 'desc')
 			->get()
 			->groupBy(function($tracking) {

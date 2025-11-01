@@ -154,10 +154,10 @@ function ViewPositionDevice(latitude, longitude, id) {
  * 
  * Pusher data to receive 
  */
-// channel.bind('coords-gps', function (data) {
-//     // Actualizamos la tarjeta del dispositivo
-//     updateDeviceCard(data);
-// });
+channel.bind('coords-gps', function (data) {
+    // Actualizamos la tarjeta del dispositivo
+    updateDeviceCard(data);
+});
 
 /**
  * 
@@ -456,7 +456,7 @@ function updateDeviceCard(IdElement) {
                     // Verificamos si las coordenadas no estan vacias
                     let init_pos = Math.abs(marker.lat) + Math.abs(marker.lng);
                     let end_pos = Math.abs(element.latitude) + Math.abs(element.longitude);
-                    var newLocation = new google.maps.LatLng(element.latitude, element.longitude);
+                    var newLocation = new google.maps.LatLng(marker.lat, marker.lng);
                     // if (detectChange(element.get_trackings)) {           
                     // if (init_pos != end_pos) { // El repa cambio de posicion
                     marker.setPosition(newLocation);
@@ -1166,9 +1166,9 @@ function animateMarkerInModal(path, marker, duration = 500) {
 			marker.setPosition({ lat, lng });
 			
 			// Hacer que el mapa siga al marcador si existe
-			if (modalMap) {
-				modalMap.panTo({ lat, lng });
-			}
+			// if (modalMap) {
+			// 	modalMap.panTo({ lat, lng });
+			// }
 
             updateModalMarker(lat, lng, angle, marker);
 
@@ -1187,9 +1187,9 @@ function animateMarkerInModal(path, marker, duration = 500) {
     }
 
     if (path.length > 1) {
-		if (modalMap) {
-			modalMap.panTo(path[0].coords);
-		}
+		// if (modalMap) {
+		// 	modalMap.panTo(path[0].coords);
+		// }
         animateSegment(null, path[0], path[1]);
     }
 }

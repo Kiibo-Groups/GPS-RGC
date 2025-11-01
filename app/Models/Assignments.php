@@ -15,7 +15,7 @@ class Assignments extends Model
         'gps_devices_id',
     ];
  
-    public function VehicleUnits(): BelongsTo
+    public function VehicleUnits()
     {
         return $this->belongsTo('App\Models\vehicle_units', 'vehicle_units_id' , 'id');
     }
